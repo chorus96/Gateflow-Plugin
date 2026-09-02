@@ -204,7 +204,7 @@ Done! Created:
 Create → Lint → Fix → Test → Fix → Formally Verify → Synthesize → Deliver
 ```
 
-### 자연어 기반 정형 검증
+### 자연어 기반 Formal 검증
 증명하고 싶은 것을 평범한 말로 GateFlow에 알려주세요:
 ```
 "Formally verify that the FIFO never overflows and the pointers are always consistent"
