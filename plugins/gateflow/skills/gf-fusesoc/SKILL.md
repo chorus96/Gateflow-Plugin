@@ -16,11 +16,11 @@ allowed-tools:
   - Bash
   - Read
 
-# GF-FuseSoC -- Build System Integration
+# GF-FuseSoC -- 빌드 시스템 통합
 
-Generate FuseSoC .core files and drive builds through Edalize backends.
+FuseSoC .core 파일을 생성하고 Edalize 백엔드를 통해 빌드를 구동합니다.
 
-## .core File Template
+## .core 파일 템플릿
 
 ```yaml
 CAPI=2:
@@ -49,7 +49,7 @@ targets:
         part: xc7a35ticsg324-1L
 ```
 
-## Complete .core Schema
+## 완전한 .core 스키마
 
 ```yaml
 CAPI=2
@@ -126,29 +126,29 @@ parameters:
     description: "Data width"
 ```
 
-## File Types
+## 파일 타입
 
-| Type | Extensions |
+| 타입 | 확장자 |
 |---|---|
 | `verilogSource` | .v, .vh |
 | `systemVerilogSource` | .sv, .svh |
 | `vhdlSource` | .vhd, .vhdl |
-| `xdc` | Vivado constraints |
-| `PCF` | iCE40 constraints |
-| `LPF` | ECP5 constraints |
-| `CST` | Gowin constraints |
+| `xdc` | Vivado 제약 |
+| `PCF` | iCE40 제약 |
+| `LPF` | ECP5 제약 |
+| `CST` | Gowin 제약 |
 
-## Edalize Backends
+## Edalize 백엔드
 
-| Backend | Tool | Use Case |
+| 백엔드 | 도구 | 용도 |
 |---------|------|----------|
-| verilator | Verilator | Simulation + lint |
-| icarus | Icarus Verilog | Simulation |
+| verilator | Verilator | 시뮬레이션 + lint |
+| icarus | Icarus Verilog | 시뮬레이션 |
 | vivado | Xilinx Vivado | Synth + P&R |
 | quartus | Intel Quartus | Synth + P&R |
-| yosys | Yosys | Open-source synth |
+| yosys | Yosys | 오픈소스 synth |
 
-## Dependency Management
+## 의존성 관리
 
 ```yaml
 depend:
@@ -158,14 +158,14 @@ depend:
   - "~vendor:lib:fifo:1.2.3"   # Patch only
 ```
 
-| Operator | Meaning |
+| 연산자 | 의미 |
 |---|---|
-| `=` (default) | Exact match |
-| `>=` | At least |
-| `^` | Semver compatible (>=X.Y.Z, <X+1.0.0) |
-| `~` | Patch only (>=X.Y.Z, <X.Y+1.0) |
+| `=` (기본) | 정확한 일치 |
+| `>=` | 최소 |
+| `^` | Semver 호환 (>=X.Y.Z, <X+1.0.0) |
+| `~` | Patch만 (>=X.Y.Z, <X.Y+1.0) |
 
-## Running FuseSoC
+## FuseSoC 실행
 
 ```bash
 fusesoc run --target=sim vendor:lib:design           # Simulate
@@ -176,30 +176,30 @@ fusesoc core list                                      # List cores
 fusesoc library add name https://github.com/org/repo  # Add library
 ```
 
-## Tool Backend Options
+## 도구 백엔드 옵션
 
 ### icestorm
-- `pnr`: `next` (nextpnr) or `arachne`
-- `nextpnr_options`: CLI args for nextpnr-ice40
-- `yosys_synth_options`: Extra synth_ice40 options
+- `pnr`: `next` (nextpnr) 또는 `arachne`
+- `nextpnr_options`: nextpnr-ice40의 CLI 인자
+- `yosys_synth_options`: 추가 synth_ice40 옵션
 
 ### trellis (ECP5)
-- `nextpnr_options`: CLI args for nextpnr-ecp5
-- `yosys_synth_options`: Extra synth_ecp5 options
+- `nextpnr_options`: nextpnr-ecp5의 CLI 인자
+- `yosys_synth_options`: 추가 synth_ecp5 옵션
 
 ### verilator
 - `mode`: `binary`, `cc`, `lint-only`
-- `verilator_options`: Extra CLI args
+- `verilator_options`: 추가 CLI 인자
 
 ### vivado
-- `part`: FPGA part number
-- `synth`: `vivado` or `yosys`
+- `part`: FPGA 부품 번호
+- `synth`: `vivado` 또는 `yosys`
 
-## Auto-Generation
+## 자동 생성
 
-Scans project, reads `.gateflow/project.yaml`, generates .core file.
+프로젝트를 스캔하고, `.gateflow/project.yaml`을 읽어 .core 파일을 생성.
 
-## GATEFLOW-RESULT Integration
+## GATEFLOW-RESULT 통합
 
 ```
 ---GATEFLOW-RESULT---
