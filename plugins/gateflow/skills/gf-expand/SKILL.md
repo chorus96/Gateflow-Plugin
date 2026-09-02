@@ -12,30 +12,30 @@ allowed-tools:
   - Task
 ---
 
-# GF Expand - Clarification and Options Workflow
+# GF Expand - 명확화 및 옵션 워크플로
 
-You are the expand mode handler for GateFlow. When intent is ambiguous or needs refinement, you guide the user through clarification before handing off.
+당신은 GateFlow의 expand 모드 핸들러입니다. 의도가 모호하거나 정제가 필요할 때, 핸드오프 전에 명확화를 통해 사용자를 안내합니다.
 
-## When Expand Mode Activates
+## Expand 모드가 활성화될 때
 
-- Confidence score is 0.70 - 0.85
-- Multiple intents have similar confidence
-- Request has implicit complexity needing clarification
+- 신뢰도 점수가 0.70 - 0.85
+- 여러 의도가 비슷한 신뢰도를 가짐
+- 요청에 명확화가 필요한 암묵적 복잡성이 있음
 
-## Workflow
+## 워크플로
 
-### Step 1: Acknowledge and Frame
+### 1단계: 인식하고 틀 잡기
 
 ```
 I'd like to help you with [brief summary of what you understood].
 Let me ask a few quick questions to make sure I deliver exactly what you need.
 ```
 
-### Step 2: Ask Clarifying Questions (2-3 max)
+### 2단계: 명확화 질문하기 (최대 2-3개)
 
-Use AskUserQuestion tool with targeted questions based on detected intent:
+감지된 의도에 기반한 표적 질문과 함께 AskUserQuestion 도구 사용:
 
-#### For Ambiguous Creation vs Debug:
+#### 모호한 생성 vs 디버그의 경우:
 ```
 questions:
   - question: "Are you creating something new or working with existing code?"
@@ -49,7 +49,7 @@ questions:
         description: "Learn how existing code works"
 ```
 
-#### For Creation Tasks:
+#### 생성 작업의 경우:
 ```
 questions:
   - question: "What interface protocol should this use?"
@@ -74,7 +74,7 @@ questions:
         description: "Just the RTL module"
 ```
 
-#### For Debug Tasks:
+#### 디버그 작업의 경우:
 ```
 questions:
   - question: "What behavior are you seeing?"
@@ -99,7 +99,7 @@ questions:
         description: "Sometimes works, sometimes fails"
 ```
 
-#### For Planning Tasks:
+#### 계획 작업의 경우:
 ```
 questions:
   - question: "What level of design detail do you need?"
@@ -113,9 +113,9 @@ questions:
         description: "Phases, file structure, test plan"
 ```
 
-### Step 3: Present Options with Trade-offs
+### 3단계: 트레이드오프와 함께 옵션 제시
 
-Based on user answers, present 2-3 implementation options:
+사용자 답변에 기반해, 구현 옵션 2-3개를 제시:
 
 ```markdown
 Based on your answers, here are your options:
@@ -144,9 +144,9 @@ Based on your answers, here are your options:
 Which approach would you like? (A/B/C)
 ```
 
-### Step 4: Build Enriched Handoff Context
+### 4단계: 풍부한 핸드오프 컨텍스트 구성
 
-After user selects option, build context:
+사용자가 옵션을 선택한 후, 컨텍스트 구성:
 
 ```json
 {
@@ -166,16 +166,16 @@ After user selects option, build context:
 }
 ```
 
-### Step 5: Handoff to Target
+### 5단계: 대상으로 핸드오프
 
-**For Skills:**
+**스킬의 경우:**
 ```
 Invoke Skill tool:
   skill: "gf"  (or gf-lint, gf-sim, etc.)
   args: "[context summary]"
 ```
 
-**For Agents:**
+**에이전트의 경우:**
 ```
 Invoke Task tool:
   description: "Create FIFO with valid/ready interface"
@@ -197,69 +197,69 @@ Invoke Task tool:
     - tb/tb_fifo.sv - Self-checking testbench
 ```
 
-## Question Templates by Scenario
+## 시나리오별 질문 템플릿
 
-### "Help me with X" (ambiguous)
-1. What do you want to do with X? (create/fix/understand)
-2. [Based on answer, ask relevant follow-up]
+### "Help me with X" (모호)
+1. X로 무엇을 하고 싶은가? (create/fix/understand)
+2. [답변에 기반해 관련 후속 질문]
 
-### "Create a [component]" (needs specs)
-1. What interface protocol?
-2. Key parameters? (width, depth, etc.)
-3. Include testbench?
+### "Create a [component]" (명세 필요)
+1. 어떤 인터페이스 프로토콜?
+2. 핵심 파라미터? (폭, 깊이 등)
+3. 테스트벤치 포함?
 
-### "Fix this" (needs diagnosis)
-1. What's the symptom?
-2. What did you expect?
-3. Any recent changes?
+### "Fix this" (진단 필요)
+1. 증상은 무엇인가?
+2. 무엇을 기대했는가?
+3. 최근 변경이 있었는가?
 
-### "Work on [project]" (scope unclear)
-1. Which part specifically?
-2. What's the goal? (new feature, bug fix, cleanup)
+### "Work on [project]" (범위 불명확)
+1. 구체적으로 어느 부분?
+2. 목표는 무엇인가? (새 기능, 버그 수정, 정리)
 
-## Important Rules
+## 중요 규칙
 
-1. **Max 3 questions** - Don't overwhelm user
-2. **Provide sensible defaults** - "Quick Start" option always available
-3. **Be specific** - "What interface?" not "Tell me more"
-4. **Remember answers** - Build comprehensive context
-5. **Handoff with full context** - Target should have everything needed
+1. **최대 3개 질문** - 사용자를 압도하지 말 것
+2. **합리적 기본값 제공** - "Quick Start" 옵션은 항상 이용 가능
+3. **구체적으로** - "더 말해달라"가 아니라 "어떤 인터페이스?"
+4. **답변 기억** - 포괄적 컨텍스트 구성
+5. **전체 컨텍스트와 함께 핸드오프** - 대상이 필요한 모든 것을 가져야 함
 
 ---
 
-## Additional Scenario Templates
+## 추가 시나리오 템플릿
 
-### Formal Verification
-- "What properties to verify?" -> Safety / Protocol compliance / Functional correctness / Suggest for me (multiSelect)
-- "Proof depth?" -> Quick check (BMC 20 cycles) / Full proof (unbounded) / Cover + Prove
+### 정형 검증
+- "어떤 프로퍼티를 검증?" -> 안전성 / 프로토콜 준수 / 기능 정확성 / 내가 제안 (multiSelect)
+- "증명 깊이?" -> 빠른 검사 (BMC 20 사이클) / 전체 증명 (무계) / Cover + Prove
 
-### Synthesis
-- "Target FPGA?" -> iCE40 / ECP5 / Gowin / Artix-7 / Generic estimate
-- "Optimization goal?" -> Minimum area / Maximum frequency / Low power / Balanced
+### 합성
+- "목표 FPGA?" -> iCE40 / ECP5 / Gowin / Artix-7 / 일반 추정
+- "최적화 목표?" -> 최소 면적 / 최대 주파수 / 저전력 / 균형
 
-### Board Targeting
-- "Which board?" -> iCEBreaker / Tang Nano 9K / Arty A7 / Other
-- "Peripherals needed?" -> LEDs+buttons / UART / SPI+I2C / HDMI+VGA (multiSelect)
+### 보드 타겟팅
+- "어떤 보드?" -> iCEBreaker / Tang Nano 9K / Arty A7 / 기타
+- "필요한 주변장치?" -> LED+버튼 / UART / SPI+I2C / HDMI+VGA (multiSelect)
 
-### Protocol Choice
-- "Protocol?" -> AXI4-Lite / AXI-Stream / Wishbone / Valid/Ready / Help me choose
-- "Data flow?" -> Register read/write / Streaming / Burst transfers / Request/response
+### 프로토콜 선택
+- "프로토콜?" -> AXI4-Lite / AXI-Stream / Wishbone / Valid/Ready / 선택을 도와줘
+- "데이터 흐름?" -> 레지스터 읽기/쓰기 / 스트리밍 / 버스트 전송 / 요청/응답
 
-## Quick Start Defaults
+## Quick Start 기본값
 
-| Scenario | Defaults |
+| 시나리오 | 기본값 |
 |---|---|
-| Creation | 32-bit, parameterized, valid/ready, self-checking TB, parallel build |
-| Debug | Run existing TB, collect waveform, auto-diagnose |
-| Formal | BMC depth 20, z3, safety properties auto-detected |
-| Synthesis | Generic target, balanced optimization |
-| Board | Auto-detect from project.yaml, fallback iCEBreaker |
-| Protocol | Valid/Ready for single module, AXI-Stream for pipelines, AXI4-Lite for registers |
+| 생성 | 32비트, 파라미터화, valid/ready, 자가 검사 TB, 병렬 빌드 |
+| 디버그 | 기존 TB 실행, 파형 수집, 자동 진단 |
+| 정형 | BMC 깊이 20, z3, 안전성 프로퍼티 자동 감지 |
+| 합성 | 일반 타겟, 균형 최적화 |
+| 보드 | project.yaml에서 자동 감지, 폴백 iCEBreaker |
+| 프로토콜 | 단일 모듈은 Valid/Ready, 파이프라인은 AXI-Stream, 레지스터는 AXI4-Lite |
 
-## Follow-Up Decision Trees
+## 후속 결정 트리
 
-**Creation:** Single module + no bus -> sv-codegen. Single module + bus -> protocol choice. Multi-component -> gf-plan then gf-build.
+**생성:** 단일 모듈 + 버스 없음 -> sv-codegen. 단일 모듈 + 버스 -> 프로토콜 선택. 다중 컴포넌트 -> gf-plan 그다음 gf-build.
 
-**Debug:** X-values from start -> check resets. Wrong output consistent -> logic error. Simulation hangs -> infinite loop or deadlock.
+**디버그:** 처음부터 X 값 -> 리셋 확인. 일관되게 잘못된 출력 -> 로직 오류. 시뮬레이션 행 -> 무한 루프 또는 데드락.
 
-**Formal:** Safety properties -> BMC then prove. Protocol compliance -> load SVA templates. Not sure -> auto-analyze design for FIFO/FSM/handshake patterns.
+**정형:** 안전성 프로퍼티 -> BMC 그다음 prove. 프로토콜 준수 -> SVA 템플릿 로드. 불확실 -> FIFO/FSM/핸드셰이크 패턴을 위해 설계 자동 분석.

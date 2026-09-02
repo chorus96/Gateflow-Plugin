@@ -17,19 +17,19 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GF-Build: Parallel Design Orchestrator
+# GF-Build: 병렬 설계 오케스트레이터
 
-You orchestrate RTL builds by decomposing designs and spawning parallel agents.
+당신은 설계를 분해하고 병렬 에이전트를 스폰하여 RTL 빌드를 오케스트레이션합니다.
 
-## Invocation
+## 호출
 
-User says: `/gf-build <design description>`
+사용자가 말함: `/gf-build <design description>`
 
-## Workflow
+## 워크플로
 
-### Step 1: Decompose
+### 1단계: 분해
 
-Analyze the request and identify:
+요청을 분석하고 식별:
 
 ```markdown
 ## Design Decomposition: [Name]
@@ -64,7 +64,7 @@ Analyze the request and identify:
 | tb_top.sv | Integration |
 ```
 
-### Step 2: Ask for Approval
+### 2단계: 승인 요청
 
 ```
 I've decomposed your design into [N] components across [M] phases.
@@ -73,24 +73,24 @@ Phase 1 will spawn [X] parallel agents.
 Proceed with parallel build?
 ```
 
-### Single-Module Requests
+### 단일 모듈 요청
 
-If the design decomposes to a single module:
-- Treat it as Phase 1 with one component
-- Spawn one sv-codegen task (still using the parallel pattern)
-- Continue with lint/testbench/sim as usual
+설계가 단일 모듈로 분해되면:
+- 컴포넌트 하나가 있는 Phase 1로 취급
+- 하나의 sv-codegen 작업을 스폰 (여전히 병렬 패턴 사용)
+- 평소처럼 lint/testbench/sim 진행
 
-### Step 3: Execute Phases
+### 3단계: 단계 실행
 
-#### Phase 0: Setup
+#### Phase 0: 설정
 ```bash
 mkdir -p rtl tb
 ```
-Spawn sv-codegen to create shared package (stay consistent with agent-only rule).
+공유 패키지를 만들기 위해 sv-codegen을 스폰 (에이전트 전용 규칙을 일관되게 유지).
 
-#### Phase 1: Parallel Component Build
+#### Phase 1: 병렬 컴포넌트 빌드
 
-**CRITICAL: Spawn ALL Phase 1 agents in a SINGLE message with multiple Task calls.**
+**중요: 하나의 메시지에 여러 Task 호출로 모든 Phase 1 에이전트를 스폰.**
 
 ```
 <Task 1>
@@ -118,40 +118,40 @@ prompt: |
 </Task 3>
 ```
 
-#### Phase 2: Parallel Lint
+#### Phase 2: 병렬 Lint
 
-Run lint on all components:
+모든 컴포넌트에 lint 실행:
 ```
 Skill: gf-lint
 args: rtl/alu.sv rtl/regfile.sv rtl/imm_gen.sv
 ```
 
-Parse results. For any failures, spawn sv-refactor agents in parallel.
+결과를 파싱. 실패가 있으면 sv-refactor 에이전트를 병렬로 스폰.
 
-#### Phase 3: Integration
+#### Phase 3: 통합
 
-Either:
-- Spawn sv-codegen for top-level with component interfaces
-- Or write directly if straightforward
+다음 중:
+- 컴포넌트 인터페이스로 톱레벨용 sv-codegen 스폰
+- 또는 간단하면 직접 작성
 
-#### Phase 4: Parallel Testbenches
+#### Phase 4: 병렬 테스트벤치
 
-Spawn testbench agents in parallel:
+테스트벤치 에이전트를 병렬로 스폰:
 ```
 <Task 1> sv-testbench for ALU
 <Task 2> sv-testbench for RegFile
 <Task 3> sv-testbench for top
 ```
 
-#### Phase 5: Simulation
+#### Phase 5: 시뮬레이션
 
-Run simulations (can be parallel):
+시뮬레이션 실행 (병렬 가능):
 ```
 Skill: gf-sim tb/tb_alu.sv rtl/alu.sv
 Skill: gf-sim tb/tb_top.sv rtl/*.sv
 ```
 
-### Step 4: Report
+### 4단계: 보고
 
 ```markdown
 ## Build Complete
@@ -177,9 +177,9 @@ Skill: gf-sim tb/tb_top.sv rtl/*.sv
 
 ---
 
-## Agent Prompt Templates
+## 에이전트 프롬프트 템플릿
 
-### sv-codegen Component Prompt
+### sv-codegen 컴포넌트 프롬프트
 
 ```markdown
 ## Component: [NAME]
@@ -210,7 +210,7 @@ module [name] #(
 Write to: [path]
 ```
 
-### sv-testbench Component Prompt
+### sv-testbench 컴포넌트 프롬프트
 
 ```markdown
 ## Testbench for: [DUT_NAME]
@@ -234,63 +234,63 @@ Write to: tb/tb_[dut].sv
 
 ---
 
-## Parallelism Rules
+## 병렬성 규칙
 
-1. **Same phase = parallel** - Components with no dependencies spawn together
-2. **Different phase = sequential** - Wait for previous phase to complete
-3. **Lint = batch** - Run on all files at once, or parallel per file
-4. **Fix = parallel** - Each failing file gets its own sv-refactor agent
-5. **Sim = parallel** - Each testbench can run independently
+1. **같은 단계 = 병렬** - 의존성이 없는 컴포넌트는 함께 스폰
+2. **다른 단계 = 순차** - 이전 단계 완료를 대기
+3. **Lint = 배치** - 모든 파일에 한 번에, 또는 파일당 병렬
+4. **수정 = 병렬** - 실패한 각 파일은 자체 sv-refactor 에이전트를 받음
+5. **Sim = 병렬** - 각 테스트벤치는 독립적으로 실행 가능
 
 ---
 
-## Error Recovery
+## 오류 복구
 
-| Error | Action |
+| 오류 | 조치 |
 |-------|--------|
-| Agent timeout | Retry once, then ask user |
-| Lint failure | Spawn sv-refactor, re-lint |
-| Sim failure | Spawn sv-debug, then sv-refactor |
-| Integration mismatch | Check interfaces, fix manually |
-| 2 consecutive failures | Ask user for guidance |
+| 에이전트 타임아웃 | 한 번 재시도, 그다음 사용자에게 질문 |
+| Lint 실패 | sv-refactor 스폰, 재lint |
+| Sim 실패 | sv-debug 스폰, 그다음 sv-refactor |
+| 통합 불일치 | 인터페이스 확인, 수동 수정 |
+| 연속 2회 실패 | 사용자에게 지침 요청 |
 
 ---
 
-## Dependency Graph Algorithm
+## 의존성 그래프 알고리즘
 
-Use Kahn's algorithm (BFS topological sort) to identify parallel phases:
-1. Build adjacency list and in-degree for each component
-2. Initialize queue with all in-degree=0 components
-3. Drain queue level by level -- each level is a parallel phase
-4. If any component still has in_degree>0 after all levels: cycle detected
+병렬 단계를 식별하기 위해 Kahn 알고리즘(BFS 위상 정렬)을 사용:
+1. 각 컴포넌트의 인접 리스트와 in-degree 구성
+2. 모든 in-degree=0 컴포넌트로 큐 초기화
+3. 레벨별로 큐를 비움 -- 각 레벨이 병렬 단계
+4. 모든 레벨 후에도 in_degree>0인 컴포넌트가 있으면: 사이클 감지됨
 
 ---
 
-## Resource Contention Rules
+## 자원 경합 규칙
 
-| Rule | Description |
+| 규칙 | 설명 |
 |---|---|
-| One writer per file | Each file owned by exactly one agent |
-| Write-before-read | Writers in earlier phase than readers |
-| Shared package pattern | Shared types go to pkg.sv in Phase 0 |
-| No implicit deps | Agent prompts list files to CREATE, READ, and NEVER MODIFY |
+| 파일당 하나의 작성자 | 각 파일은 정확히 한 에이전트가 소유 |
+| 읽기 전 쓰기 | 작성자는 독자보다 이른 단계에 |
+| 공유 패키지 패턴 | 공유 타입은 Phase 0의 pkg.sv로 |
+| 암시적 의존성 없음 | 에이전트 프롬프트는 CREATE, READ, NEVER MODIFY할 파일을 나열 |
 
 ---
 
-## Incremental Build
+## 증분 빌드
 
-Track file hashes in `.gateflow/cache/hashes.json`:
+`.gateflow/cache/hashes.json`에 파일 해시를 추적:
 ```json
 {"rtl/alu.sv": {"sha256": "a1b2...", "last_lint": "PASS", "last_sim": "PASS"}}
 ```
 
-Decision: if hash unchanged AND all dependency hashes unchanged -> skip (cache hit). Otherwise re-run.
+결정: 해시가 변경되지 않았고 모든 의존성 해시가 변경되지 않았으면 -> 건너뜀 (캐시 히트). 그렇지 않으면 재실행.
 
-Dependency-aware invalidation: when pkg.sv changes, invalidate all importers.
+의존성 인식 무효화: pkg.sv가 변경되면, 모든 importer를 무효화.
 
 ---
 
-## Build Cache Structure
+## 빌드 캐시 구조
 
 ```
 .gateflow/cache/
@@ -302,7 +302,7 @@ Dependency-aware invalidation: when pkg.sv changes, invalidate all importers.
 
 ---
 
-## Progress Visualization
+## 진행 상황 시각화
 
 ```
 [Phase 0] Setup         [====================] DONE  0:04
@@ -315,7 +315,7 @@ Dependency-aware invalidation: when pkg.sv changes, invalidate all importers.
 
 ---
 
-## Return Format
+## 반환 형식
 
 ```
 ---GATEFLOW-RETURN---

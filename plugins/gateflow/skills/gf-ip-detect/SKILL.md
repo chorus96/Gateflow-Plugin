@@ -16,15 +16,15 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GF-IP-Detect — IP Block Auto-Detection and Auto-Fill
+# GF-IP-Detect — IP 블록 자동 감지 및 자동 채움
 
-Scans hardware codebases to find IP blocks, identify gaps, and dispatch
-agents to implement missing pieces.
+하드웨어 코드베이스를 스캔해 IP 블록을 찾고, 빈틈을 식별하며,
+누락 부분을 구현하도록 에이전트를 파견합니다.
 
-## What This Detects
+## 감지하는 것
 
-### 1. Missing Module Implementations
-Modules instantiated but never defined in the project:
+### 1. 누락된 모듈 구현
+인스턴스화되었으나 프로젝트에 정의되지 않은 모듈:
 ```bash
 # Find all module instantiations
 grep -rn "^\s*\w\+\s\+\w\+\s*(" rtl/ tb/ --include="*.sv" --include="*.v" --include="*.vhd"
@@ -35,8 +35,8 @@ grep -rn "^\s*module\s\+\w\+" rtl/ --include="*.sv" --include="*.v"
 # Diff = missing implementations
 ```
 
-### 2. Stub Modules (Empty or TODO)
-Modules defined but with no real implementation:
+### 2. 스텁 모듈 (비어 있거나 TODO)
+정의되었으나 실제 구현이 없는 모듈:
 ```bash
 # Find modules with TODO/FIXME/stub markers
 grep -rn "TODO\|FIXME\|STUB\|NOT IMPLEMENTED" rtl/ --include="*.sv"
@@ -44,29 +44,29 @@ grep -rn "TODO\|FIXME\|STUB\|NOT IMPLEMENTED" rtl/ --include="*.sv"
 # Find modules with empty bodies (just endmodule after ports)
 ```
 
-### 3. Standard IP Pattern Matching
-Detect common hardware patterns that could use verified IP blocks:
+### 3. 표준 IP 패턴 매칭
+검증된 IP 블록을 쓸 수 있는 흔한 하드웨어 패턴을 감지:
 
-| Pattern Detected | Matching IP Block | Confidence |
+| 감지된 패턴 | 일치하는 IP 블록 | 신뢰도 |
 |-----------------|-------------------|------------|
-| FIFO-like read/write with full/empty | `fifo_sync` or `fifo_async` | High |
-| 2+ flip-flop chain (synchronizer) | `cdc_2ff` | High |
-| Req/ack handshake across clocks | `cdc_handshake` | High |
-| UART-like shift register with baud | `uart` | Medium |
-| SPI-like SCLK/MOSI/MISO/CS_N | `spi_master` | High |
-| AXI-like valid/ready with addr/data | `axi4lite_slave` | Medium |
-| Counter with debounce logic | `debouncer` | Medium |
+| full/empty가 있는 FIFO형 read/write | `fifo_sync` 또는 `fifo_async` | High |
+| 2개 이상의 플립플롭 체인 (동기화기) | `cdc_2ff` | High |
+| 클럭 간 Req/ack 핸드셰이크 | `cdc_handshake` | High |
+| baud가 있는 UART형 시프트 레지스터 | `uart` | Medium |
+| SCLK/MOSI/MISO/CS_N의 SPI형 | `spi_master` | High |
+| addr/data가 있는 valid/ready의 AXI형 | `axi4lite_slave` | Medium |
+| 디바운스 로직이 있는 카운터 | `debouncer` | Medium |
 
-### 4. Interface Gaps
-Ports declared in a top module but not connected to any implementation:
+### 4. 인터페이스 빈틈
+톱 모듈에 선언되었으나 어떤 구현에도 연결되지 않은 포트:
 ```bash
 # Find top module ports
 # Check which ports connect to instantiated submodules
 # Unconnected ports = potential missing IP
 ```
 
-### 5. Vendor IP Placeholders
-Detect instantiations of vendor-specific IP that could have open-source alternatives:
+### 5. 벤더 IP 플레이스홀더
+오픈소스 대안이 있을 수 있는 벤더 특화 IP의 인스턴스화를 감지:
 ```bash
 # Xilinx primitives
 grep -rn "IBUF\|OBUF\|BUFG\|MMCME2\|PLLE2\|BRAM" rtl/ --include="*.sv"
@@ -77,9 +77,9 @@ grep -rn "SB_IO\|SB_GB\|SB_PLL\|SB_RAM" rtl/ --include="*.sv"
 
 ---
 
-## Detection Workflow
+## 감지 워크플로
 
-### Step 1: Scan Codebase
+### 1단계: 코드베이스 스캔
 
 ```
 Read all .sv/.v/.vhd files in project
@@ -93,20 +93,20 @@ Extract: signal patterns (FIFO, CDC, protocol)
 Build dependency graph
 ```
 
-### Step 2: Identify Gaps
+### 2단계: 빈틈 식별
 
-For each instantiated module:
-1. Is it defined in the project? → if no, **MISSING**
-2. Is it a known IP block from GateFlow library? → suggest `/gf-ip add`
-3. Is it a vendor primitive? → flag for review
-4. Is it defined but empty/stub? → **NEEDS IMPLEMENTATION**
+인스턴스화된 각 모듈에 대해:
+1. 프로젝트에 정의되어 있는가? → 없으면 **MISSING**
+2. GateFlow 라이브러리의 알려진 IP 블록인가? → `/gf-ip add` 제안
+3. 벤더 프리미티브인가? → 리뷰 대상으로 표시
+4. 정의되었으나 비어 있음/스텁인가? → **NEEDS IMPLEMENTATION**
 
-For each signal pattern:
-1. Does it match a standard IP pattern? → suggest replacement
-2. Is the implementation ad-hoc? → suggest verified IP block
-3. Is there a CDC crossing without synchronizer? → **CRITICAL: suggest cdc_2ff**
+각 신호 패턴에 대해:
+1. 표준 IP 패턴과 일치하는가? → 대체 제안
+2. 구현이 임시적인가? → 검증된 IP 블록 제안
+3. 동기화기 없는 CDC 크로싱이 있는가? → **CRITICAL: cdc_2ff 제안**
 
-### Step 3: Report
+### 3단계: 보고
 
 ```
 ---GATEFLOW-RESULT---
@@ -149,9 +149,9 @@ IP_OPPORTUNITIES:
 ---END-GATEFLOW-RESULT---
 ```
 
-### Step 4: Auto-Fill (with user approval)
+### 4단계: 자동 채움 (사용자 승인)
 
-Present findings and ask:
+결과를 제시하고 질문:
 ```
 Found 2 missing modules and 1 stub:
 
@@ -170,11 +170,11 @@ Found 2 missing modules and 1 stub:
 
 ---
 
-## Auto-Fill Dispatch
+## 자동 채움 파견
 
-When user approves auto-fill, dispatch appropriate agents:
+사용자가 자동 채움을 승인하면, 적절한 에이전트를 파견:
 
-### For IP Block Matches
+### IP 블록 일치의 경우
 ```
 Use Task tool:
   subagent_type: "gateflow:sv-codegen"
@@ -186,7 +186,7 @@ Use Task tool:
     Generate the module, then create a testbench.
 ```
 
-### For Stubs
+### 스텁의 경우
 ```
 Use Task tool:
   subagent_type: "gateflow:sv-codegen"
@@ -199,7 +199,7 @@ Use Task tool:
     Implement full functionality, following the existing codebase patterns.
 ```
 
-### For CDC Issues
+### CDC 문제의 경우
 ```
 Use Task tool:
   subagent_type: "gateflow:sv-refactor"
@@ -214,9 +214,9 @@ Use Task tool:
 
 ---
 
-## Pattern Detection Rules
+## 패턴 감지 규칙
 
-### FIFO Detection
+### FIFO 감지
 ```
 Confidence: HIGH if module has:
 - wr_en/write + rd_en/read signals
@@ -226,7 +226,7 @@ Confidence: HIGH if module has:
 - Dual clock → fifo_async
 ```
 
-### CDC Detection
+### CDC 감지
 ```
 Confidence: HIGH if:
 - Signal assigned in always_ff @(posedge clk_a)
@@ -237,7 +237,7 @@ Confidence: MEDIUM if:
 - 2+ flip-flop chain detected but not using standard sync pattern
 ```
 
-### Protocol Detection
+### 프로토콜 감지
 ```
 SPI: sclk + mosi + miso + cs_n (any naming variant)
 UART: tx/rx + baud-related parameter
@@ -245,7 +245,7 @@ I2C: scl + sda (bidirectional)
 AXI: *valid + *ready + *addr + *data patterns
 ```
 
-### Vendor IP Detection
+### 벤더 IP 감지
 ```
 Xilinx: IBUF, OBUF, BUFG, MMCME2, PLLE2, BRAM_TDP, DSP48E1
 Lattice: SB_IO, SB_GB, SB_PLL40, SB_SPRAM, SB_RAM
@@ -255,72 +255,72 @@ Intel: altpll, altsyncram, altddio
 
 ---
 
-## Integration with /gf Orchestrator
+## /gf 오케스트레이터와의 통합
 
-The `/gf` orchestrator can invoke IP detection:
-- Before any new feature implementation (check what exists)
-- After codebase mapping (enrich with IP analysis)
-- When user says "what's missing" or "scan for gaps"
+`/gf` 오케스트레이터가 IP 감지를 호출할 수 있습니다:
+- 새 기능 구현 전에 (무엇이 존재하는지 확인)
+- 코드베이스 매핑 후 (IP 분석으로 보강)
+- 사용자가 "what's missing" 또는 "scan for gaps"라고 말할 때
 
-## Integration with /gf-architect
+## /gf-architect와의 통합
 
-Combine with codebase mapping:
-1. `/gf-architect` maps the module hierarchy
-2. `/gf-ip-detect` overlays IP analysis on the map
-3. Result: hierarchy + IP opportunities + CDC issues
-
----
-
-## Commands
-
-- "Scan for missing IP blocks" → full detection + report
-- "Auto-fill missing modules" → detect + dispatch agents
-- "What IP blocks does my project need?" → detection + suggestions
-- "Find CDC issues" → focused CDC crossing analysis
-- "Replace ad-hoc code with verified IP" → pattern match + swap
+코드베이스 매핑과 결합:
+1. `/gf-architect`가 모듈 계층 구조를 매핑
+2. `/gf-ip-detect`가 맵 위에 IP 분석을 오버레이
+3. 결과: 계층 구조 + IP 기회 + CDC 문제
 
 ---
 
-## Extended Vendor IP Detection
+## 커맨드
 
-Additional primitives to detect beyond existing list:
+- "Scan for missing IP blocks" → 전체 감지 + 보고
+- "Auto-fill missing modules" → 감지 + 에이전트 파견
+- "What IP blocks does my project need?" → 감지 + 제안
+- "Find CDC issues" → CDC 크로싱 집중 분석
+- "Replace ad-hoc code with verified IP" → 패턴 매칭 + 교체
+
+---
+
+## 확장 벤더 IP 감지
+
+기존 목록 외에 추가로 감지할 프리미티브:
 - **Xilinx UltraScale+:** URAM288, DSP48E2, BUFGCE, MMCME4_ADV, GTHE4_CHANNEL, STARTUPE3
 - **Intel Agilex:** IOPLL, RAM20K, M20K, MLAB, tennm_ph2_iopll
 - **Lattice ECP5:** EHXPLLL, DP16KD, TRELLIS_FF, DCUA, EXTREFB
-- **Gowin (extended):** rPLL, PLLVR, SDPB, DPB, pROM, EMCU, DHCEN
+- **Gowin (확장):** rPLL, PLLVR, SDPB, DPB, pROM, EMCU, DHCEN
 - **Microchip PolarFire:** LSRAM, uSRAM, MACC, CCC, SERDES_IF
 - **Efinix:** EFX_PLL, EFX_RAM_5K, EFX_DPRAM_5K, EFX_GBUFCE
 
-## False Positive Reduction
+## 오탐 감소
 
-| Pattern | False Positive When | Action |
+| 패턴 | 오탐인 경우 | 조치 |
 |---|---|---|
-| 2FF chain | Inside shift register (3+ stages) | Skip |
-| 2FF chain | Both FFs same clock | Skip |
-| FIFO signals | Inside module named `*fifo*` | Skip |
-| valid/ready | AXI bus already using IP block | Skip |
-| SPI signals | Inside testbench files (tb_*, *_tb.sv) | Skip |
-| Vendor primitive | In comments or string literals | Skip |
+| 2FF 체인 | 시프트 레지스터 내부 (3단계 이상) | 건너뜀 |
+| 2FF 체인 | 두 FF가 같은 클럭 | 건너뜀 |
+| FIFO 신호 | `*fifo*` 이름의 모듈 내부 | 건너뜀 |
+| valid/ready | 이미 IP 블록을 쓰는 AXI 버스 | 건너뜀 |
+| SPI 신호 | 테스트벤치 파일 내부 (tb_*, *_tb.sv) | 건너뜀 |
+| 벤더 프리미티브 | 주석 또는 문자열 리터럴 안 | 건너뜀 |
 
-## Severity Scoring
+## 심각도 점수
 
-| Severity | Criteria | Examples |
+| 심각도 | 기준 | 예시 |
 |---|---|---|
-| CRITICAL | Data corruption, metastability | CDC without synchronizer |
-| HIGH | Missing module, empty stubs | Instantiated but undefined |
-| MEDIUM | Ad-hoc reimplementation | Hand-rolled FIFO, manual 2FF |
-| LOW | Style, minor optimization | Vendor primitive with OSS equivalent |
-| INFO | Already correct | Verified IP properly used |
+| CRITICAL | 데이터 손상, 준안정성 | 동기화기 없는 CDC |
+| HIGH | 누락 모듈, 빈 스텁 | 인스턴스화되었으나 미정의 |
+| MEDIUM | 임시 재구현 | 손수 만든 FIFO, 수동 2FF |
+| LOW | 스타일, 사소한 최적화 | OSS 대안이 있는 벤더 프리미티브 |
+| INFO | 이미 올바름 | 검증된 IP가 제대로 사용됨 |
 
-## Auto-Suggestion Integration
+## 자동 제안 통합
 
-| Detected Pattern | Suggested Command | Parameters |
+| 감지된 패턴 | 제안 커맨드 | 파라미터 |
 |---|---|---|
-| Sync FIFO signals | `/gf-ip add fifo_sync` | WIDTH=detected, DEPTH=next_pow2 |
-| Async FIFO signals | `/gf-ip add fifo_async` | WIDTH=detected, DEPTH=8 |
-| 2FF CDC crossing | `/gf-ip add cdc_2ff` | default |
-| Multi-bit CDC handshake | `/gf-ip add cdc_handshake` | WIDTH=detected |
-| UART pattern | `/gf-ip add uart` | CLK_FREQ=detected, BAUD=115200 |
-| SPI pattern | `/gf-ip add spi_master` | CLK_DIV=computed |
-| AXI register pattern | `/gf-ip add axi4lite_slave` | ADDR_WIDTH=detected |
-| Button debounce | `/gf-ip add debouncer` | DEBOUNCE_MS=20 |
+| 동기 FIFO 신호 | `/gf-ip add fifo_sync` | WIDTH=감지값, DEPTH=next_pow2 |
+| 비동기 FIFO 신호 | `/gf-ip add fifo_async` | WIDTH=감지값, DEPTH=8 |
+| 2FF CDC 크로싱 | `/gf-ip add cdc_2ff` | 기본값 |
+| 멀티비트 CDC 핸드셰이크 | `/gf-ip add cdc_handshake` | WIDTH=감지값 |
+| UART 패턴 | `/gf-ip add uart` | CLK_FREQ=감지값, BAUD=115200 |
+| SPI 패턴 | `/gf-ip add spi_master` | CLK_DIV=계산값 |
+| AXI 레지스터 패턴 | `/gf-ip add axi4lite_slave` | ADDR_WIDTH=감지값 |
+| 버튼 디바운스 | `/gf-ip add debouncer` | DEBOUNCE_MS=20 |
