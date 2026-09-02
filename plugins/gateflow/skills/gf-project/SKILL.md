@@ -124,4 +124,3 @@ synthesis: {tool: null}
 | Top module 발견 | sources에서 `module <top>`를 grep |
 | 제약이 타겟과 일치 | Xilinx는 .xdc, iCE40은 .pcf, ECP5는 .lpf, Gowin은 .cst |
 | 도구 설치됨 | which <sim_tool>, which <synth_tool> |
-```
