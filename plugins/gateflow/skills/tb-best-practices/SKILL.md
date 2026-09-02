@@ -16,11 +16,11 @@ allowed-tools:
   - Task
 ---
 
-# Testbench Best Practices
+# 테스트벤치 모범 사례
 
-Professional verification patterns for SystemVerilog testbenches.
+SystemVerilog 테스트벤치를 위한 전문 검증 패턴.
 
-## Layered Testbench Architecture
+## 계층형 테스트벤치 아키텍처
 
 ```
 ┌─────────────────────────────────────────┐
@@ -44,9 +44,9 @@ Professional verification patterns for SystemVerilog testbenches.
 
 ---
 
-## 1. Testbench Structure
+## 1. 테스트벤치 구조
 
-### Basic Self-Checking TB
+### 기본 자가 검사 TB
 ```systemverilog
 module tb_dut;
     // Clock and reset
@@ -99,9 +99,9 @@ endmodule
 
 ---
 
-## 2. Transaction Class
+## 2. 트랜잭션 클래스
 
-### Best Practice: Separate data from timing
+### 모범 사례: 데이터와 타이밍 분리
 ```systemverilog
 class Transaction;
     rand bit [31:0] addr;
@@ -133,9 +133,9 @@ endclass
 
 ---
 
-## 3. Driver
+## 3. 드라이버
 
-### Best Practice: Drive interface, not signals
+### 모범 사례: 신호가 아니라 인터페이스를 구동
 ```systemverilog
 class Driver;
     virtual bus_if.master vif;
@@ -169,9 +169,9 @@ endclass
 
 ---
 
-## 4. Monitor
+## 4. 모니터
 
-### Best Practice: Passive observation only
+### 모범 사례: 수동 관찰만
 ```systemverilog
 class Monitor;
     virtual bus_if.monitor vif;
@@ -199,9 +199,9 @@ endclass
 
 ---
 
-## 5. Scoreboard
+## 5. 스코어보드
 
-### Best Practice: Compare expected vs actual
+### 모범 사례: 예상 vs 실제 비교
 ```systemverilog
 class Scoreboard;
     mailbox #(Transaction) expected_mbx;
@@ -241,9 +241,9 @@ endclass
 
 ---
 
-## 6. Randomization Best Practices
+## 6. 무작위화 모범 사례
 
-### Constraint Layering
+### 제약 계층화
 ```systemverilog
 class Transaction;
     rand bit [31:0] addr;
@@ -262,7 +262,7 @@ class ErrorTransaction extends Transaction;
 endclass
 ```
 
-### Weighted Distribution
+### 가중 분포
 ```systemverilog
 class Packet;
     rand bit [1:0] pkt_type;
@@ -293,9 +293,9 @@ endclass
 
 ---
 
-## 7. Coverage Best Practices
+## 7. 커버리지 모범 사례
 
-### Functional Coverage
+### 기능 커버리지
 ```systemverilog
 class Coverage;
     Transaction t;
@@ -333,8 +333,8 @@ class Coverage;
 endclass
 ```
 
-### Coverage Goals
-| Coverage Type | Target |
+### 커버리지 목표
+| 커버리지 타입 | 목표 |
 |---------------|--------|
 | Line | >95% |
 | Branch | >90% |
@@ -344,7 +344,7 @@ endclass
 
 ---
 
-## 8. Threading Patterns
+## 8. 스레딩 패턴
 
 ### Fork/Join
 ```systemverilog
@@ -369,7 +369,7 @@ fork
 join_none
 ```
 
-### Timeout Pattern
+### 타임아웃 패턴
 ```systemverilog
 task run_with_timeout(int cycles);
     fork
@@ -388,9 +388,9 @@ endtask
 
 ---
 
-## 9. Interface Best Practices
+## 9. 인터페이스 모범 사례
 
-### Parameterized Interface
+### 파라미터화된 인터페이스
 ```systemverilog
 interface axi_if #(
     parameter int ADDR_W = 32,
@@ -430,7 +430,7 @@ interface axi_if #(
 endinterface
 ```
 
-### Virtual Interface in Class
+### 클래스의 가상 인터페이스
 ```systemverilog
 class Agent;
     virtual axi_if vif;
@@ -443,9 +443,9 @@ endclass
 
 ---
 
-## 10. Assertions in Testbench
+## 10. 테스트벤치의 어서션
 
-### Protocol Checks
+### 프로토콜 검사
 ```systemverilog
 // In interface or bind module
 property p_valid_stable;
@@ -463,9 +463,9 @@ assert property (p_handshake) else $error("No ready within 100 cycles");
 
 ---
 
-## 11. Test Organization
+## 11. 테스트 구성
 
-### Test Base Class
+### 테스트 베이스 클래스
 ```systemverilog
 virtual class BaseTest;
     Environment env;
@@ -498,31 +498,31 @@ endclass
 
 ---
 
-## 12. Checklist
+## 12. 체크리스트
 
-### Before Starting
-- [ ] Define verification plan
-- [ ] Identify coverage goals
-- [ ] List test scenarios
-- [ ] Design TB architecture
+### 시작 전
+- [ ] 검증 계획 정의
+- [ ] 커버리지 목표 식별
+- [ ] 테스트 시나리오 목록화
+- [ ] TB 아키텍처 설계
 
-### During Development
-- [ ] Use transactions, not raw signals
-- [ ] Separate driver/monitor/scoreboard
-- [ ] Use virtual interfaces
-- [ ] Add functional coverage
-- [ ] Include protocol assertions
+### 개발 중
+- [ ] 원시 신호가 아니라 트랜잭션 사용
+- [ ] driver/monitor/scoreboard 분리
+- [ ] 가상 인터페이스 사용
+- [ ] 기능 커버리지 추가
+- [ ] 프로토콜 어서션 포함
 
-### Before Signoff
-- [ ] All tests pass
-- [ ] Coverage goals met
-- [ ] No X/Z in simulation
-- [ ] Edge cases tested
-- [ ] Error injection tested
+### 사인오프 전
+- [ ] 모든 테스트 통과
+- [ ] 커버리지 목표 달성
+- [ ] 시뮬레이션에 X/Z 없음
+- [ ] 엣지 케이스 테스트
+- [ ] 오류 주입 테스트
 
 ---
 
-## Reference
+## 레퍼런스
 
 ```
 [SystemVerilog for Verification, 3rd ed. — Spear/Tumbush]
@@ -532,15 +532,15 @@ endclass
 
 ---
 
-## UVM-Lite for Verilator v5
+## Verilator v5용 UVM-Lite
 
-Verilator v5 supports UVM 2017 subset. Works: uvm_component, uvm_object, uvm_sequence_item, uvm_driver, uvm_monitor, uvm_scoreboard, uvm_env, uvm_test, uvm_tlm ports, phases. Does NOT work: factory overrides, $cast, RAL, uvm_config_db with virtual interfaces, callbacks.
+Verilator v5는 UVM 2017 서브셋을 지원합니다. 동작: uvm_component, uvm_object, uvm_sequence_item, uvm_driver, uvm_monitor, uvm_scoreboard, uvm_env, uvm_test, uvm_tlm 포트, phase. 동작 안 함: factory override, $cast, RAL, 가상 인터페이스가 있는 uvm_config_db, 콜백.
 
-Pass virtual interfaces via constructor/setter, not config_db. Use direct construction, not factory. Compile with `-DUVM_NO_DPI --timing`.
+가상 인터페이스는 config_db가 아니라 생성자/setter로 전달. factory가 아니라 직접 생성 사용. `-DUVM_NO_DPI --timing`으로 컴파일.
 
-## Cocotb Equivalents
+## Cocotb 대응물
 
-| SV Pattern | Cocotb Equivalent |
+| SV 패턴 | Cocotb 대응물 |
 |---|---|
 | Transaction class | Python dataclass |
 | rand/constraint | random module + manual constraints |
@@ -551,36 +551,36 @@ Pass virtual interfaces via constructor/setter, not config_db. Use direct constr
 | fork/join_any | First(start_soon(...)) |
 | assert property | async def checker coroutine |
 
-## Coverage Closure Checklist
+## 커버리지 클로저 체크리스트
 
-1. Extract coverage report after full regression
-2. Categorize: unreachable code (exclude with justification), untriggered FSM transitions (write directed test), empty cross bins (constraint override), low-hit coverpoints (increase iterations or add weighted distribution)
-3. Write directed tests for each remaining hole
-4. Re-run with merged coverage, verify all targets met
-5. Document all exclusions with justification comments
+1. 전체 회귀 후 커버리지 보고서 추출
+2. 분류: 도달 불가능한 코드 (근거와 함께 제외), 트리거되지 않은 FSM 전이 (지향 테스트 작성), 빈 크로스 빈 (제약 오버라이드), 낮은 히트 coverpoint (반복 증가 또는 가중 분포 추가)
+3. 남은 각 빈틈에 대해 지향 테스트 작성
+4. 병합된 커버리지로 재실행, 모든 목표 달성 검증
+5. 모든 제외를 근거 주석과 함께 문서화
 
-## 10 TB Anti-Patterns
+## 10가지 TB 안티패턴
 
-1. **Magic numbers** -> Use localparam with meaningful names
-2. **No timeout** -> fork/join_any with $fatal timeout guard
-3. **Happy path only** -> Test errors, resets mid-operation, edge cases
-4. **#delay for sync** -> Use @(posedge clk) for synchronization
-5. **Ignoring X/Z** -> Use $isunknown() and `===` operator
-6. **Monolithic test** -> Split into reusable tasks
-7. **Print-and-pray** -> Use assert with $error messages
-8. **Race conditions** -> Non-blocking `<=` at clock edges
-9. **Global state** -> Encapsulate in classes, pass via constructor
-10. **Not draining pipeline** -> Wait PIPELINE_DEPTH + margin cycles before checking
+1. **매직 넘버** -> 의미 있는 이름의 localparam 사용
+2. **타임아웃 없음** -> $fatal 타임아웃 가드가 있는 fork/join_any
+3. **해피 패스만** -> 오류, 동작 중 리셋, 엣지 케이스 테스트
+4. **동기화에 #delay** -> 동기화에 @(posedge clk) 사용
+5. **X/Z 무시** -> $isunknown()과 `===` 연산자 사용
+6. **단일체 테스트** -> 재사용 가능한 태스크로 분할
+7. **출력하고 기도하기** -> $error 메시지가 있는 assert 사용
+8. **경쟁 조건** -> 클럭 에지에서 non-blocking `<=`
+9. **전역 상태** -> 클래스에 캡슐화, 생성자로 전달
+10. **파이프라인 미배출** -> 확인 전 PIPELINE_DEPTH + 여유 사이클 대기
 
-## Performance Optimization
+## 성능 최적화
 
-| Technique | Speedup |
+| 기법 | 속도 향상 |
 |---|---|
 | `--threads N` | 2-4x |
 | `--trace-fst` (not VCD) | 2-3x smaller files |
-| Disable tracing in regression | 2-5x |
-| Minimize $display | 1.2-2x |
+| 회귀에서 트레이싱 비활성화 | 2-5x |
+| $display 최소화 | 1.2-2x |
 | `--x-assign fast` (after X-clean) | 1.1x |
-| Parallel test execution (`make -j`) | Nx |
+| 병렬 테스트 실행 (`make -j`) | Nx |
 
-Test tiers: SMOKE (seconds, every commit), RANDOM (minutes, PR merge), COVERAGE (hours, nightly), REGRESSION (hours, weekly).
+테스트 계층: SMOKE (초 단위, 매 커밋), RANDOM (분 단위, PR 병합), COVERAGE (시간 단위, 야간), REGRESSION (시간 단위, 주간).

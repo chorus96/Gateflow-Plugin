@@ -1,8 +1,8 @@
-# KiCad CLI Reference
+# KiCad CLI 레퍼런스
 
-## PCB Export Commands
+## PCB 내보내기 커맨드
 
-### Gerbers
+### 거버(Gerbers)
 ```bash
 kicad-cli pcb export gerbers \
   --output gerbers/ \
@@ -11,7 +11,7 @@ kicad-cli pcb export gerbers \
   board.kicad_pcb
 ```
 
-### Drill Files
+### 드릴 파일
 ```bash
 # Excellon format (most common)
 kicad-cli pcb export drill \
@@ -22,7 +22,7 @@ kicad-cli pcb export drill \
   board.kicad_pcb
 ```
 
-### Pick and Place (Component Position)
+### Pick and Place (부품 위치)
 ```bash
 kicad-cli pcb export pos \
   --output board-pos.csv \
@@ -32,7 +32,7 @@ kicad-cli pcb export pos \
   board.kicad_pcb
 ```
 
-### 3D Model (STEP)
+### 3D 모델 (STEP)
 ```bash
 kicad-cli pcb export step \
   --output board.step \
@@ -72,7 +72,7 @@ kicad-cli pcb export vrml \
   board.kicad_pcb
 ```
 
-## Schematic Export Commands
+## 회로도 내보내기 커맨드
 
 ### BOM
 ```bash
@@ -84,7 +84,7 @@ kicad-cli sch export bom \
   design.kicad_sch
 ```
 
-### Netlist
+### 넷리스트
 ```bash
 kicad-cli sch export netlist \
   --output design.net \
@@ -92,21 +92,21 @@ kicad-cli sch export netlist \
   design.kicad_sch
 ```
 
-### Schematic PDF
+### 회로도 PDF
 ```bash
 kicad-cli sch export pdf \
   --output schematic.pdf \
   design.kicad_sch
 ```
 
-### Schematic SVG
+### 회로도 SVG
 ```bash
 kicad-cli sch export svg \
   --output schematic-svg/ \
   design.kicad_sch
 ```
 
-## DRC / ERC Commands
+## DRC / ERC 커맨드
 
 ### DRC
 ```bash
@@ -128,9 +128,9 @@ kicad-cli sch erc \
   design.kicad_sch
 ```
 
-Exit codes: 0 = clean, 5 = violations found.
+종료 코드: 0 = 클린, 5 = 위반 발견.
 
-## DRC JSON Report Format
+## DRC JSON 보고서 형식
 
 ```json
 {
@@ -163,35 +163,35 @@ Exit codes: 0 = clean, 5 = violations found.
 }
 ```
 
-### Full DRC Violation Types
+### 전체 DRC 위반 타입
 
-| Type | Severity | Description |
+| 타입 | 심각도 | 설명 |
 |---|---|---|
-| clearance_violation | error | Items closer than design rule minimum |
-| shorting_items | error | Different nets electrically touching |
-| tracks_crossing | error | Tracks on same layer crossing |
-| unconnected_items | error | Pads in same net not routed |
-| courtyards_overlap | error | Component courtyards intersecting |
-| missing_courtyard | warning | Footprint has no courtyard |
-| track_width | error | Track width outside allowed range |
-| annular_width | error | Via annular ring below minimum |
-| drill_too_small | error | Drill diameter below fab minimum |
-| via_diameter | error | Via outer diameter out of range |
-| copper_sliver | warning | Thin copper area (manufacturing risk) |
-| starved_thermal | warning | Thermal relief with insufficient spokes |
-| pad_near_pad | error | Pads from different nets too close |
-| hole_near_hole | error | Drill holes too close together |
-| zone_has_empty_net | warning | Copper zone assigned to empty net |
-| isolated_copper | warning | Copper island not connected to any net |
-| silk_over_pads | warning | Silkscreen overlapping SMD pads |
-| text_height | warning | Text smaller than fab minimum |
-| board_edge_clearance | error | Copper too close to board edge |
-| footprint_type_mismatch | warning | SMD footprint on wrong side |
-| extra_footprint | error | Footprint not in schematic |
-| missing_footprint | error | Schematic symbol missing from board |
-| net_conflict | error | Net assignment mismatch board vs schematic |
+| clearance_violation | error | 설계 규칙 최소치보다 가까운 항목 |
+| shorting_items | error | 다른 네트가 전기적으로 접촉 |
+| tracks_crossing | error | 같은 레이어에서 트랙이 교차 |
+| unconnected_items | error | 같은 네트의 패드가 라우팅되지 않음 |
+| courtyards_overlap | error | 부품 courtyard가 교차 |
+| missing_courtyard | warning | 풋프린트에 courtyard 없음 |
+| track_width | error | 트랙 폭이 허용 범위 밖 |
+| annular_width | error | Via 환형 링이 최소치 미만 |
+| drill_too_small | error | 드릴 지름이 제조 최소치 미만 |
+| via_diameter | error | Via 외경이 범위 밖 |
+| copper_sliver | warning | 얇은 구리 영역 (제조 위험) |
+| starved_thermal | warning | 스포크가 부족한 열 릴리프 |
+| pad_near_pad | error | 다른 네트의 패드가 너무 가까움 |
+| hole_near_hole | error | 드릴 홀이 서로 너무 가까움 |
+| zone_has_empty_net | warning | 구리 존이 빈 네트에 배정됨 |
+| isolated_copper | warning | 어떤 네트에도 연결되지 않은 구리 섬 |
+| silk_over_pads | warning | 실크스크린이 SMD 패드와 겹침 |
+| text_height | warning | 텍스트가 제조 최소치보다 작음 |
+| board_edge_clearance | error | 구리가 보드 가장자리에 너무 가까움 |
+| footprint_type_mismatch | warning | SMD 풋프린트가 잘못된 면에 |
+| extra_footprint | error | 회로도에 없는 풋프린트 |
+| missing_footprint | error | 보드에서 회로도 심볼 누락 |
+| net_conflict | error | 보드 vs 회로도 네트 배정 불일치 |
 
-## Minimal .kicad_sch Template
+## 최소 .kicad_sch 템플릿
 
 ```lisp
 (kicad_sch
@@ -245,7 +245,7 @@ Exit codes: 0 = clean, 5 = violations found.
 )
 ```
 
-## Minimal .kicad_pcb Template
+## 최소 .kicad_pcb 템플릿
 
 ```lisp
 (kicad_pcb
@@ -374,24 +374,24 @@ Exit codes: 0 = clean, 5 = violations found.
 )
 ```
 
-## Key S-Expression Primitives
+## 주요 S-Expression 프리미티브
 
-| Primitive | Usage | Example |
+| 프리미티브 | 용도 | 예시 |
 |---|---|---|
-| `(footprint ...)` | Component on PCB | `(footprint "Package_SO:SOIC-8" (layer "F.Cu") (at 100 50) ...)` |
-| `(pad ...)` | Copper pad | `(pad "1" smd roundrect (at 0 0) (size 1.0 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (net 1 "VCC"))` |
-| `(segment ...)` | Copper trace | `(segment (start 100 50) (end 120 50) (width 0.25) (layer "F.Cu") (net 1))` |
-| `(via ...)` | Through-hole via | `(via (at 110 50) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 1))` |
-| `(zone ...)` | Copper pour | `(zone (net 1) (net_name "GND") (layer "F.Cu") ...)` |
-| `(gr_line ...)` | Board edge / graphic | `(gr_line (start 90 30) (end 160 30) (stroke (width 0.1)) (layer "Edge.Cuts"))` |
-| `(gr_rect ...)` | Rectangle graphic | `(gr_rect (start 90 30) (end 160 100) (layer "Edge.Cuts"))` |
-| `(gr_circle ...)` | Circle graphic | `(gr_circle (center 100 50) (end 105 50) (layer "Edge.Cuts"))` |
-| `(symbol ...)` | Component in schematic | `(symbol (lib_id "Device:C") (at 100 50 0) ...)` |
-| `(wire ...)` | Schematic wire | `(wire (pts (xy 100 50) (xy 120 50)))` |
-| `(label ...)` | Net label | `(label "SDA" (at 100 50 0))` |
-| `(global_label ...)` | Global net label | `(global_label "VCC" (at 100 20 0) (shape input))` |
+| `(footprint ...)` | PCB의 부품 | `(footprint "Package_SO:SOIC-8" (layer "F.Cu") (at 100 50) ...)` |
+| `(pad ...)` | 구리 패드 | `(pad "1" smd roundrect (at 0 0) (size 1.0 1.2) (layers "F.Cu" "F.Paste" "F.Mask") (net 1 "VCC"))` |
+| `(segment ...)` | 구리 트레이스 | `(segment (start 100 50) (end 120 50) (width 0.25) (layer "F.Cu") (net 1))` |
+| `(via ...)` | 스루홀 via | `(via (at 110 50) (size 0.6) (drill 0.3) (layers "F.Cu" "B.Cu") (net 1))` |
+| `(zone ...)` | 구리 pour | `(zone (net 1) (net_name "GND") (layer "F.Cu") ...)` |
+| `(gr_line ...)` | 보드 가장자리 / 그래픽 | `(gr_line (start 90 30) (end 160 30) (stroke (width 0.1)) (layer "Edge.Cuts"))` |
+| `(gr_rect ...)` | 사각형 그래픽 | `(gr_rect (start 90 30) (end 160 100) (layer "Edge.Cuts"))` |
+| `(gr_circle ...)` | 원 그래픽 | `(gr_circle (center 100 50) (end 105 50) (layer "Edge.Cuts"))` |
+| `(symbol ...)` | 회로도의 부품 | `(symbol (lib_id "Device:C") (at 100 50 0) ...)` |
+| `(wire ...)` | 회로도 와이어 | `(wire (pts (xy 100 50) (xy 120 50)))` |
+| `(label ...)` | 네트 라벨 | `(label "SDA" (at 100 50 0))` |
+| `(global_label ...)` | 전역 네트 라벨 | `(global_label "VCC" (at 100 20 0) (shape input))` |
 
-## Manufacturing Package Script
+## 제조 패키지 스크립트
 
 ```bash
 #!/bin/bash
@@ -488,7 +488,7 @@ echo "  assembly/      - BOM + pick-and-place (send to assembler)"
 echo "  docs/          - Schematic PDF, board PDF, 3D model"
 ```
 
-## CI/CD Validation Pipeline Script
+## CI/CD 검증 파이프라인 스크립트
 
 ```bash
 #!/bin/bash
