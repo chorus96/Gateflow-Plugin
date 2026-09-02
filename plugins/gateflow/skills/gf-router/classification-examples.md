@@ -1,13 +1,13 @@
-# Intent Classification Examples
+# 의도 분류 예시
 
-This file contains few-shot examples for semantic intent classification.
-Use these to understand how to classify user requests.
+이 파일은 의미론적 의도 분류를 위한 few-shot 예시를 담고 있습니다.
+사용자 요청을 어떻게 분류할지 이해하는 데 사용하세요.
 
 ---
 
-## High Confidence Examples (>= 0.85)
+## 높은 신뢰도 예시 (>= 0.85)
 
-### CREATE_RTL Examples
+### CREATE_RTL 예시
 ```
 Query: "I need a 4-stage pipeline register with valid/ready"
 Intent: CREATE_RTL | Confidence: 0.95
@@ -30,7 +30,7 @@ Target: gateflow:sv-codegen
 Reasoning: "I want" + FSM with specific function
 ```
 
-### DEBUG Examples
+### DEBUG 예시
 ```
 Query: "My simulation is stuck, nothing happens after reset"
 Intent: DEBUG | Confidence: 0.94
@@ -53,7 +53,7 @@ Target: gateflow:sv-debug
 Reasoning: Unexpected behavior, needs root cause analysis
 ```
 
-### CREATE_TB Examples
+### CREATE_TB 예시
 ```
 Query: "Write a testbench for uart_tx.sv"
 Intent: CREATE_TB | Confidence: 0.95
@@ -71,7 +71,7 @@ Target: gateflow:sv-testbench
 Reasoning: Stimulus is testbench component
 ```
 
-### VERIFY Examples
+### VERIFY 예시
 ```
 Query: "Add assertions to verify the AXI protocol"
 Intent: VERIFY | Confidence: 0.93
@@ -89,7 +89,7 @@ Target: gateflow:sv-verification
 Reasoning: Property to verify, not debug
 ```
 
-### EXPLAIN Examples
+### EXPLAIN 예시
 ```
 Query: "What does the state machine in uart_tx.sv do?"
 Intent: EXPLAIN | Confidence: 0.94
@@ -112,7 +112,7 @@ Target: gateflow:sv-understanding
 Reasoning: "Walk through" = explanation request
 ```
 
-### REFACTOR Examples
+### REFACTOR 예시
 ```
 Query: "This code has too many lint warnings, clean it up"
 Intent: REFACTOR | Confidence: 0.92
@@ -135,7 +135,7 @@ Target: gateflow:sv-refactor
 Reasoning: Optimization = refactoring
 ```
 
-### ORCHESTRATE Examples
+### ORCHESTRATE 예시
 ```
 Query: "Create a FIFO and make sure it works"
 Intent: ORCHESTRATE | Confidence: 0.92
@@ -153,7 +153,7 @@ Target: gf
 Reasoning: "Working" implies verification, multiple outputs
 ```
 
-### PLAN Examples
+### PLAN 예시
 ```
 Query: "How should I design a DMA controller?"
 Intent: PLAN | Confidence: 0.91
@@ -171,7 +171,7 @@ Target: gateflow:sv-planner
 Reasoning: Architecture question before implementation
 ```
 
-### LEARN Examples
+### LEARN 예시
 ```
 Query: "I want to practice writing FSMs"
 Intent: LEARN | Confidence: 0.95
@@ -191,7 +191,7 @@ Reasoning: Learning context
 
 ---
 
-## Medium Confidence Examples (0.70-0.85) - Trigger Expand Mode
+## 중간 신뢰도 예시 (0.70-0.85) - Expand 모드 트리거
 
 ```
 Query: "Help me with the FIFO"
@@ -236,7 +236,7 @@ Questions:
 
 ---
 
-## Low Confidence Examples (< 0.70) - Request Clarification
+## 낮은 신뢰도 예시 (< 0.70) - 명확화 요청
 
 ```
 Query: "Help"
@@ -265,9 +265,9 @@ Response: "I'd like to help fix the issue. Could you tell me:
 
 ---
 
-## Context-Dependent Examples
+## 컨텍스트 의존 예시
 
-### After code was just created:
+### 코드가 방금 생성된 후:
 ```
 Query: "Test it"
 Intent: SIMULATE (not CREATE_TB) | Confidence: 0.85
@@ -275,7 +275,7 @@ Reasoning: Testbench likely exists, user wants to run sim
 Target: gf-sim
 ```
 
-### In learning mode:
+### 학습 모드에서:
 ```
 Query: "Check my solution"
 Intent: TUTOR | Confidence: 0.90
@@ -283,7 +283,7 @@ Reasoning: Learning context, wants review
 Target: gateflow:sv-tutor
 ```
 
-### After simulation failed:
+### 시뮬레이션이 실패한 후:
 ```
 Query: "Fix it"
 Intent: DEBUG | Confidence: 0.88
@@ -293,27 +293,27 @@ Target: gateflow:sv-debug
 
 ---
 
-## Disambiguation Signals
+## 모호성 해소 신호
 
-### Signals pointing to CREATE_RTL:
+### CREATE_RTL을 가리키는 신호:
 - "new", "create", "build", "make", "generate", "need a", "want a"
-- Specific component names (FIFO, FSM, arbiter, counter)
-- Interface specifications (width, depth, protocol)
+- 특정 컴포넌트 이름 (FIFO, FSM, arbiter, counter)
+- 인터페이스 명세 (폭, 깊이, 프로토콜)
 
-### Signals pointing to DEBUG:
-- Problem descriptions (stuck, wrong, fails, broken, X-value)
+### DEBUG를 가리키는 신호:
+- 문제 설명 (stuck, wrong, fails, broken, X-value)
 - "used to work", "suddenly", "after I changed"
-- Error messages, unexpected behavior
+- 오류 메시지, 예상치 못한 동작
 
-### Signals pointing to REFACTOR:
+### REFACTOR를 가리키는 신호:
 - "clean", "lint", "style", "optimize", "readable"
 - "warnings", "improve", "better"
 
-### Signals pointing to EXPLAIN:
+### EXPLAIN을 가리키는 신호:
 - "what does", "how does", "explain", "understand"
 - "walk through", "confused", "why is this"
 
-### Signals pointing to ORCHESTRATE:
-- Multiple actions: "create and test", "build and verify"
-- "working" (implies verification)
+### ORCHESTRATE를 가리키는 신호:
+- 여러 동작: "create and test", "build and verify"
+- "working" (검증을 함의)
 - "end to end", "complete"
