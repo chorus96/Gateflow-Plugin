@@ -13,34 +13,34 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GF-Viz: Terminal Visualization
+# GF-Viz: 터미널 시각화
 
-Renders `.gateflow/map/` data as interactive ASCII/Unicode diagrams in the terminal.
+`.gateflow/map/` 데이터를 터미널에서 대화형 ASCII/Unicode 다이어그램으로 렌더링합니다.
 
-## Prerequisites
+## 사전 요구 사항
 
-Check for codebase map:
+코드베이스 맵 확인:
 
 ```bash
 ls .gateflow/map/CODEBASE.md 2>/dev/null
 ```
 
-- **Map exists:** Proceed to render
-- **No map:** Tell user: "No codebase map found. Run `/gf-map` first to generate one."
+- **맵 존재:** 렌더링으로 진행
+- **맵 없음:** 사용자에게 안내: "No codebase map found. Run `/gf-map` first to generate one."
 
-## Entry Point
+## 진입점
 
-When invoked, render the **Overview Dashboard** and present the navigation menu.
+호출되면, **개요 대시보드**를 렌더링하고 내비게이션 메뉴를 제시.
 
-If invoked with an argument (e.g., `/gf-viz uart_tx`), jump directly to the **Module Detail Card** for that module.
+인자와 함께 호출되면(예: `/gf-viz uart_tx`), 해당 모듈의 **모듈 상세 카드**로 바로 이동.
 
 ---
 
-## View 1: Overview Dashboard
+## 뷰 1: 개요 대시보드
 
-**Data sources:** `CODEBASE.md` (stats, module index), `hierarchy.md` (tree), `fsm.md` (FSM list), `clock-domains.md` (clocks/CDC)
+**데이터 소스:** `CODEBASE.md` (통계, 모듈 인덱스), `hierarchy.md` (트리), `fsm.md` (FSM 목록), `clock-domains.md` (클럭/CDC)
 
-Read these files, extract the data, and render:
+이 파일들을 읽고, 데이터를 추출한 뒤, 렌더링:
 
 ```
 ╔══ CODEBASE: <project_name> ═══════════════════════════════╗
@@ -67,18 +67,18 @@ Read these files, extract the data, and render:
 ╚═══════════════════════════════════════════════════════════╝
 ```
 
-**Rules:**
-- Hierarchy flattened to **2 levels max** in dashboard
-- FSMs show **one-line summaries** with state chain
-- Stats pulled from CODEBASE.md frontmatter and module index
-- Health pulled from warnings section
-- If any section has no data, show "none detected" rather than omitting
+**규칙:**
+- 대시보드에서 계층은 **최대 2레벨**로 평탄화
+- FSM은 상태 체인과 함께 **한 줄 요약**으로 표시
+- 통계는 CODEBASE.md 프론트매터와 모듈 인덱스에서 가져옴
+- 헬스는 warnings 섹션에서 가져옴
+- 섹션에 데이터가 없으면 생략하지 말고 "none detected" 표시
 
 ---
 
-## View 2: Hierarchy Explorer
+## 뷰 2: 계층 탐색기
 
-**Data sources:** `hierarchy.md`, `modules/*.md`
+**데이터 소스:** `hierarchy.md`, `modules/*.md`
 
 ```
 ══ MODULE HIERARCHY ════════════════════════════════════════
@@ -104,27 +104,27 @@ Read these files, extract the data, and render:
   Or: "show <module>", "which modules use <module>?"
 ```
 
-**Module type badges:**
-- `◆` **TOP** - bold, top-level module (never instantiated by others)
-- `■` **MID** - standard weight, has children
-- `□` **LEAF** - lighter weight, no children
+**모듈 타입 배지:**
+- `◆` **TOP** - 굵게, 톱레벨 모듈 (다른 것에 의해 인스턴스화되지 않음)
+- `■` **MID** - 표준 두께, 자식 있음
+- `□` **LEAF** - 가벼운 두께, 자식 없음
 
-**Depth cues:** Deeper modules rendered with lighter visual weight. Top pops, leaves fade.
+**깊이 단서:** 더 깊은 모듈은 더 가벼운 시각 두께로 렌더링. 톱은 두드러지고 리프는 흐려짐.
 
-**Behaviors:**
-- Show full tree with all depth levels
-- Parameters shown inline as `[PARAM=VAL]`
-- Instance table shows all parent→child relationships
-- "show <module>" re-renders tree rooted at that module
-- "which modules use <module>?" searches instance table, lists parents
+**동작:**
+- 모든 깊이 레벨의 전체 트리 표시
+- 파라미터는 `[PARAM=VAL]`로 인라인 표시
+- 인스턴스 표는 모든 부모→자식 관계를 표시
+- "show <module>"는 해당 모듈을 루트로 하는 트리를 재렌더링
+- "which modules use <module>?"는 인스턴스 표를 검색하여 부모를 나열
 
 ---
 
-## View 3: FSM Viewer
+## 뷰 3: FSM 뷰어
 
-**Data sources:** `fsm.md`, per-module pages
+**데이터 소스:** `fsm.md`, 모듈별 페이지
 
-**When multiple FSMs exist, show picker first:**
+**여러 FSM이 존재하면, 선택기를 먼저 표시:**
 
 ```
 ══ STATE MACHINES ══════════════════════════════════════════
@@ -136,7 +136,7 @@ Read these files, extract the data, and render:
   Pick a number, or: "show <fsm_name>"
 ```
 
-**Single FSM rendering:**
+**단일 FSM 렌더링:**
 
 ```
 ══ FSM: <fsm_name> ═════════════════════════════════════════
@@ -173,24 +173,24 @@ Read these files, extract the data, and render:
   Or: "show another FSM", "explain the S2→S3 transition"
 ```
 
-**Layout rules for FSM box diagrams:**
-- **2-4 states:** Arrange in a line or L-shape
-- **4-6 states:** Arrange in a 2x2 or 2x3 grid
-- **7+ states:** Use transition table only (too complex for ASCII boxes)
-- Reset state always marked with `◉`
-- Self-loops shown as `──┐` / `◄─┘` back to same box
-- Transition arrows use `──►` with condition labels
+**FSM 박스 다이어그램의 레이아웃 규칙:**
+- **2-4 상태:** 일렬 또는 L자 형태로 배치
+- **4-6 상태:** 2x2 또는 2x3 그리드로 배치
+- **7개 이상 상태:** 전이 표만 사용 (ASCII 박스에는 너무 복잡)
+- 리셋 상태는 항상 `◉`로 표시
+- 셀프 루프는 같은 박스로 돌아가는 `──┐` / `◄─┘`로 표시
+- 전이 화살표는 조건 라벨과 함께 `──►` 사용
 
-**Behaviors:**
-- "explain <from>→<to> transition" triggers analysis using RTL source
-- "show module" cross-links to parent module's detail card
-- Output column in transition table filled when map data includes it
+**동작:**
+- "explain <from>→<to> transition"은 RTL 소스를 사용한 분석을 트리거
+- "show module"은 부모 모듈의 상세 카드로 상호 링크
+- 맵 데이터가 포함하면 전이 표의 Output 열을 채움
 
 ---
 
-## View 4: Module Detail Card
+## 뷰 4: 모듈 상세 카드
 
-**Data sources:** `modules/<module_name>.md` (primary), `hierarchy.md`, `fsm.md`, `signals.md`
+**데이터 소스:** `modules/<module_name>.md` (주), `hierarchy.md`, `fsm.md`, `signals.md`
 
 ```
 ╔══════════════════════════════════════════════════════════╗
@@ -229,81 +229,81 @@ Read these files, extract the data, and render:
   Or: "show ports", "explain the handshake", "add assertions"
 ```
 
-**Port direction symbols:**
-- `→` inputs
-- `←` outputs
-- `↔` bidirectional (inout)
+**포트 방향 기호:**
+- `→` 입력
+- `←` 출력
+- `↔` 양방향 (inout)
 
-**Type badges:** `TOP`, `MID`, `LEAF`
+**타입 배지:** `TOP`, `MID`, `LEAF`
 
-**Behaviors:**
-- Connections section shows **actual signal bindings** from parent instantiation
-- If module is instantiated multiple times, show each instance
-- FSM line cross-links to FSM viewer
-- Parent name cross-links to parent's detail card
-- "add assertions" can hand off to `sv-verification` agent
-- "explain the handshake" reads RTL source to reason about protocol
+**동작:**
+- Connections 섹션은 부모 인스턴스화의 **실제 신호 바인딩**을 표시
+- 모듈이 여러 번 인스턴스화되면, 각 인스턴스를 표시
+- FSM 줄은 FSM 뷰어로 상호 링크
+- 부모 이름은 부모의 상세 카드로 상호 링크
+- "add assertions"는 `sv-verification` 에이전트로 핸드오프 가능
+- "explain the handshake"는 RTL 소스를 읽어 프로토콜을 추론
 
 ---
 
-## Color/Emphasis Vocabulary
+## 색상/강조 어휘
 
-Apply these consistently across all views:
+모든 뷰에서 일관되게 적용:
 
-| Element | Symbol | Style |
+| 요소 | 기호 | 스타일 |
 |---------|--------|-------|
-| Top module | `◆` | **Bold** |
-| Mid module | `■` | Standard |
-| Leaf module | `□` | Light |
-| Input port | `→` | Green emphasis |
-| Output port | `←` | Yellow emphasis |
-| Bidir port | `↔` | Cyan emphasis |
-| FSM indicator | `↻` | Standard |
-| Reset state | `◉` | **Bold/highlighted** |
-| Clean/pass | `✓` | Green |
-| Warning | `⚠` | Yellow/amber |
-| Info/stat | `●` | Standard |
-| Transition | `──►` | Standard |
+| Top module | `◆` | **굵게** |
+| Mid module | `■` | 표준 |
+| Leaf module | `□` | 가볍게 |
+| Input port | `→` | 초록 강조 |
+| Output port | `←` | 노랑 강조 |
+| Bidir port | `↔` | 청록 강조 |
+| FSM indicator | `↻` | 표준 |
+| Reset state | `◉` | **굵게/강조** |
+| Clean/pass | `✓` | 초록 |
+| Warning | `⚠` | 노랑/호박색 |
+| Info/stat | `●` | 표준 |
+| Transition | `──►` | 표준 |
 
-**Depth cues in hierarchy:** Top-level bold, mid standard, leaf dimmed.
-
----
-
-## Interaction Model
-
-### Menu Navigation
-
-After every render, show a navigation footer with numbered options:
-- `[H]` Home - return to dashboard
-- `[1]` `[2]` `[3]` - switch between views
-- `[↑]` Parent - navigate up in hierarchy (detail card only)
-
-### Free-Form Queries
-
-Always accept natural language alongside menus:
-- "show <module_name>" → Module Detail Card
-- "show <fsm_name>" → FSM Viewer for that FSM
-- "which modules use <module>?" → filtered hierarchy
-- "trace <signal> from <module_a> to <module_b>" → signal path analysis
-- "explain <aspect>" → reads RTL source, reasons about it
-- "add assertions to <module>" → hands off to sv-verification agent
-- "back" → previous view
-- "home" → dashboard
-
-### Agent Handoff
-
-For queries that go beyond visualization:
-- "explain" / "why" → spawn `sv-understanding` agent via Task tool
-- "add assertions" → spawn `sv-verification` agent via Task tool
-- "fix" / "refactor" → spawn `sv-refactor` agent via Task tool
-
-When handing off, pass the current visualization context (which module, which view) so the agent has full context.
+**계층의 깊이 단서:** 톱레벨 굵게, 미드 표준, 리프 흐리게.
 
 ---
 
-## Auto-Trigger After /gf-map
+## 상호작용 모델
 
-When used as a final step in `gf-architect`, render ONLY the Overview Dashboard (View 1) as a compact summary. Do not show the full interactive menu - just the dashboard with a note:
+### 메뉴 내비게이션
+
+매 렌더 후, 번호 옵션이 있는 내비게이션 푸터 표시:
+- `[H]` Home - 대시보드로 복귀
+- `[1]` `[2]` `[3]` - 뷰 간 전환
+- `[↑]` Parent - 계층에서 위로 이동 (상세 카드에서만)
+
+### 자유 형식 질의
+
+메뉴와 함께 항상 자연어를 수용:
+- "show <module_name>" → 모듈 상세 카드
+- "show <fsm_name>" → 해당 FSM의 FSM 뷰어
+- "which modules use <module>?" → 필터링된 계층
+- "trace <signal> from <module_a> to <module_b>" → 신호 경로 분석
+- "explain <aspect>" → RTL 소스를 읽어 추론
+- "add assertions to <module>" → sv-verification 에이전트로 핸드오프
+- "back" → 이전 뷰
+- "home" → 대시보드
+
+### 에이전트 핸드오프
+
+시각화를 넘어서는 질의의 경우:
+- "explain" / "why" → Task 도구로 `sv-understanding` 에이전트 스폰
+- "add assertions" → Task 도구로 `sv-verification` 에이전트 스폰
+- "fix" / "refactor" → Task 도구로 `sv-refactor` 에이전트 스폰
+
+핸드오프할 때, 에이전트가 전체 컨텍스트를 갖도록 현재 시각화 컨텍스트(어느 모듈, 어느 뷰)를 전달.
+
+---
+
+## /gf-map 이후 자동 트리거
+
+`gf-architect`의 마지막 단계로 사용될 때, 간결한 요약으로 개요 대시보드(뷰 1)만 렌더링. 전체 대화형 메뉴는 표시하지 말고 - 대시보드와 함께 참고만:
 
 ```
 Run /gf-viz to explore interactively.
@@ -311,92 +311,92 @@ Run /gf-viz to explore interactively.
 
 ---
 
-## Data Extraction
+## 데이터 추출
 
-### Reading CODEBASE.md
+### CODEBASE.md 읽기
 
-Extract from frontmatter:
+프론트매터에서 추출:
 - `total_files`, `total_tokens`, `commit`, `last_mapped`
 
-Extract from Module Index table:
-- Module names, types, files, port summaries
+모듈 인덱스 표에서 추출:
+- 모듈 이름, 타입, 파일, 포트 요약
 
-Extract from Warnings section:
-- Lint warnings, undriven signals, CDC issues
+Warnings 섹션에서 추출:
+- lint 경고, 미구동 신호, CDC 문제
 
-### Reading hierarchy.md
+### hierarchy.md 읽기
 
-Extract from Mermaid flowchart:
-- Parent→child relationships
-- Instance names
+Mermaid 플로차트에서 추출:
+- 부모→자식 관계
+- 인스턴스 이름
 
-Extract from Instance Table:
-- Full parent, instance, module, parameters data
+인스턴스 표에서 추출:
+- 전체 부모, 인스턴스, 모듈, 파라미터 데이터
 
-### Reading fsm.md
+### fsm.md 읽기
 
-Extract for each FSM:
-- FSM name, parent module
-- State list with encoding
-- Transition table (from, to, condition, output)
-- Reset state
+각 FSM에 대해 추출:
+- FSM 이름, 부모 모듈
+- 인코딩이 있는 상태 목록
+- 전이 표 (from, to, condition, output)
+- 리셋 상태
 
-### Reading modules/*.md
+### modules/*.md 읽기
 
-Extract per module:
-- Parameters table
-- Ports table (name, direction, width, description)
-- Clock/reset info
-- Instance list
-- Assertion/coverage info
-
----
-
-## Edge Cases
-
-- **Empty map:** "No codebase map found. Run `/gf-map` first."
-- **No FSMs detected:** FSM section shows "No state machines detected in this codebase."
-- **Single module:** Hierarchy view shows just the one module. Skip instance table.
-- **Module not found:** "Module '<name>' not found in map. Available modules: <list>"
-- **Very deep hierarchy (>6 levels):** Render full tree but note: "Deep hierarchy detected. Use 'show <module>' to focus on a subtree."
-- **Very wide hierarchy (>10 siblings):** Show first 8, then "... and N more. Use 'show <parent>' to see all."
+모듈별로 추출:
+- 파라미터 표
+- 포트 표 (이름, 방향, 폭, 설명)
+- 클럭/리셋 정보
+- 인스턴스 목록
+- 어서션/커버리지 정보
 
 ---
 
-## View 5: Signal Path Trace
+## 엣지 케이스
 
-Triggered by: "trace data_in from top to digest_out"
+- **빈 맵:** "No codebase map found. Run `/gf-map` first."
+- **FSM 미감지:** FSM 섹션에 "No state machines detected in this codebase." 표시
+- **단일 모듈:** 계층 뷰가 하나의 모듈만 표시. 인스턴스 표 건너뜀.
+- **모듈을 찾을 수 없음:** "Module '<name>' not found in map. Available modules: <list>"
+- **매우 깊은 계층 (>6레벨):** 전체 트리를 렌더링하되 참고: "Deep hierarchy detected. Use 'show <module>' to focus on a subtree."
+- **매우 넓은 계층 (형제 >10):** 처음 8개를 표시한 뒤 "... and N more. Use 'show <parent>' to see all."
 
-Renders signal path across module boundaries as ASCII with boxes for modules, arrows for signals, and `◈` markers for registered boundaries (pipeline stages). Shows hop count and pipeline stage summary.
+---
 
-## View 6: Timing Diagram
+## 뷰 5: 신호 경로 추적
 
-Triggered by: "timing uart_tx" or "timing fsm tx_state"
+트리거: "trace data_in from top to digest_out"
 
-ASCII waveforms: `┌─┐└─┘` for clock, `───` high, `___` low, `╡val╞` for bus/enum values. Auto-generates from FSM data or known protocol patterns. Accepts WaveJSON input for custom diagrams.
+모듈 경계를 넘나드는 신호 경로를 ASCII로 렌더링 - 모듈에는 박스, 신호에는 화살표, 레지스터된 경계(파이프라인 스테이지)에는 `◈` 마커. 홉 수와 파이프라인 스테이지 요약을 표시.
 
-## View 7: Diff View
+## 뷰 6: 타이밍 다이어그램
 
-Triggered by: "diff" or "what changed"
+트리거: "timing uart_tx" 또는 "timing fsm tx_state"
 
-Shows structural changes between map snapshots: `+ ADDED`, `~ MODIFIED` (with specific change: port/instance/FSM/parameter), `- REMOVED`. Requires previous snapshot at `.gateflow/map/.prev_*`.
+ASCII 파형: 클럭에 `┌─┐└─┘`, high에 `───`, low에 `___`, 버스/enum 값에 `╡val╞`. FSM 데이터나 알려진 프로토콜 패턴에서 자동 생성. 커스텀 다이어그램용 WaveJSON 입력 수용.
 
-## View 8: Port Connection Matrix
+## 뷰 7: Diff 뷰
 
-Triggered by: "matrix uart_ctrl" or "connections"
+트리거: "diff" 또는 "what changed"
 
-Table showing which parent signals connect to which instance ports. Bottom row shows connected/unconnected counts. Separate section lists all unconnected ports with `⚠` warning. Compact dot-matrix variant for large designs: `●` connected, `○` not connected.
+맵 스냅샷 간 구조 변화 표시: `+ ADDED`, `~ MODIFIED` (구체적 변경: port/instance/FSM/parameter 포함), `- REMOVED`. `.gateflow/map/.prev_*`에 이전 스냅샷 필요.
 
-## Search
+## 뷰 8: 포트 연결 매트릭스
 
-Triggered by: "find modules with FSM", "find signals named *_valid"
+트리거: "matrix uart_ctrl" 또는 "connections"
 
-| Query | Finds |
+어느 부모 신호가 어느 인스턴스 포트에 연결되는지 보여주는 표. 하단 행에 연결됨/미연결 개수 표시. 별도 섹션에 모든 미연결 포트를 `⚠` 경고와 함께 나열. 큰 설계용 간결한 점 매트릭스 변형: `●` 연결됨, `○` 미연결.
+
+## 검색
+
+트리거: "find modules with FSM", "find signals named *_valid"
+
+| 질의 | 찾는 것 |
 |---|---|
-| `find modules with <clock>` | Modules using specific clock |
-| `find modules with fsm` | All modules containing FSMs |
-| `find modules with >20 ports` | Large interface modules |
-| `find signals named <glob>` | Signal name pattern match |
-| `find instances of <module>` | All instantiations |
-| `find unconnected ports` | Floating ports |
-| `find cdc crossings` | Clock domain crossings |
+| `find modules with <clock>` | 특정 클럭을 쓰는 모듈 |
+| `find modules with fsm` | FSM을 포함하는 모든 모듈 |
+| `find modules with >20 ports` | 큰 인터페이스 모듈 |
+| `find signals named <glob>` | 신호 이름 패턴 일치 |
+| `find instances of <module>` | 모든 인스턴스화 |
+| `find unconnected ports` | 플로팅 포트 |
+| `find cdc crossings` | 클럭 도메인 크로싱 |
