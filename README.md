@@ -72,7 +72,7 @@ Option 3의 경우 `~/.claude/settings.json` 또는 `.claude/settings.json`에 �
 | [Verilator](https://verilator.org/) | 권장 | `brew install verilator` | `sudo apt install verilator` |
 | Verible | 선택 | `brew tap chipsalliance/verible && brew install verible` | [releases](https://github.com/chipsalliance/verible/releases) 참고 |
 | [Yosys](https://github.com/YosysHQ/yosys) | 합성용 | `brew install yosys` | `sudo apt install yosys` |
-| [SymbiYosys](https://github.com/YosysHQ/sby) | 정형 검증용 | `pip install symbiyosys` | `pip install symbiyosys` |
+| [SymbiYosys](https://github.com/YosysHQ/sby) | Formal 검증용 | `pip install symbiyosys` | `pip install symbiyosys` |
 | [GHDL](https://github.com/ghdl/ghdl) | VHDL용 | `brew install ghdl` | `sudo apt install ghdl` |
 | [nextpnr](https://github.com/YosysHQ/nextpnr) | P&R용 | `brew install nextpnr` | GitHub 참고 |
 | [openFPGALoader](https://github.com/trabucayre/openFPGALoader) | 플래시용 | `brew install openfpgaloader` | GitHub 참고 |
