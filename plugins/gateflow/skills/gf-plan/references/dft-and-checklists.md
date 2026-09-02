@@ -1,6 +1,6 @@
-## DFT & Testability Planning
+## DFT & 테스트 용이성 계획
 
-### DFT Strategy
+### DFT 전략
 
 ```markdown
 ## DFT Plan
@@ -21,7 +21,7 @@
 | Total | 6 | - | - |
 ```
 
-### Scan Chain Wrapper
+### 스캔 체인 래퍼
 ```systemverilog
 module scan_ff (
     input  logic clk,
@@ -45,7 +45,7 @@ module scan_ff (
 endmodule
 ```
 
-### JTAG TAP Controller
+### JTAG TAP 컨트롤러
 ```systemverilog
 module jtag_tap (
     input  logic tck,
@@ -128,7 +128,7 @@ module jtag_tap (
 endmodule
 ```
 
-### Memory BIST
+### 메모리 BIST
 ```systemverilog
 module mbist_controller #(
     parameter int ADDR_W = 10,
@@ -235,9 +235,9 @@ endmodule
 
 ---
 
-## Timing Closure Strategies
+## 타이밍 클로저 전략
 
-### Timing Planning
+### 타이밍 계획
 
 ```markdown
 ## Timing Closure Plan
@@ -258,7 +258,7 @@ endmodule
 | Multicycle | Slow paths by design | Relaxes timing |
 ```
 
-### Retiming Example
+### 리타이밍 예시
 ```systemverilog
 // BEFORE: All logic in one stage
 // always_ff @(posedge clk) result <= (a * b) + (c * d);
@@ -284,7 +284,7 @@ module retimed_mac (
 endmodule
 ```
 
-### Logic Restructuring
+### 로직 재구조화
 ```systemverilog
 // BEFORE: Deep mux tree (slow)
 // assign out = sel[3] ? (sel[2] ? ... ) : ...;
@@ -317,7 +317,7 @@ module balanced_mux8 #(parameter WIDTH = 32) (
 endmodule
 ```
 
-### SDC Timing Exceptions
+### SDC 타이밍 예외
 ```tcl
 # False path - truly asynchronous
 set_false_path -from [get_clocks clk_a] -to [get_clocks clk_b]
@@ -340,9 +340,9 @@ set_clock_groups -asynchronous \
 
 ---
 
-## RTL Review Checklist
+## RTL 리뷰 체크리스트
 
-### Common RTL Bugs
+### 흔한 RTL 버그
 
 ```markdown
 ## RTL Bug Checklist
@@ -373,7 +373,7 @@ set_clock_groups -asynchronous \
 - [ ] Binary encoding for small FSMs
 ```
 
-### Synthesis Warning Checklist
+### 합성 경고 체크리스트
 ```markdown
 ## Synthesis Warning Categories
 
@@ -395,7 +395,7 @@ set_clock_groups -asynchronous \
 - [ ] Non-synthesizable constructs
 ```
 
-### CDC Review Checklist
+### CDC 리뷰 체크리스트
 ```markdown
 ## CDC Review
 
@@ -418,7 +418,7 @@ set_clock_groups -asynchronous \
 - [ ] Proper acknowledgment
 ```
 
-### FSM Review Checklist
+### FSM 리뷰 체크리스트
 ```markdown
 ## FSM Review
 
@@ -441,7 +441,7 @@ set_clock_groups -asynchronous \
 - [ ] Timeout for stuck states
 ```
 
-### Coding Style Checklist
+### 코딩 스타일 체크리스트
 ```markdown
 ## Coding Style
 

@@ -1,6 +1,6 @@
-## Design Patterns Reference
+## 설계 패턴 레퍼런스
 
-### Valid/Ready Handshake
+### Valid/Ready 핸드셰이크
 ```systemverilog
 // Producer
 always_ff @(posedge clk or negedge rst_n)
@@ -13,7 +13,7 @@ assign ready = !full;
 wire transfer = valid && ready;
 ```
 
-### Skid Buffer
+### Skid 버퍼
 ```systemverilog
 // Allows ready to deassert without losing data
 logic [WIDTH-1:0] skid_data;
@@ -32,7 +32,7 @@ always_ff @(posedge clk)
     end
 ```
 
-### 2FF Synchronizer
+### 2FF 동기화기
 ```systemverilog
 logic [1:0] sync_ff;
 always_ff @(posedge clk_dst or negedge rst_n)
@@ -41,7 +41,7 @@ always_ff @(posedge clk_dst or negedge rst_n)
 assign sync_out = sync_ff[1];
 ```
 
-### Round-Robin Arbiter
+### 라운드 로빈 아비터
 ```systemverilog
 logic [$clog2(N)-1:0] last_grant;
 logic [N-1:0] grant;
@@ -55,7 +55,7 @@ always_comb begin
 end
 ```
 
-### Async FIFO Pointers
+### 비동기 FIFO 포인터
 ```systemverilog
 // Gray code conversion
 function automatic [ADDR_W:0] bin2gray(input [ADDR_W:0] bin);
@@ -68,7 +68,7 @@ assign full = (wr_gray[ADDR_W] != rd_gray_sync[ADDR_W]) &&
 assign empty = (rd_gray == wr_gray_sync);
 ```
 
-### Synchronous FIFO
+### 동기 FIFO
 ```systemverilog
 module sync_fifo #(
     parameter int WIDTH = 32,
@@ -113,7 +113,7 @@ module sync_fifo #(
 endmodule
 ```
 
-### Dual-Port RAM
+### 듀얼 포트 RAM
 ```systemverilog
 module dual_port_ram #(
     parameter int WIDTH = 32,
@@ -155,7 +155,7 @@ module dual_port_ram #(
 endmodule
 ```
 
-### ROM with Initialization
+### 초기화가 있는 ROM
 ```systemverilog
 module rom #(
     parameter int WIDTH = 32,
@@ -180,7 +180,7 @@ module rom #(
 endmodule
 ```
 
-### Register File
+### 레지스터 파일
 ```systemverilog
 module reg_file #(
     parameter int WIDTH = 32,
@@ -227,9 +227,9 @@ endmodule
 
 ---
 
-## Error Handling & Fault Tolerance
+## 오류 처리 & 결함 허용
 
-### Planning Error Handling
+### 오류 처리 계획
 
 ```markdown
 ## Error Handling Plan
@@ -252,7 +252,7 @@ endmodule
 | Protocol | Assertions | Error state |
 ```
 
-### SECDED (Single Error Correct, Double Error Detect)
+### SECDED (단일 오류 정정, 이중 오류 감지)
 ```systemverilog
 module secded_encoder #(
     parameter int DATA_W = 64
@@ -314,7 +314,7 @@ module secded_decoder #(
 endmodule
 ```
 
-### Watchdog Timer
+### 워치독 타이머
 ```systemverilog
 module watchdog #(
     parameter int WIDTH = 24,
@@ -345,7 +345,7 @@ module watchdog #(
 endmodule
 ```
 
-### Triple Modular Redundancy (TMR)
+### 삼중 모듈 중복(TMR)
 ```systemverilog
 module tmr_voter #(
     parameter int WIDTH = 32

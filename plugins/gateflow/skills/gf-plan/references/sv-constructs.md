@@ -1,8 +1,8 @@
-## SystemVerilog Constructs Reference
+## SystemVerilog 구문 레퍼런스
 
-Every plan should consider which of these constructs are needed:
+모든 계획은 이 구문 중 어느 것이 필요한지 고려해야 합니다:
 
-### Packages
+### 패키지
 
 ```markdown
 ## Package Design: <name>_pkg
@@ -23,7 +23,7 @@ Every plan should consider which of these constructs are needed:
 - Imported by: [modules using this]
 ```
 
-**Package Template:**
+**패키지 템플릿:**
 ```systemverilog
 package dma_pkg;
     // Parameters
@@ -52,7 +52,7 @@ package dma_pkg;
 endpackage
 ```
 
-### Type Definitions
+### 타입 정의
 
 ```markdown
 ## Type Definitions
@@ -81,7 +81,7 @@ endpackage
 | addr_t | logic[31:0] | Address |
 ```
 
-**Type Templates:**
+**타입 템플릿:**
 ```systemverilog
 // Enum with explicit encoding
 typedef enum logic [1:0] {
@@ -115,7 +115,7 @@ typedef logic [31:0] data_t;
 typedef logic [11:0] addr_t;
 ```
 
-### Macros and Preprocessor
+### 매크로와 전처리기
 
 ```markdown
 ## Preprocessor Directives
@@ -143,7 +143,7 @@ include/
 | `ifdef FPGA | FPGA-specific | rtl/*.sv |
 ```
 
-**Macro Templates:**
+**매크로 템플릿:**
 ```systemverilog
 // defines.svh
 `ifndef DEFINES_SVH
@@ -168,7 +168,7 @@ include/
 `endif // DEFINES_SVH
 ```
 
-### Interfaces and Modports
+### 인터페이스와 Modport
 
 ```markdown
 ## Interface Design
@@ -193,7 +193,7 @@ include/
 | monitor | input | all (passive) |
 ```
 
-**Interface Template:**
+**인터페이스 템플릿:**
 ```systemverilog
 interface stream_if #(
     parameter int WIDTH = 32
@@ -237,7 +237,7 @@ interface stream_if #(
 endinterface
 ```
 
-### Generate Blocks
+### Generate 블록
 
 ```markdown
 ## Generate Blocks
@@ -255,7 +255,7 @@ endinterface
 | WIDTH > 32 | wide_path | narrow_path |
 ```
 
-**Generate Templates:**
+**Generate 템플릿:**
 ```systemverilog
 // Loop generate - multiple instances
 genvar i;
@@ -297,7 +297,7 @@ generate
 endgenerate
 ```
 
-### Functions and Tasks
+### 함수와 태스크
 
 ```markdown
 ## Functions and Tasks
@@ -317,7 +317,7 @@ endgenerate
 | check_result | expected | Verify output |
 ```
 
-**Function/Task Templates:**
+**함수/태스크 템플릿:**
 ```systemverilog
 // Pure function (synthesizable)
 function automatic logic [7:0] gray_encode(input logic [7:0] bin);
@@ -355,7 +355,7 @@ task automatic wait_for_done(input int timeout_cycles);
 endtask
 ```
 
-### Instantiation Patterns
+### 인스턴스화 패턴
 
 ```markdown
 ## Module Instantiation
@@ -373,7 +373,7 @@ endtask
 - Wildcard: `.*` with explicit overrides
 ```
 
-**Instantiation Templates:**
+**인스턴스화 템플릿:**
 ```systemverilog
 // Named port connection (preferred)
 sync_fifo #(
@@ -419,7 +419,7 @@ generate
 endgenerate
 ```
 
-### Assertions (SVA)
+### 어서션 (SVA)
 
 ```markdown
 ## Assertion Plan
@@ -446,7 +446,7 @@ endgenerate
 | axi_master | axi_protocol_check | rtl/axi_sva.sv |
 ```
 
-**SVA Templates:**
+**SVA 템플릿:**
 ```systemverilog
 // Immediate assertion
 always_comb begin
@@ -483,7 +483,7 @@ endproperty
 bind dma_channel dma_sva u_sva (.*);
 ```
 
-### Coverage
+### 커버리지
 
 ```markdown
 ## Coverage Plan
@@ -502,7 +502,7 @@ bind dma_channel dma_sva u_sva (.*);
 | size x burst | Transfer size, burst type | All size/burst combos |
 ```
 
-**Coverage Templates:**
+**커버리지 템플릿:**
 ```systemverilog
 covergroup cg_fsm @(posedge clk);
     cp_state: coverpoint state {
@@ -537,7 +537,7 @@ covergroup cg_config @(posedge config_valid);
 endgroup
 ```
 
-### Classes (Verification)
+### 클래스 (검증)
 
 ```markdown
 ## Class Hierarchy (for Verification)
@@ -556,7 +556,7 @@ endgroup
 | dma_scoreboard | uvm_scoreboard | Check results |
 ```
 
-**Class Templates:**
+**클래스 템플릿:**
 ```systemverilog
 // Transaction class
 class dma_transaction extends uvm_sequence_item;
@@ -613,7 +613,7 @@ endclass
 | sv_callback | callback | C calls SV |
 ```
 
-**DPI Templates:**
+**DPI 템플릿:**
 ```systemverilog
 // Import C function
 import "DPI-C" function int c_crc32(

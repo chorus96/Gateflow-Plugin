@@ -1,6 +1,6 @@
-## Synthesis Planning
+## 합성 계획
 
-### Synthesis Strategy
+### 합성 전략
 
 ```markdown
 ## Synthesis Plan
@@ -30,7 +30,7 @@
 | Multicycle | [if any] |
 ```
 
-**SDC Template:**
+**SDC 템플릿:**
 ```tcl
 # Clock definition
 create_clock -name clk -period 10.0 [get_ports clk]
@@ -49,7 +49,7 @@ set_false_path -from [get_clocks clk_a] -to [get_clocks clk_b]
 set_multicycle_path 2 -setup -from [get_pins */slow_reg*/Q]
 ```
 
-### Resource Estimation
+### 리소스 추정
 
 ```markdown
 | Resource | Estimate | Budget | Notes |
@@ -60,19 +60,19 @@ set_multicycle_path 2 -setup -from [get_pins */slow_reg*/Q]
 | DSP | 0 | 4 | No math |
 ```
 
-### Synthesis Checklist
-- [ ] All code is synthesizable (no `initial`, `#delays`)
-- [ ] No latches inferred
-- [ ] Clock gating cells for power
-- [ ] Reset strategy matches target
-- [ ] Timing constraints defined
-- [ ] Resource estimates acceptable
+### 합성 체크리스트
+- [ ] 모든 코드가 합성 가능 (`initial`, `#delays` 없음)
+- [ ] 래치가 추론되지 않음
+- [ ] 전력을 위한 클럭 게이팅 셀
+- [ ] 리셋 전략이 타겟과 일치
+- [ ] 타이밍 제약 정의
+- [ ] 리소스 추정치 허용 가능
 
 ---
 
-## Waveform & Debug Planning
+## 파형 & 디버그 계획
 
-### Debug Infrastructure
+### 디버그 인프라
 
 ```markdown
 ## Debug Plan
@@ -101,7 +101,7 @@ set_multicycle_path 2 -setup -from [get_pins */slow_reg*/Q]
 | error | all | Failures |
 ```
 
-**Waveform Dump Template:**
+**파형 덤프 템플릿:**
 ```systemverilog
 initial begin
     // VCD dump
@@ -125,7 +125,7 @@ initial begin
 end
 ```
 
-### Debug Assertions
+### 디버그 어서션
 
 ```systemverilog
 // Debug helpers
@@ -145,9 +145,9 @@ end
 
 ---
 
-## Formal Verification Planning
+## 정형 검증 계획
 
-### Formal Strategy
+### 정형 전략
 
 ```markdown
 ## Formal Verification Plan
@@ -175,7 +175,7 @@ end
 | Protocol compliance | Assume valid stimulus |
 ```
 
-**SymbiYosys Template (.sby):**
+**SymbiYosys 템플릿 (.sby):**
 ```
 [options]
 mode bmc        # Bounded model checking
@@ -192,7 +192,7 @@ prep -top top
 top.sv
 ```
 
-**Formal Properties:**
+**Formal 프로퍼티:**
 ```systemverilog
 // Assume valid inputs
 assume property (@(posedge clk) disable iff (!rst_n)
@@ -212,9 +212,9 @@ cover property (@(posedge clk) state == DONE);
 
 ---
 
-## Build System Planning
+## 빌드 시스템 계획
 
-### Build Infrastructure
+### 빌드 인프라
 
 ```markdown
 ## Build System
@@ -237,7 +237,7 @@ cover property (@(posedge clk) state == DONE);
 | pkg.f | Packages (compile first) |
 ```
 
-**Makefile Template:**
+**Makefile 템플릿:**
 ```makefile
 # GateFlow Makefile
 TOP = dma_top
@@ -292,7 +292,7 @@ test: lint
 	@echo "All tests passed!"
 ```
 
-**Filelist Template (rtl.f):**
+**Filelist 템플릿 (rtl.f):**
 ```
 # Packages first (order matters)
 rtl/pkg/dma_pkg.sv
@@ -305,7 +305,7 @@ rtl/dma_reg_if.sv
 rtl/dma_top.sv
 ```
 
-**FuseSoC core file (for IP management):**
+**FuseSoC core 파일 (IP 관리용):**
 ```yaml
 CAPI=2:
 name: ::dma:1.0.0
@@ -338,9 +338,9 @@ targets:
 
 ---
 
-## FPGA-Specific Planning
+## FPGA 특화 계획
 
-### FPGA Considerations
+### FPGA 고려 사항
 
 ```markdown
 ## FPGA Implementation Plan
@@ -375,7 +375,7 @@ targets:
 | led[0] | H5 | LVCMOS33 | Status |
 ```
 
-**Vivado Constraints (XDC):**
+**Vivado 제약 (XDC):**
 ```tcl
 # Clock
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports clk]
@@ -392,7 +392,7 @@ set_property CFGBVS VCCO [current_design]
 set_property CONFIG_VOLTAGE 3.3 [current_design]
 ```
 
-### FPGA-Specific Coding
+### FPGA 특화 코딩
 
 ```systemverilog
 // Block RAM inference
@@ -413,7 +413,7 @@ assign product = a * b;
 logic [31:0] pipeline_reg;
 ```
 
-### FPGA Debug (ILA)
+### FPGA 디버그 (ILA)
 
 ```markdown
 ## Debug Cores
