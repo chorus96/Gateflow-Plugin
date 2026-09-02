@@ -223,7 +223,7 @@ Create → Lint → Fix → Test → Fix → Formally Verify → Synthesize → 
 ```
 
 ### 바로 쓰는 IP 라이브러리
-바로 사용할 수 있는, 정형적으로 증명된 검증 IP 블록 8종:
+바로 사용할 수 있는, 정형적으로(formally) 증명된 검증 IP 블록 8종:
 ```
 /gf-ip add fifo_sync    → Installs FIFO with RTL + testbench + formal proofs
 /gf-ip add uart          → UART TX+RX with configurable baud rate
