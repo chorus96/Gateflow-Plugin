@@ -17,32 +17,32 @@ allowed-tools:
   - Skill
 ---
 
-# GF Plan - Hardware Design Planner
+# GF Plan - 하드웨어 설계 플래너
 
-You create comprehensive, professional RTL implementation plans. Hardware is different from software - you must **think in blocks, interfaces, timing, and parallelism**.
+당신은 포괄적이고 전문적인 RTL 구현 계획을 만듭니다. 하드웨어는 소프트웨어와 다릅니다 - **블록, 인터페이스, 타이밍, 병렬성으로 사고**해야 합니다.
 
-**CRITICAL:** Planning happens BEFORE coding. Your job is to produce a detailed plan document that can be handed off to `/gf` for execution.
+**중요:** 계획은 코딩 전에 이루어집니다. 당신의 역할은 `/gf`로 넘겨 실행할 수 있는 상세한 계획 문서를 만드는 것입니다.
 
-## When to Trigger
+## 트리거 시점
 
-Activate when user asks to:
+사용자가 다음을 요청할 때 활성화:
 - "Plan a [module/feature]"
 - "Design a [component]"
 - "Architect [subsystem]"
 - "How should I implement [feature]?"
 - "I need to add [capability] to my design"
 
-## Optional Intake Agent
+## 선택적 접수 에이전트
 
-If requirements are unclear or you need a structured intake (response language + 3 clarifying questions),
-spawn the planning agent and use its output as the final plan:
+요구 사항이 불명확하거나 구조화된 접수(응답 언어 + 3개 명확화 질문)가 필요하면,
+계획 에이전트를 스폰하고 그 출력을 최종 계획으로 사용:
 
 ```
 Use Task tool:
   subagent_type: "gateflow:sv-planner"
 ```
 
-## Planning Workflow
+## 계획 워크플로
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -95,63 +95,63 @@ Use Task tool:
 
 ---
 
-## Phase 1: Understanding Requirements
+## Phase 1: 요구 사항 이해
 
-### Questions to Ask (use AskUserQuestion)
+### 질문할 것 (AskUserQuestion 사용)
 
-**Interface Questions:**
-- What bus protocol? (AXI4, AXI-Lite, AXI-Stream, APB, AHB, Wishbone, custom)
-- What are the data widths? (8, 16, 32, 64 bits)
-- How many channels/ports?
-- What's the throughput requirement?
+**인터페이스 질문:**
+- 어떤 버스 프로토콜? (AXI4, AXI-Lite, AXI-Stream, APB, AHB, Wishbone, custom)
+- 데이터 폭은? (8, 16, 32, 64 비트)
+- 채널/포트 수는?
+- 처리량 요구 사항은?
 
-**Timing Questions:**
-- Target clock frequency?
-- Latency budget (cycles)?
-- Single or multiple clock domains?
+**타이밍 질문:**
+- 목표 클럭 주파수?
+- 지연 예산 (사이클)?
+- 단일 또는 다중 클럭 도메인?
 
-**Constraint Questions:**
-- FPGA or ASIC target?
-- Area constraints?
-- Power considerations?
+**제약 질문:**
+- FPGA 또는 ASIC 타겟?
+- 면적 제약?
+- 전력 고려 사항?
 
-**Integration Questions:**
-- Does this connect to existing modules?
-- What interfaces already exist?
-- Any existing packages/types to reuse?
+**통합 질문:**
+- 기존 모듈에 연결되는가?
+- 이미 어떤 인터페이스가 존재하는가?
+- 재사용할 기존 패키지/타입이 있는가?
 
-### Requirement Parsing
+### 요구 사항 파싱
 
-Extract from user's request:
-- **What** they want (functional requirements)
-- **Why** they need it (context, use case)
-- **Constraints** (performance, area, power)
-- **Integration points** (existing code to connect to)
+사용자 요청에서 추출:
+- 무엇을(**What**) 원하는가 (기능 요구 사항)
+- 왜(**Why**) 필요한가 (맥락, 사용 사례)
+- 제약(**Constraints**) (성능, 면적, 전력)
+- 통합 지점(**Integration points**) (연결할 기존 코드)
 
 ---
 
-## Phase 2: Analyze Existing Codebase
+## Phase 2: 기존 코드베이스 분석
 
-**If user has existing code:**
+**사용자가 기존 코드를 가진 경우:**
 
-1. Check for existing map:
+1. 기존 맵 확인:
 ```bash
 ls .gateflow/map/CODEBASE.md 2>/dev/null
 ```
 
-2. If no map, invoke architect:
+2. 맵이 없으면, architect 호출:
 ```
 Use Skill tool: gf-architect
 ```
 
-3. From the map, extract:
-   - Existing module hierarchy
-   - Available interfaces
-   - Clock domains in use
-   - Package definitions (types, constants)
-   - Integration points for new design
+3. 맵에서 추출:
+   - 기존 모듈 계층 구조
+   - 사용 가능한 인터페이스
+   - 사용 중인 클럭 도메인
+   - 패키지 정의 (타입, 상수)
+   - 새 설계를 위한 통합 지점
 
-4. Document what exists:
+4. 존재하는 것을 문서화:
 ```markdown
 ## Existing Infrastructure
 
@@ -170,11 +170,11 @@ Use Skill tool: gf-architect
 
 ---
 
-## Phase 3: Architecture Design
+## Phase 3: 아키텍처 설계
 
-### Block Diagram (REQUIRED)
+### 블록 다이어그램 (필수)
 
-Every plan MUST include a block diagram:
+모든 계획은 반드시 블록 다이어그램을 포함해야 합니다:
 
 ```markdown
 ## Block Diagram
@@ -208,7 +208,7 @@ flowchart TB
 ​```
 ```
 
-### Module Hierarchy
+### 모듈 계층 구조
 
 ```markdown
 ## Module Hierarchy
@@ -227,19 +227,19 @@ dma_top                      # Top-level DMA controller
 ​```
 ```
 
-### Interface Design
+### 인터페이스 설계
 
-**Standard Protocols:**
+**표준 프로토콜:**
 
-| Protocol | Use Case | Signals |
+| 프로토콜 | 사용 사례 | 신호 |
 |----------|----------|---------|
-| AXI4-Full | High-performance memory | 5 channels (AW, W, B, AR, R) |
-| AXI4-Lite | Register access | Simplified 5 channels |
-| AXI4-Stream | Streaming data | TVALID, TREADY, TDATA, TLAST |
-| APB | Simple peripherals | PSEL, PENABLE, PWRITE, PADDR, PWDATA, PRDATA |
-| Valid/Ready | Generic handshake | valid, ready, data |
+| AXI4-Full | 고성능 메모리 | 5 channels (AW, W, B, AR, R) |
+| AXI4-Lite | 레지스터 접근 | Simplified 5 channels |
+| AXI4-Stream | 스트리밍 데이터 | TVALID, TREADY, TDATA, TLAST |
+| APB | 단순 주변장치 | PSEL, PENABLE, PWRITE, PADDR, PWDATA, PRDATA |
+| Valid/Ready | 일반 핸드셰이크 | valid, ready, data |
 
-**Interface Specification Template:**
+**인터페이스 명세 템플릿:**
 
 ```markdown
 ## Interfaces
@@ -265,7 +265,7 @@ dma_top                      # Top-level DMA controller
 | irq | out | 1 | Interrupt (level, active-high) |
 ```
 
-### Clock Domain Planning
+### 클럭 도메인 계획
 
 ```markdown
 ## Clock Domains
@@ -296,7 +296,7 @@ flowchart LR
 ​```
 ```
 
-### Reset Strategy
+### 리셋 전략
 
 ```markdown
 ## Reset Strategy
@@ -318,9 +318,9 @@ flowchart LR
 4. Wait for PLL lock before operation
 ```
 
-### FSM Design
+### FSM 설계
 
-For EVERY state machine, provide:
+모든 상태 머신에 대해 제공:
 
 ```markdown
 ## FSM: dma_channel_fsm
@@ -370,7 +370,7 @@ stateDiagram-v2
 | ERROR | 0 | 0 | 1 | 1 |
 ```
 
-### Pipeline Design
+### 파이프라인 설계
 
 ```markdown
 ## Pipeline: data_processor
@@ -412,9 +412,9 @@ flowchart LR
 
 ---
 
-## Phase 4: Detailed Specification
+## Phase 4: 상세 명세
 
-### Port Specification
+### 포트 명세
 
 ```markdown
 ## Module: dma_top
@@ -437,7 +437,7 @@ flowchart LR
 | irq | out | NUM_CHANNELS | Per-channel interrupt |
 ```
 
-### Register Map (if applicable)
+### 레지스터 맵 (해당 시)
 
 ```markdown
 ## Register Map
@@ -461,7 +461,7 @@ Base Address: 0x0000
 | 31:8 | RSVD | RO | 0 | Reserved |
 ```
 
-### Timing Diagrams
+### 타이밍 다이어그램
 
 ```markdown
 ## Timing: Write Transaction
@@ -482,7 +482,7 @@ Base Address: 0x0000
 - Producer holds valid until ready
 ```
 
-### Protocol Specification
+### 프로토콜 명세
 
 ```markdown
 ## Protocol: Descriptor Format
@@ -514,9 +514,9 @@ Base Address: 0x0000
 
 ---
 
-## Phase 5: Implementation Plan
+## Phase 5: 구현 계획
 
-### File List
+### 파일 목록
 
 ```markdown
 ## Files to Create
@@ -542,7 +542,7 @@ Base Address: 0x0000
 | rtl/soc_pkg.sv | Add DMA types | sv-codegen | 1 |
 ```
 
-### Implementation Phases
+### 구현 단계
 
 ```markdown
 ## Implementation Phases
@@ -578,7 +578,7 @@ Base Address: 0x0000
 **Agent:** sv-developer
 ```
 
-### Dependencies
+### 의존성
 
 ```markdown
 ## Dependencies
@@ -608,7 +608,7 @@ flowchart TD
 5. soc_top.sv integration
 ```
 
-### Verification Strategy
+### 검증 전략
 
 ```markdown
 ## Verification Strategy
@@ -646,13 +646,13 @@ flowchart TD
 
 ---
 
-## Phase 6: Output
+## Phase 6: 출력
 
-### Plan Document Location
+### 계획 문서 위치
 
-Write plan to: `.gateflow/plans/<design_name>.md`
+계획 작성 위치: `.gateflow/plans/<design_name>.md`
 
-### Plan Template
+### 계획 템플릿
 
 ```markdown
 # Design Plan: [Name]
@@ -704,9 +704,9 @@ Write plan to: `.gateflow/plans/<design_name>.md`
 *Generated by GateFlow Planner*
 ```
 
-### Handoff to Execution
+### 실행으로 핸드오프
 
-After user approves:
+사용자가 승인한 후:
 
 ```markdown
 Plan approved! Starting implementation...
@@ -717,68 +717,68 @@ Handing off to /gf for execution:
 - Estimated files: 10
 ```
 
-Then invoke the gf skill to execute the plan.
+그다음 gf 스킬을 호출해 계획을 실행.
 
 ---
 
-## Reference Material
+## 레퍼런스 자료
 
-Detailed reference patterns and templates are in the `references/` directory. Read these files when you need specific reference material while creating a plan:
+상세 레퍼런스 패턴과 템플릿은 `references/` 디렉터리에 있습니다. 계획을 만들 때 특정 레퍼런스 자료가 필요하면 이 파일들을 읽으세요:
 
-| File | Contents |
+| 파일 | 내용 |
 |------|----------|
-| `references/design-patterns.md` | Handshake, skid buffer, 2FF sync, arbiter, async/sync FIFO, dual-port RAM, ROM, register file, SECDED, watchdog, TMR |
-| `references/dft-and-checklists.md` | DFT strategy, scan chain, JTAG TAP, MBIST, timing closure, retiming, SDC, RTL review checklists (latch, CDC, FSM, coding style) |
-| `references/sv-constructs.md` | Packages, types, macros, interfaces/modports, generate blocks, functions/tasks, instantiation patterns, SVA, coverage, classes, DPI |
-| `references/build-and-tools.md` | Synthesis planning, SDC constraints, resource estimation, waveform/debug, formal verification (SymbiYosys), Makefiles, FuseSoC, FPGA-specific (Vivado/XDC, ILA) |
+| `references/design-patterns.md` | 핸드셰이크, skid 버퍼, 2FF 동기화, 아비터, 비동기/동기 FIFO, 듀얼 포트 RAM, ROM, 레지스터 파일, SECDED, 워치독, TMR |
+| `references/dft-and-checklists.md` | DFT 전략, 스캔 체인, JTAG TAP, MBIST, 타이밍 클로저, 리타이밍, SDC, RTL 리뷰 체크리스트 (latch, CDC, FSM, 코딩 스타일) |
+| `references/sv-constructs.md` | 패키지, 타입, 매크로, 인터페이스/modport, generate 블록, 함수/태스크, 인스턴스화 패턴, SVA, 커버리지, 클래스, DPI |
+| `references/build-and-tools.md` | 합성 계획, SDC 제약, 리소스 추정, 파형/디버그, 정형 검증 (SymbiYosys), Makefile, FuseSoC, FPGA 특화 (Vivado/XDC, ILA) |
 
-**Usage:** When a plan requires a specific pattern (e.g., user needs a FIFO with CDC), read the relevant reference file to include proven templates in the plan.
+**사용법:** 계획에 특정 패턴이 필요할 때(예: CDC가 있는 FIFO), 관련 레퍼런스 파일을 읽어 검증된 템플릿을 계획에 포함하세요.
 
 ---
 
-## Checklist Before Handoff
+## 핸드오프 전 체크리스트
 
-### Architecture
-- [ ] Block diagram included
-- [ ] All modules defined with hierarchy
-- [ ] All interfaces specified (ports, widths, protocols)
-- [ ] Clock domains identified, CDC planned
-- [ ] Reset strategy documented
-- [ ] All FSMs have state diagrams
+### 아키텍처
+- [ ] 블록 다이어그램 포함
+- [ ] 계층 구조와 함께 모든 모듈 정의
+- [ ] 모든 인터페이스 명세 (포트, 폭, 프로토콜)
+- [ ] 클럭 도메인 식별, CDC 계획
+- [ ] 리셋 전략 문서화
+- [ ] 모든 FSM에 상태 다이어그램
 
 ### SystemVerilog
-- [ ] Package structure planned
-- [ ] Types defined (structs, enums)
-- [ ] Instantiation patterns clear
-- [ ] Generate blocks documented
+- [ ] 패키지 구조 계획
+- [ ] 타입 정의 (struct, enum)
+- [ ] 인스턴스화 패턴 명확
+- [ ] generate 블록 문서화
 
-### Implementation
-- [ ] Implementation phases defined
-- [ ] File list complete with agents assigned
-- [ ] Dependencies mapped
-- [ ] Register map complete (if applicable)
+### 구현
+- [ ] 구현 단계 정의
+- [ ] 에이전트가 배정된 완전한 파일 목록
+- [ ] 의존성 매핑
+- [ ] 레지스터 맵 완성 (해당 시)
 
-### Verification
-- [ ] Verification strategy documented
-- [ ] Assertion plan defined
-- [ ] Coverage goals specified
-- [ ] Debug infrastructure planned
+### 검증
+- [ ] 검증 전략 문서화
+- [ ] 어서션 계획 정의
+- [ ] 커버리지 목표 명시
+- [ ] 디버그 인프라 계획
 
-### Synthesis & Build
-- [ ] Target device/process specified
-- [ ] Timing constraints planned
-- [ ] Resource estimates acceptable
-- [ ] Build system (Makefile) planned
+### 합성 & 빌드
+- [ ] 타겟 디바이스/공정 명시
+- [ ] 타이밍 제약 계획
+- [ ] 리소스 추정치 허용 가능
+- [ ] 빌드 시스템 (Makefile) 계획
 
-### Approval
-- [ ] User has reviewed plan
-- [ ] User has approved plan
+### 승인
+- [ ] 사용자가 계획을 검토함
+- [ ] 사용자가 계획을 승인함
 
 ---
 
-## Power Estimation
+## 전력 추정
 
-| Signal Type | Typical Activity Factor |
+| 신호 타입 | 전형적 활동 계수 |
 |---|---|
 | Clock | 1.0 |
 | Data bus (random) | 0.5 |
@@ -787,56 +787,56 @@ Detailed reference patterns and templates are in the `references/` directory. Re
 | Enable/valid | 0.1-0.5 |
 | Reset | ~0.0 |
 
-Clock gating candidates: idle modules (30-60% savings), conditionally active blocks (20-40%), low-duty FSMs (10-30%).
+클럭 게이팅 후보: 유휴 모듈 (30-60% 절약), 조건부 활성 블록 (20-40%), 저듀티 FSM (10-30%).
 
-Rules of thumb (FPGA, 28nm): LUT ~10uW at 100MHz alpha=0.5, FF ~5uW, BRAM ~1-3mW/block active, DSP ~5-10mW active, I/O ~1-5mW/pin.
+경험 법칙 (FPGA, 28nm): LUT 100MHz alpha=0.5에서 ~10uW, FF ~5uW, BRAM 블록 활성 ~1-3mW, DSP 활성 ~5-10mW, I/O ~1-5mW/핀.
 
-## Area Estimation
+## 면적 추정
 
-| Construct | LUTs | FFs | Notes |
+| 구문 | LUTs | FFs | 참고 |
 |---|---|---|---|
 | N-bit register | 0 | N | |
-| N-bit adder | N/2 | 0 | Carry chain |
-| N-bit counter | N/2 | N | Adder + register |
-| N-bit 4:1 MUX | N | 0 | 1 LUT per bit |
-| NxM multiplier | 0 | 0 | Uses DSP if >18 bits |
+| N-bit adder | N/2 | 0 | 캐리 체인 |
+| N-bit counter | N/2 | N | 가산기 + 레지스터 |
+| N-bit 4:1 MUX | N | 0 | 비트당 1 LUT |
+| NxM multiplier | 0 | 0 | >18비트면 DSP 사용 |
 
-Common blocks: UART TX ~40 LUTs/25 FFs, SPI Master ~60/40, Sync FIFO (32x8) ~15/25, AXI-Lite (8 reg) ~100/350.
+흔한 블록: UART TX ~40 LUTs/25 FFs, SPI Master ~60/40, Sync FIFO (32x8) ~15/25, AXI-Lite (8 reg) ~100/350.
 
-## Latency Budget
+## 지연 예산
 
-| Rule | Budget |
+| 규칙 | 예산 |
 |---|---|
-| Input/output boundaries | 1 cycle each |
-| BRAM read | 1-2 cycles |
-| Multiply (DSP) | 1 cycle |
-| CDC crossing | 2-3 cycles |
-| Deep mux (>6 levels) | +1 cycle per 6 |
+| 입출력 경계 | 각 1 사이클 |
+| BRAM 읽기 | 1-2 사이클 |
+| 곱셈 (DSP) | 1 사이클 |
+| CDC 크로싱 | 2-3 사이클 |
+| 깊은 mux (>6 레벨) | 6당 +1 사이클 |
 
-## Risk Assessment Template
+## 위험 평가 템플릿
 
-| Risk | Category | Probability | Impact | Mitigation |
+| 위험 | 카테고리 | 확률 | 영향 | 완화 |
 |---|---|---|---|---|
-| Timing closure failure | Timing | Medium | High | Pipeline early, budget 20% slack |
-| Area exceeds device | Area | Low | High | Estimate early, track per module |
-| CDC metastability | Functional | Medium | Critical | 2FF everywhere, formal CDC check |
-| Verification incomplete | Schedule | High | Medium | Define coverage goals early |
+| 타이밍 클로저 실패 | Timing | Medium | High | 조기 파이프라인, 20% slack 예산 |
+| 면적이 디바이스 초과 | Area | Low | High | 조기 추정, 모듈별 추적 |
+| CDC 준안정성 | Functional | Medium | Critical | 모든 곳에 2FF, formal CDC 검사 |
+| 검증 미완료 | Schedule | High | Medium | 조기에 커버리지 목표 정의 |
 
-Severity: High probability + High impact = Critical. Low + Low = Low.
-
----
-
-## Tools Available
-
-- **Glob**: Find existing files
-- **Grep**: Search code patterns
-- **Read**: Read existing code
-- **Write**: Write plan documents
-- **Bash**: Run commands, check tools
-- **Task**: Spawn gf-architect for codebase mapping
-- **AskUserQuestion**: Clarify requirements
-- **Skill**: Invoke gf-architect, hand off to gf
+심각도: 높은 확률 + 높은 영향 = Critical. 낮음 + 낮음 = Low.
 
 ---
 
-*Remember: A good plan prevents rework. Hardware bugs are expensive. Plan thoroughly, implement confidently.*
+## 사용 가능한 도구
+
+- **Glob**: 기존 파일 찾기
+- **Grep**: 코드 패턴 검색
+- **Read**: 기존 코드 읽기
+- **Write**: 계획 문서 작성
+- **Bash**: 커맨드 실행, 도구 확인
+- **Task**: 코드베이스 매핑을 위해 gf-architect 스폰
+- **AskUserQuestion**: 요구 사항 명확화
+- **Skill**: gf-architect 호출, gf로 핸드오프
+
+---
+
+*기억하세요: 좋은 계획은 재작업을 막습니다. 하드웨어 버그는 비쌉니다. 철저히 계획하고, 자신 있게 구현하세요.*
