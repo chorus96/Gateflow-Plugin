@@ -130,7 +130,7 @@ GateFlow는 맥락을 이해합니다. 필요한 것을 평범한 말로 설명�
 | `/gf` | 모든 SV 작업 | **메인 오케스트레이터** — 계획 우선, 병렬 빌드, 동작할 때까지 검증 |
 | `/gf-plan` | "plan", "design", "architect" | ASCII 다이어그램이 포함된 RTL 구현 계획 |
 | `/gf-build` | "build", "multi-component", "SoC" | 병렬 컴포넌트 빌드 오케스트레이션 |
-| `/gf-formal` | "formally verify", "prove", "check property" | SymbiYosys를 통한 **자연어 기반 정형 검증** |
+| `/gf-formal` | "formally verify", "prove", "check property" | SymbiYosys를 통한 **자연어 기반 Formal 검증** |
 | `/gf-synth` | "synthesize", "area estimate", "resource usage" | LUT/FF/BRAM/DSP 리포트가 포함된 **Yosys 합성** |
 | `/gf-architect` | "map codebase", "analyze project" | 계층 구조, FSM, 클럭, CDC를 담은 코드베이스 맵 |
 | `/gf-viz` | "visualize", "show hierarchy" | RTL 아키텍처의 터미널 ASCII 시각화 |
