@@ -1,23 +1,23 @@
-# SPI Protocol Reference
+# SPI 프로토콜 레퍼런스
 
-## Signals
-| Signal | Direction (Master) | Description |
+## 신호
+| 신호 | 방향 (마스터) | 설명 |
 |--------|-------------------|-------------|
-| SCLK | output | Serial clock |
+| SCLK | output | 시리얼 클럭 |
 | MOSI | output | Master Out Slave In |
 | MISO | input | Master In Slave Out |
-| CS_N | output | Chip select (active low) |
+| CS_N | output | 칩 셀렉트 (active low) |
 
-## Modes
-| Mode | CPOL | CPHA | Clock Idle | Data Capture | Data Shift |
+## 모드
+| 모드 | CPOL | CPHA | 클럭 유휴 | 데이터 캡처 | 데이터 시프트 |
 |------|------|------|------------|-------------|------------|
-| 0 | 0 | 0 | Low | Rising edge | Falling edge |
-| 1 | 0 | 1 | Low | Falling edge | Rising edge |
-| 2 | 1 | 0 | High | Falling edge | Rising edge |
-| 3 | 1 | 1 | High | Rising edge | Falling edge |
+| 0 | 0 | 0 | Low | 상승 에지 | 하강 에지 |
+| 1 | 0 | 1 | Low | 하강 에지 | 상승 에지 |
+| 2 | 1 | 0 | High | 하강 에지 | 상승 에지 |
+| 3 | 1 | 1 | High | 상승 에지 | 하강 에지 |
 
-## Timing
-- CS_N asserted (low) before first SCLK edge
-- Data valid before capture edge
-- CS_N deasserted (high) after last SCLK edge
-- MSB first (default) or LSB first (configurable)
+## 타이밍
+- 첫 SCLK 에지 전에 CS_N assert (low)
+- 캡처 에지 전에 데이터 valid
+- 마지막 SCLK 에지 후에 CS_N deassert (high)
+- MSB 먼저 (기본) 또는 LSB 먼저 (구성 가능)

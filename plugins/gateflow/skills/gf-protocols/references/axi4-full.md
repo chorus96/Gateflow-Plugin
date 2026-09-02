@@ -1,38 +1,38 @@
-# AXI4-Full Protocol Reference
+# AXI4-Full 프로토콜 레퍼런스
 
-## Additional Signals (vs AXI4-Lite)
+## 추가 신호 (AXI4-Lite 대비)
 
-### Burst Support
-| Signal | Width | Description |
+### 버스트 지원
+| 신호 | 폭 | 설명 |
 |--------|-------|-------------|
-| AWLEN | 8 | Burst length (0-255, actual = AWLEN+1) |
-| AWSIZE | 3 | Bytes per beat (2^AWSIZE) |
-| AWBURST | 2 | Burst type: FIXED(00), INCR(01), WRAP(10) |
-| ARLEN/ARSIZE/ARBURST | same | Read channel equivalents |
+| AWLEN | 8 | 버스트 길이 (0-255, 실제 = AWLEN+1) |
+| AWSIZE | 3 | 비트당 바이트 (2^AWSIZE) |
+| AWBURST | 2 | 버스트 타입: FIXED(00), INCR(01), WRAP(10) |
+| ARLEN/ARSIZE/ARBURST | 동일 | 읽기 채널 대응물 |
 
-### Write Channel
-| Signal | Width | Description |
+### 쓰기 채널
+| 신호 | 폭 | 설명 |
 |--------|-------|-------------|
-| WLAST | 1 | Last write beat in burst |
+| WLAST | 1 | 버스트의 마지막 쓰기 비트 |
 
-### Read Channel
-| Signal | Width | Description |
+### 읽기 채널
+| 신호 | 폭 | 설명 |
 |--------|-------|-------------|
-| RLAST | 1 | Last read beat in burst |
+| RLAST | 1 | 버스트의 마지막 읽기 비트 |
 
-### IDs (for out-of-order support)
-| Signal | Width | Description |
+### ID (순서 무관 지원용)
+| 신호 | 폭 | 설명 |
 |--------|-------|-------------|
-| AWID/ARID | ID_W | Transaction ID |
-| BID/RID | ID_W | Response ID (must match request) |
+| AWID/ARID | ID_W | 트랜잭션 ID |
+| BID/RID | ID_W | 응답 ID (요청과 일치해야 함) |
 
-## Burst Types
-- **FIXED**: Same address every beat (e.g., FIFO access)
-- **INCR**: Incrementing address (most common)
-- **WRAP**: Wrapping burst (cache line fills)
+## 버스트 타입
+- **FIXED**: 매 비트마다 같은 주소 (예: FIFO 접근)
+- **INCR**: 증가하는 주소 (가장 흔함)
+- **WRAP**: 래핑 버스트 (캐시 라인 채움)
 
-## Key Rules
-- WLAST must be asserted on final write beat
-- RLAST must be asserted on final read beat
-- Slave must not reorder responses with same ID
-- 4KB address boundary must not be crossed by a burst
+## 핵심 규칙
+- WLAST는 마지막 쓰기 비트에서 assert되어야 함
+- RLAST는 마지막 읽기 비트에서 assert되어야 함
+- 슬레이브는 같은 ID의 응답을 재정렬해서는 안 됨
+- 버스트가 4KB 주소 경계를 넘어서는 안 됨

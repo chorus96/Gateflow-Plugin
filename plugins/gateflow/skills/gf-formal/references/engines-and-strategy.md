@@ -1,6 +1,6 @@
-# Proof Strategy and Engines
+# 증명 전략과 엔진
 
-## Proof Strategy
+## 증명 전략
 
 ```
 What to verify?
@@ -11,28 +11,28 @@ What to verify?
   +-- Eventually happens?     --> Live (mode live)
 ```
 
-| Property Type | Approach | Engine |
+| 프로퍼티 유형 | 접근법 | 엔진 |
 |---|---|---|
-| Simple bounds | BMC first, then prove | `smtbmc z3` |
-| Protocol compliance | BMC + prove | `smtbmc z3`, `abc pdr` |
-| FSM correctness | Prove with invariants | `abc pdr` |
-| Liveness | Live mode | `aiger suprove` |
-| Complex arithmetic | BMC (prove may timeout) | `smtbmc bitwuzla` |
+| 단순 경계 | BMC 먼저, 그다음 prove | `smtbmc z3` |
+| 프로토콜 준수 | BMC + prove | `smtbmc z3`, `abc pdr` |
+| FSM 정확성 | 불변식으로 prove | `abc pdr` |
+| 활성성 | Live 모드 | `aiger suprove` |
+| 복잡한 산술 | BMC (prove는 타임아웃 가능) | `smtbmc bitwuzla` |
 
-## Engine Comparison
+## 엔진 비교
 
-| Engine | Modes | Strengths |
+| 엔진 | 모드 | 강점 |
 |---|---|---|
-| `smtbmc` | bmc, prove, cover | Human-readable traces, k-induction |
-| `abc pdr` | prove | Powerful unbounded proofs, auto-invariants |
-| `abc bmc3` | bmc | Fast bit-level bounded checking |
-| `aiger suprove` | prove, live | Liveness verification |
+| `smtbmc` | bmc, prove, cover | 사람이 읽기 쉬운 트레이스, k-귀납법 |
+| `abc pdr` | prove | 강력한 무계 증명, 자동 불변식 |
+| `abc bmc3` | bmc | 빠른 비트 수준 유계 검사 |
+| `aiger suprove` | prove, live | 활성성 검증 |
 
-## SMT Solver Options
+## SMT 솔버 옵션
 
-| Solver | Best For |
+| 솔버 | 최적 용도 |
 |---|---|
-| `z3` | Good default, permissive license |
-| `yices` | Fast bit-vector problems |
-| `bitwuzla` | Complex arithmetic |
-| `boolector` | Hardware-specialized |
+| `z3` | 좋은 기본값, 관대한 라이선스 |
+| `yices` | 빠른 비트 벡터 문제 |
+| `bitwuzla` | 복잡한 산술 |
+| `boolector` | 하드웨어 특화 |

@@ -1,14 +1,14 @@
-# Counterexample Interpretation
+# 반례 해석
 
-## Trace Locations
+## 트레이스 위치
 
-| Failure | Location |
+| 실패 | 위치 |
 |---|---|
-| BMC failure | `<task>/engine_0/trace.vcd` |
-| Induction failure | `<task>/engine_0/trace_induct.vcd` |
-| Cover trace | `<task>/engine_0/trace<N>.vcd` |
+| BMC 실패 | `<task>/engine_0/trace.vcd` |
+| 귀납 실패 | `<task>/engine_0/trace_induct.vcd` |
+| Cover 트레이스 | `<task>/engine_0/trace<N>.vcd` |
 
-## Debugging Workflow
+## 디버깅 워크플로
 
 ```
 Assertion Fails
@@ -20,11 +20,11 @@ Assertion Fails
               --> Or try `abc pdr` (builds invariants automatically)
 ```
 
-## Common Failure Patterns
+## 흔한 실패 패턴
 
-| Pattern | Fix |
+| 패턴 | 수정 |
 |---|---|
-| Missing initial value | Add reset logic |
-| Unconstrained input | Add `assume` properties |
-| Unreachable induction state | Strengthen invariants or use `abc pdr` |
-| Over-constrained (cover fails) | Relax assumptions |
+| 초기값 누락 | 리셋 로직 추가 |
+| 제약되지 않은 입력 | `assume` 프로퍼티 추가 |
+| 도달 불가능한 귀납 상태 | 불변식 강화 또는 `abc pdr` 사용 |
+| 과도하게 제약됨 (cover 실패) | 가정을 완화 |

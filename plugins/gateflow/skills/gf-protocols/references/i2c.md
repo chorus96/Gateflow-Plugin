@@ -1,29 +1,29 @@
-# I2C Protocol Reference
+# I2C 프로토콜 레퍼런스
 
-## Signals
-| Signal | Type | Description |
+## 신호
+| 신호 | 타입 | 설명 |
 |--------|------|-------------|
-| SCL | open-drain | Serial clock (master drives) |
-| SDA | open-drain | Serial data (bidirectional) |
+| SCL | open-drain | 시리얼 클럭 (마스터가 구동) |
+| SDA | open-drain | 시리얼 데이터 (양방향) |
 
-## Addressing
-- 7-bit address + R/W bit = 8-bit first byte
-- 10-bit addressing: two-byte header
-- Reserved addresses: 0x00 (general call), 0x78-0x7F (10-bit header)
+## 주소 지정
+- 7비트 주소 + R/W 비트 = 8비트 첫 바이트
+- 10비트 주소 지정: 2바이트 헤더
+- 예약 주소: 0x00 (general call), 0x78-0x7F (10비트 헤더)
 
-## Protocol Sequence
-1. START: SDA falls while SCL high
-2. Address byte: 7-bit addr + R/W, MSB first
-3. ACK: slave pulls SDA low for 1 clock
-4. Data bytes: 8 bits + ACK each
-5. STOP: SDA rises while SCL high
+## 프로토콜 시퀀스
+1. START: SCL이 높은 동안 SDA가 하강
+2. 주소 바이트: 7비트 addr + R/W, MSB 먼저
+3. ACK: 슬레이브가 1클럭 동안 SDA를 낮춤
+4. 데이터 바이트: 각각 8비트 + ACK
+5. STOP: SCL이 높은 동안 SDA가 상승
 
-## Clock Stretching
-- Slave holds SCL low to pause master
-- Master must check SCL before proceeding
+## 클럭 스트레칭
+- 슬레이브가 SCL을 낮게 유지해 마스터를 일시 정지
+- 마스터는 진행 전에 SCL을 확인해야 함
 
-## Speed Modes
-| Mode | Max Frequency |
+## 속도 모드
+| 모드 | 최대 주파수 |
 |------|---------------|
 | Standard | 100 kHz |
 | Fast | 400 kHz |

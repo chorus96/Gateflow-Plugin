@@ -1,6 +1,6 @@
-# .sby Configuration Templates
+# .sby 구성 템플릿
 
-## BMC Template
+## BMC 템플릿
 ```sby
 [tasks]
 bmc
@@ -21,7 +21,7 @@ prep -top top_module
 design.sv
 ```
 
-## Prove (Induction) Template
+## Prove (귀납) 템플릿
 ```sby
 [tasks]
 prove
@@ -43,7 +43,7 @@ prep -top top_module
 design.sv
 ```
 
-## Cover Template
+## Cover 템플릿
 ```sby
 [tasks]
 cover
@@ -64,7 +64,7 @@ prep -top top_module
 design.sv
 ```
 
-## Multi-Task Template (BMC + Prove + Cover)
+## 멀티 태스크 템플릿 (BMC + Prove + Cover)
 ```sby
 [tasks]
 bmc
@@ -94,12 +94,12 @@ prep -top top_module
 design.sv
 ```
 
-## .sby Options Reference
+## .sby 옵션 레퍼런스
 
-| Option | Modes | Default | Description |
+| 옵션 | 모드 | 기본값 | 설명 |
 |--------|-------|---------|-------------|
-| `mode` | all | (required) | `bmc`, `prove`, `cover`, or `live` |
-| `depth` | bmc, cover | 20 | Number of cycles to check |
-| `timeout` | all | none | Timeout in seconds |
-| `multiclock` | all | off | Multiple clocks / async logic |
-| `expect` | all | pass | Expected result: pass, fail, unknown |
+| `mode` | all | (필수) | `bmc`, `prove`, `cover`, `live` |
+| `depth` | bmc, cover | 20 | 확인할 사이클 수 |
+| `timeout` | all | none | 초 단위 타임아웃 |
+| `multiclock` | all | off | 다중 클럭 / 비동기 로직 |
+| `expect` | all | pass | 예상 결과: pass, fail, unknown |

@@ -1,6 +1,6 @@
-# SVA Property Patterns
+# SVA 프로퍼티 패턴
 
-## No Overflow (FIFO/Counter)
+## 오버플로 없음 (FIFO/카운터)
 ```systemverilog
 a_no_overflow: assert property (
     @(posedge clk) disable iff (rst)
@@ -8,7 +8,7 @@ a_no_overflow: assert property (
 );
 ```
 
-## No Underflow
+## 언더플로 없음
 ```systemverilog
 a_no_underflow: assert property (
     @(posedge clk) disable iff (rst)
@@ -16,7 +16,7 @@ a_no_underflow: assert property (
 );
 ```
 
-## Valid/Ready Handshake
+## Valid/Ready 핸드셰이크
 ```systemverilog
 a_valid_stable: assert property (
     @(posedge clk) disable iff (rst)
@@ -29,7 +29,7 @@ a_data_stable: assert property (
 );
 ```
 
-## One-Hot (Mutual Exclusion)
+## One-Hot (상호 배제)
 ```systemverilog
 a_state_onehot: assert property (
     @(posedge clk) disable iff (rst)
@@ -37,7 +37,7 @@ a_state_onehot: assert property (
 );
 ```
 
-## Liveness (Request Granted)
+## 활성성 (요청이 승인됨)
 ```systemverilog
 a_req_granted: assert property (
     @(posedge clk) disable iff (rst)
@@ -45,7 +45,7 @@ a_req_granted: assert property (
 );
 ```
 
-## Reset Behavior
+## 리셋 동작
 ```systemverilog
 a_reset_outputs: assert property (
     @(posedge clk)
@@ -53,7 +53,7 @@ a_reset_outputs: assert property (
 );
 ```
 
-## FIFO Count Tracking
+## FIFO 카운트 추적
 ```systemverilog
 a_fifo_count_inc: assert property (
     @(posedge clk) disable iff (rst)

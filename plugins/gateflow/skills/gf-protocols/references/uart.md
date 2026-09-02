@@ -1,29 +1,29 @@
-# UART Protocol Reference
+# UART 프로토콜 레퍼런스
 
-## Signals
-| Signal | Direction (TX) | Description |
+## 신호
+| 신호 | 방향 (TX) | 설명 |
 |--------|---------------|-------------|
-| TX | output | Serial data output |
-| RX | input | Serial data input |
+| TX | output | 시리얼 데이터 출력 |
+| RX | input | 시리얼 데이터 입력 |
 
-## Frame Format (8N1)
+## 프레임 형식 (8N1)
 ```
 IDLE ──┐   ┌─D0─D1─D2─D3─D4─D5─D6─D7─┐   ┌── IDLE
        └───┘ START                      └───┘ STOP
 ```
-- Start bit: 1 low bit
-- Data: 8 bits, LSB first
-- Parity: none (8N1)
-- Stop bit: 1 high bit
+- 시작 비트: 1 low 비트
+- 데이터: 8비트, LSB 먼저
+- 패리티: 없음 (8N1)
+- 정지 비트: 1 high 비트
 
-## Baud Rate
-Clock divider = CLK_FREQ / BAUD_RATE
+## 보드레이트
+클럭 분주 = CLK_FREQ / BAUD_RATE
 
-| Baud Rate | Divider (100MHz) |
+| 보드레이트 | 분주 (100MHz) |
 |-----------|-----------------|
 | 9600 | 10417 |
 | 115200 | 868 |
 | 921600 | 109 |
 
-## Receiver Oversampling
-Sample at 16x baud rate, check middle of each bit for noise immunity.
+## 수신기 오버샘플링
+보드레이트의 16배로 샘플링하고, 노이즈 내성을 위해 각 비트의 중간을 확인.
