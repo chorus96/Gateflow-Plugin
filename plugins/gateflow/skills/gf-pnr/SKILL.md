@@ -12,25 +12,25 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GF-PNR -- Place & Route Skill
+# GF-PNR -- Place & Route 스킬
 
-## Supported Targets
+## 지원 타겟
 
-| FPGA Family | Tool | Command |
+| FPGA 패밀리 | 도구 | 커맨드 |
 |------------|------|---------|
 | Lattice iCE40 | nextpnr-ice40 | `nextpnr-ice40 --up5k --package sg48 --json synth.json --pcf constraints.pcf --asc output.asc` |
 | Lattice ECP5 | nextpnr-ecp5 | `nextpnr-ecp5 --85k --package CABGA381 --json synth.json --lpf constraints.lpf --textcfg output.config` |
 | Gowin | nextpnr-gowin | `nextpnr-gowin --device GW1NR-LV9QN88PC6/I5 --json synth.json --cst constraints.cst` |
 
-**NOT Supported**: Xilinx (use Vivado), Intel (use Quartus). For these, GateFlow generates TCL scripts instead.
+**미지원**: Xilinx (Vivado 사용), Intel (Quartus 사용). 이 경우 GateFlow는 대신 TCL 스크립트를 생성합니다.
 
-## Tool Detection
+## 도구 감지
 
 ```bash
 which nextpnr-ice40 || which nextpnr-ecp5 || which nextpnr-gowin
 ```
 
-If not found:
+찾을 수 없으면:
 ```
 ---GATEFLOW-RESULT---
 STATUS: ERROR
@@ -40,23 +40,23 @@ DETAILS: nextpnr not installed. Install for place & route.
 ---END-GATEFLOW-RESULT---
 ```
 
-## Workflow
+## 워크플로
 
-1. Check project target (board.yaml -> pnr_target)
-2. Verify synthesis output exists (synth.json from Yosys)
-3. Verify constraint file exists
-4. Run nextpnr with correct flags
-5. Report timing and utilization
-6. Generate bitstream if P&R succeeds
+1. 프로젝트 타겟 확인 (board.yaml -> pnr_target)
+2. 합성 출력이 존재하는지 검증 (Yosys의 synth.json)
+3. 제약 파일이 존재하는지 검증
+4. 올바른 플래그로 nextpnr 실행
+5. 타이밍과 사용률 보고
+6. P&R 성공 시 비트스트림 생성
 
-## Bitstream Generation
+## 비트스트림 생성
 
-After P&R:
+P&R 후:
 - iCE40: `icepack output.asc output.bin`
 - ECP5: `ecppack output.config output.bit`
-- Gowin: built into nextpnr-gowin output
+- Gowin: nextpnr-gowin 출력에 내장됨
 
-## Result Format
+## 결과 형식
 
 ```
 ---GATEFLOW-RESULT---
@@ -72,74 +72,74 @@ DETAILS: [summary or timing violations]
 ---END-GATEFLOW-RESULT---
 ```
 
-## Common Flags
+## 흔한 플래그
 
-| Flag | Purpose |
+| 플래그 | 목적 |
 |---|---|
-| `--freq <mhz>` | Target frequency |
-| `--seed <n>` / `-r` | RNG seed / randomize |
-| `--opt-timing` | Post-placement timing opt |
-| `--report <file>` | JSON timing/utilization |
-| `--timing-allow-fail` | Proceed despite violations |
-| `--router2-heatmap <prefix>` | Congestion heatmaps |
-| `--placer heap` | Heap placer (default) |
+| `--freq <mhz>` | 목표 주파수 |
+| `--seed <n>` / `-r` | RNG 시드 / 무작위화 |
+| `--opt-timing` | 배치 후 타이밍 최적화 |
+| `--report <file>` | JSON 타이밍/사용률 |
+| `--timing-allow-fail` | 위반에도 진행 |
+| `--router2-heatmap <prefix>` | 혼잡 히트맵 |
+| `--placer heap` | Heap 배치기 (기본) |
 
-## Target Details
+## 타겟 세부 사항
 
 ### iCE40
-Devices: `--lp1k`, `--lp8k`, `--hx1k`, `--hx8k`, `--up5k`
-Output: `--asc <file>` | Constraints: `--pcf <file>`
-Full pipeline: `yosys -p "synth_ice40 -json out.json" design.v && nextpnr-ice40 --hx8k --package ct256 --json out.json --pcf pins.pcf --asc out.asc && icepack out.asc out.bin`
+디바이스: `--lp1k`, `--lp8k`, `--hx1k`, `--hx8k`, `--up5k`
+출력: `--asc <file>` | 제약: `--pcf <file>`
+전체 파이프라인: `yosys -p "synth_ice40 -json out.json" design.v && nextpnr-ice40 --hx8k --package ct256 --json out.json --pcf pins.pcf --asc out.asc && icepack out.asc out.bin`
 
 ### ECP5
-Devices: `--12k`, `--25k`, `--45k`, `--85k`
-Output: `--textcfg <file>` | Constraints: `--lpf <file>`, `--sdc <file>`
-Full pipeline: `yosys -p "synth_ecp5 -json out.json" design.v && nextpnr-ecp5 --25k --package CABGA256 --json out.json --lpf pins.lpf --textcfg out.config && ecppack out.config out.bit`
+디바이스: `--12k`, `--25k`, `--45k`, `--85k`
+출력: `--textcfg <file>` | 제약: `--lpf <file>`, `--sdc <file>`
+전체 파이프라인: `yosys -p "synth_ecp5 -json out.json" design.v && nextpnr-ecp5 --25k --package CABGA256 --json out.json --lpf pins.lpf --textcfg out.config && ecppack out.config out.bit`
 
 ### Gowin
-Device: `--device <part>` (e.g., `GW1NR-LV9QN88PC6/I5`)
-Family: `--vopt family=<fam>` (for C-silicon, e.g., `GW1N-9C`)
-Constraints: `--vopt cst=<file>` (mandatory)
-Full pipeline: `yosys -p "synth_gowin -json out.json" design.v && nextpnr-himbaechel --device GW1NR-LV9QN88PC6/I5 --vopt family=GW1N-9C --vopt cst=pins.cst --json out.json --write routed.json && gowin_pack -d GW1N-9C -o out.fs routed.json`
+디바이스: `--device <part>` (예: `GW1NR-LV9QN88PC6/I5`)
+패밀리: `--vopt family=<fam>` (C-silicon의 경우, 예: `GW1N-9C`)
+제약: `--vopt cst=<file>` (필수)
+전체 파이프라인: `yosys -p "synth_gowin -json out.json" design.v && nextpnr-himbaechel --device GW1NR-LV9QN88PC6/I5 --vopt family=GW1N-9C --vopt cst=pins.cst --json out.json --write routed.json && gowin_pack -d GW1N-9C -o out.fs routed.json`
 
-## Timing Analysis
+## 타이밍 분석
 
 ### Fmax
-- Maximum frequency from worst-case critical path
-- Use `--freq 0` for auto-determine, `--freq N` for target
+- 최악의 critical path에서 나온 최대 주파수
+- 자동 결정은 `--freq 0`, 목표는 `--freq N`
 
 ### Slack
-- Positive = timing met | Negative = violation | Zero = exact
-- Critical path = path with worst slack
+- 양수 = 타이밍 충족 | 음수 = 위반 | 0 = 정확
+- Critical path = slack이 가장 나쁜 경로
 
-### Improving Fmax
-1. Pipeline long combinational paths
-2. `--opt-timing` for post-placement optimization
-3. Different seeds (`-r`) for better placement
-4. Increase `--placer-heap-timingweight` (20-50)
-5. `--router2-tmg-ripup` for timing-driven rerouting
-6. Yosys: `-nowidelut` for ECP5 (big Fmax improvement)
+### Fmax 개선
+1. 긴 조합 논리 경로를 파이프라인화
+2. 배치 후 최적화를 위한 `--opt-timing`
+3. 더 나은 배치를 위한 다른 시드 (`-r`)
+4. `--placer-heap-timingweight` 증가 (20-50)
+5. 타이밍 주도 재라우팅을 위한 `--router2-tmg-ripup`
+6. Yosys: ECP5용 `-nowidelut` (큰 Fmax 개선)
 
-## Utilization Thresholds
+## 사용률 임계값
 
-| Usage | Status |
+| 사용률 | 상태 |
 |---|---|
-| < 50% | Comfortable |
-| 50-70% | Normal |
-| 70-80% | Tight |
-| > 80% | Warning: congestion likely |
-| > 95% | May fail to route |
+| < 50% | 여유로움 |
+| 50-70% | 보통 |
+| 70-80% | 빡빡함 |
+| > 80% | 경고: 혼잡 가능성 |
+| > 95% | 라우팅 실패 가능 |
 
-## Common Failures
+## 흔한 실패
 
-| Failure | Fix |
+| 실패 | 수정 |
 |---|---|
-| Routing congestion | Larger device, optimize synth, different seed |
-| Timing violations | Pipeline, `--opt-timing`, different seed |
-| Placement failure | Check constraints, try `--placer sa` |
-| Combinatorial loops | Break with register, or `--ignore-loops` |
+| 라우팅 혼잡 | 더 큰 디바이스, 합성 최적화, 다른 시드 |
+| 타이밍 위반 | 파이프라인, `--opt-timing`, 다른 시드 |
+| 배치 실패 | 제약 확인, `--placer sa` 시도 |
+| 조합 논리 루프 | 레지스터로 끊기, 또는 `--ignore-loops` |
 
-## Constraint Formats
+## 제약 형식
 
 ### PCF (iCE40)
 ```

@@ -15,19 +15,19 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GF-Cocotb -- Python Testbench Generation
+# GF-Cocotb -- Python 테스트벤치 생성
 
-Generate Cocotb testbenches as an alternative to SystemVerilog TBs.
+SystemVerilog TB의 대안으로 Cocotb 테스트벤치를 생성합니다.
 
-## Tool Detection
+## 도구 감지
 
 ```bash
 python3 -c "import cocotb" 2>/dev/null
 ```
 
-If not found, return GATEFLOW-RESULT ERROR with: `pip install cocotb`
+찾을 수 없으면, `pip install cocotb`와 함께 GATEFLOW-RESULT ERROR를 반환.
 
-## Test Template
+## 테스트 템플릿
 
 ```python
 import cocotb
@@ -46,15 +46,15 @@ async def test_reset(dut):
     assert dut.count.value == 0
 ```
 
-## When to Use
+## 사용 시점
 
-| Cocotb | SV Testbench |
+| Cocotb | SV 테스트벤치 |
 |--------|-------------|
-| Python (lower barrier) | SystemVerilog |
-| Complex stimulus (Python libs) | Protocol + coverage |
-| Slower (co-simulation) | Faster (native) |
+| Python (낮은 진입 장벽) | SystemVerilog |
+| 복잡한 자극 (Python 라이브러리) | 프로토콜 + 커버리지 |
+| 느림 (공동 시뮬레이션) | 빠름 (네이티브) |
 
-## Makefile Template
+## Makefile 템플릿
 
 ```makefile
 SIM ?= icarus
@@ -73,9 +73,9 @@ SIM_BUILD = sim_build/$(SIM)
 include $(shell cocotb-config --makefiles)/Makefile.sim
 ```
 
-## Test Templates
+## 테스트 템플릿
 
-### FIFO Test
+### FIFO 테스트
 ```python
 import cocotb
 from cocotb.clock import Clock
@@ -117,7 +117,7 @@ async def test_fifo_write_read(dut):
     assert read == written
 ```
 
-### Valid/Ready Handshake Test
+### Valid/Ready 핸드셰이크 테스트
 ```python
 @cocotb.test()
 async def test_handshake(dut):
@@ -145,7 +145,7 @@ async def test_handshake(dut):
     await ClockCycles(dut.clk, 200)
 ```
 
-### FSM Test
+### FSM 테스트
 ```python
 from enum import IntEnum
 
@@ -167,7 +167,7 @@ async def test_fsm(dut):
     assert int(dut.state.value) == State.ACTIVE
 ```
 
-## Python Runner (pytest)
+## Python 러너 (pytest)
 
 ```python
 import os
@@ -187,9 +187,9 @@ def test_module():
     )
 ```
 
-## cocotbext Protocol Libraries
+## cocotbext 프로토콜 라이브러리
 
-| Package | Protocol | Install |
+| 패키지 | 프로토콜 | 설치 |
 |---|---|---|
 | `cocotbext-axi` | AXI4, AXI-Lite, AXI-Stream | `pip install cocotbext-axi` |
 | `cocotbext-wishbone` | Wishbone B4 | `pip install cocotbext-wishbone` |
@@ -198,7 +198,7 @@ def test_module():
 | `cocotbext-eth` | Ethernet | `pip install cocotbext-eth` |
 | `cocotbext-pcie` | PCIe | `pip install cocotbext-pcie` |
 
-### AXI-Lite Example
+### AXI-Lite 예시
 ```python
 from cocotbext.axi import AxiLiteBus, AxiLiteMaster
 
@@ -207,19 +207,19 @@ await axil.write(0x0000, b'\x42\x00\x00\x00')
 data = await axil.read(0x0000, 4)
 ```
 
-## Decision Matrix: Cocotb vs SV TB
+## 결정 매트릭스: Cocotb vs SV TB
 
-| Factor | Use Cocotb | Use SV/UVM |
+| 요인 | Cocotb 사용 | SV/UVM 사용 |
 |---|---|---|
-| Team knows Python | Yes | - |
-| FPGA project | Yes | - |
-| Large ASIC with UVM infra | - | Yes |
-| Need open-source CI | Yes | - |
-| Standard protocols (AXI, SPI) | Yes (cocotbext) | - |
-| Deep constrained random | - | Yes |
-| Rapid iteration | Yes | - |
+| 팀이 Python을 앎 | 예 | - |
+| FPGA 프로젝트 | 예 | - |
+| UVM 인프라가 있는 대형 ASIC | - | 예 |
+| 오픈소스 CI 필요 | 예 | - |
+| 표준 프로토콜 (AXI, SPI) | 예 (cocotbext) | - |
+| 깊은 제약 무작위 | - | 예 |
+| 빠른 반복 | 예 | - |
 
-## GATEFLOW-RESULT Integration
+## GATEFLOW-RESULT 통합
 
 ```
 ---GATEFLOW-RESULT---
