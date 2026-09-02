@@ -10,9 +10,9 @@ allowed-tools:
   - Grep
 ---
 
-# GateFlow Formal Verification Command
+# GateFlow Formal Verification 커맨드
 
-## Usage
+## 사용법
 
 ```
 /gf-formal rtl/fifo.sv                            # Auto-generate and prove properties
@@ -20,13 +20,13 @@ allowed-tools:
 /gf-formal formal/fifo.sby                          # Run existing .sby config
 ```
 
-## Execution
+## 실행
 
-1. If argument is `.sby` file: run directly with `sby -f <file>.sby`
-2. If argument is `.sv` file:
-   a. Read the module
-   b. Generate SVA properties (or use --property hint)
-   c. Create `.sby` configuration
-   d. Run SymbiYosys
-   e. Report with 3-layer error translation
-3. If no arguments: find `.sby` configs in `formal/` and run all
+1. 인자가 `.sby` 파일이면: `sby -f <file>.sby`로 직접 실행
+2. 인자가 `.sv` 파일이면:
+   a. 모듈을 읽음
+   b. SVA 프로퍼티를 생성 (또는 --property 힌트 사용)
+   c. `.sby` 구성을 생성
+   d. SymbiYosys 실행
+   e. 3계층 오류 번역과 함께 보고
+3. 인자가 없으면: `formal/`에서 `.sby` 구성을 찾아 전부 실행

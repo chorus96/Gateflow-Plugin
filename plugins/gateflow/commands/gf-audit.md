@@ -12,11 +12,11 @@ allowed-tools:
   - Task
 ---
 
-# GateFlow Plugin Audit Command
+# GateFlow Plugin Audit 커맨드
 
-Scan the entire plugin for gaps, inconsistencies, and missing content.
+플러그인 전체를 스캔해 빈틈, 불일치, 누락된 콘텐츠를 찾습니다.
 
-## Usage
+## 사용법
 
 ```
 /gf-audit                    # Full audit, report only
@@ -26,29 +26,29 @@ Scan the entire plugin for gaps, inconsistencies, and missing content.
 /gf-audit --category docs    # Audit only documentation
 ```
 
-## Execution
+## 실행
 
-### Report Mode (default)
-1. Spawn gf-auditor agent to scan everything
-2. Present prioritized report (Critical → Low)
-3. Ask user which issues to fix
+### 보고 모드 (기본)
+1. gf-auditor 에이전트를 스폰해 모든 것을 스캔
+2. 우선순위가 매겨진 보고서 제시 (Critical → Low)
+3. 어느 문제를 수정할지 사용자에게 질문
 
-### Fix Mode (--fix)
-1. Spawn gf-auditor agent to scan
-2. Spawn gf-pluginfixer agent with findings
-3. Fix all issues automatically
-4. Show summary of changes
-5. Commit fixes
+### 수정 모드 (--fix)
+1. gf-auditor 에이전트를 스폰해 스캔
+2. 결과와 함께 gf-pluginfixer 에이전트를 스폰
+3. 모든 문제를 자동으로 수정
+4. 변경 요약 표시
+5. 수정 커밋
 
-### Category Mode
-Focus audit on one area:
-- `agents` — Check agent files, routing, cross-references
-- `skills` — Check skill files, triggers, return formats
-- `ip` — Check IP blocks (RTL, TB, formal, metadata, docs)
-- `boards` — Check board database (yaml, constraints, completeness)
-- `docs` — Check README, releases, CLAUDE.md, AGENTS.md consistency
+### 카테고리 모드
+한 영역에 감사를 집중:
+- `agents` — 에이전트 파일, 라우팅, 상호 참조 확인
+- `skills` — 스킬 파일, 트리거, 반환 형식 확인
+- `ip` — IP 블록 확인 (RTL, TB, formal, 메타데이터, 문서)
+- `boards` — 보드 데이터베이스 확인 (yaml, 제약, 완전성)
+- `docs` — README, releases, CLAUDE.md, AGENTS.md 일관성 확인
 
-## Output
+## 출력
 
 ```
 GateFlow Plugin Audit Results

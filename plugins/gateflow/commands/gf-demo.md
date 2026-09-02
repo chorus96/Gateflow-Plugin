@@ -10,27 +10,27 @@ allowed-tools:
 
 # GateFlow Demo
 
-Generate a complete working project to showcase GateFlow's capabilities. Zero user input needed.
+GateFlow의 기능을 보여주기 위해 완전히 동작하는 프로젝트를 생성합니다. 사용자 입력이 전혀 필요 없습니다.
 
-## What This Does
+## 이것이 하는 일
 
-1. Creates a parameterized 4-bit counter with enable and reset
-2. Creates a self-checking testbench
-3. Runs Verilator lint (if available)
-4. Runs simulation (if Verilator available)
-5. Reports results
+1. enable과 reset이 있는 파라미터화된 4비트 카운터 생성
+2. 자가 검사 테스트벤치 생성
+3. Verilator lint 실행 (사용 가능한 경우)
+4. 시뮬레이션 실행 (Verilator 사용 가능한 경우)
+5. 결과 보고
 
-## Execution
+## 실행
 
-### Step 1: Create project structure
+### 1단계: 프로젝트 구조 생성
 
 ```bash
 mkdir -p rtl tb
 ```
 
-### Step 2: Generate counter module
+### 2단계: 카운터 모듈 생성
 
-Write to `rtl/counter.sv`:
+`rtl/counter.sv`에 작성:
 
 ```systemverilog
 module counter #(
@@ -52,9 +52,9 @@ module counter #(
 endmodule
 ```
 
-### Step 3: Generate self-checking testbench
+### 3단계: 자가 검사 테스트벤치 생성
 
-Write to `tb/tb_counter.sv`:
+`tb/tb_counter.sv`에 작성:
 
 ```systemverilog
 module tb_counter;
@@ -134,7 +134,7 @@ module tb_counter;
 endmodule
 ```
 
-### Step 4: Run lint (if Verilator available)
+### 4단계: lint 실행 (Verilator 사용 가능한 경우)
 
 ```bash
 if command -v verilator &>/dev/null; then
@@ -144,9 +144,9 @@ else
 fi
 ```
 
-Report lint results.
+lint 결과를 보고.
 
-### Step 5: Run simulation (if Verilator available)
+### 5단계: 시뮬레이션 실행 (Verilator 사용 가능한 경우)
 
 ```bash
 if command -v verilator &>/dev/null; then
@@ -159,9 +159,9 @@ else
 fi
 ```
 
-### Step 6: Report results
+### 6단계: 결과 보고
 
-Display a summary:
+요약을 표시:
 
 ```
 GateFlow Demo Complete!

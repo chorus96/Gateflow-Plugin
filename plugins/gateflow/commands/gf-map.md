@@ -10,34 +10,34 @@ allowed-tools:
   - Grep
 ---
 
-# GateFlow Map Command
+# GateFlow Map 커맨드
 
-Generate a comprehensive map of a SystemVerilog codebase with parallel analysis agents.
+병렬 분석 에이전트로 SystemVerilog 코드베이스의 포괄적인 맵을 생성합니다.
 
-## Instructions
+## 지침
 
-1. Find all SystemVerilog files in the project:
+1. 프로젝트의 모든 SystemVerilog 파일을 찾음:
    ```
    Use Glob to find **/*.sv and **/*.svh files
    ```
 
-2. Create the output directory:
+2. 출력 디렉터리 생성:
    ```bash
    mkdir -p .gateflow/map/modules
    ```
 
-3. Spawn the `gf-architect` agent using the Task tool:
-   - Pass the list of discovered files
-   - The agent will spawn 10 sub-agents in parallel for analysis
-   - Results are written to `.gateflow/map/`
+3. Task 도구를 사용해 `gf-architect` 에이전트를 스폰:
+   - 발견된 파일 목록을 전달
+   - 에이전트가 분석을 위해 10개의 서브 에이전트를 병렬로 스폰
+   - 결과는 `.gateflow/map/`에 작성됨
 
-4. Report completion with summary:
-   - Number of modules found
-   - Number of packages
-   - Top module(s) identified
-   - Any warnings (missing files, parse errors)
+4. 요약과 함께 완료 보고:
+   - 발견된 모듈 수
+   - 패키지 수
+   - 식별된 톱 모듈
+   - 경고 (누락 파일, 파싱 오류)
 
-## Output Structure
+## 출력 구조
 
 ```
 .gateflow/map/
@@ -60,22 +60,22 @@ Generate a comprehensive map of a SystemVerilog codebase with parallel analysis 
     └── <module_name>.md
 ```
 
-## Analysis Method
+## 분석 방법
 
-Uses hybrid approach:
-1. **Token budgeting** - Count tokens per file, group into ~150k chunks
-2. **Parallel agents** - Spawn 2-10 agents based on codebase size
-3. **Regex parsing** - Fast structured extraction of ports, instances, types
-4. **Merge** - Combine agent context + regex structure
+하이브리드 접근법 사용:
+1. **토큰 예산 배정** - 파일당 토큰을 세어 ~150k 청크로 그룹화
+2. **병렬 에이전트** - 코드베이스 크기에 따라 2-10개 에이전트를 스폰
+3. **정규식 파싱** - 포트, 인스턴스, 타입의 빠른 구조적 추출
+4. **병합** - 에이전트 컨텍스트 + 정규식 구조를 결합
 
-## Incremental Updates
+## 증분 갱신
 
-On subsequent runs:
-- Detects existing `.gateflow/map/CODEBASE.md`
-- Checks git history for changes since last scan
-- Only re-analyzes modified files
-- Merges updates with existing map
-- Saves commit hash for next incremental run
+이후 실행 시:
+- 기존 `.gateflow/map/CODEBASE.md`를 감지
+- 마지막 스캔 이후 변경 사항을 git 이력에서 확인
+- 수정된 파일만 재분석
+- 갱신을 기존 맵과 병합
+- 다음 증분 실행을 위해 커밋 해시를 저장
 
-First run: Full scan (may use significant tokens for large codebases)
-Later runs: Fast incremental update (only changed files)
+첫 실행: 전체 스캔 (큰 코드베이스는 상당한 토큰을 사용할 수 있음)
+이후 실행: 빠른 증분 갱신 (변경된 파일만)

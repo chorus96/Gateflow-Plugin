@@ -8,9 +8,9 @@ allowed-tools:
   - Glob
 ---
 
-# GateFlow Boards Command
+# GateFlow Boards 커맨드
 
-## Usage
+## 사용법
 
 ```
 /gf-boards                        # List all supported boards
@@ -18,13 +18,13 @@ allowed-tools:
 /gf-boards arty-a7-35t pmod-ja    # Show specific connector pins
 ```
 
-## Execution
+## 실행
 
-1. **No arguments**: List all directories in `${CLAUDE_PLUGIN_ROOT}/boards/`, read each `board.yaml`, display name + FPGA + clock
-2. **Board name**: Read `boards/<name>/board.yaml`, display full details including clock, connectors, LEDs, buttons
-3. **Board + connector**: Show pin-level detail for that connector with I/O standards
+1. **인자 없음**: `${CLAUDE_PLUGIN_ROOT}/boards/`의 모든 디렉터리를 나열하고, 각 `board.yaml`을 읽어 이름 + FPGA + 클럭 표시
+2. **보드 이름**: `boards/<name>/board.yaml`을 읽어 클럭, 커넥터, LED, 버튼을 포함한 전체 세부 정보 표시
+3. **보드 + 커넥터**: 해당 커넥터의 I/O 표준과 함께 핀 수준 세부 정보 표시
 
-## Output Format
+## 출력 형식
 
 ```
 Arty A7-35T (Digilent)

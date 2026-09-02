@@ -11,37 +11,37 @@ allowed-tools:
   - Grep
 ---
 
-# GateFlow Release Command
+# GateFlow Release 커맨드
 
-Prepare and validate a GateFlow plugin release.
+GateFlow 플러그인 릴리스를 준비하고 검증합니다.
 
-## Usage
+## 사용법
 
 ```
 /gf-release --check-only
 /gf-release --version 2.5.0
 ```
 
-## Workflow
+## 워크플로
 
-1. Invoke the `gf-release` skill.
-2. Run the deterministic validator:
+1. `gf-release` 스킬을 호출.
+2. 결정적 검증기를 실행:
 
 ```bash
 python3 tools/validate_gateflow.py --version <version>
 ```
 
-3. If validation fails, fix the reported package wiring issues before tagging.
-4. Confirm `plugins/gateflow/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`,
-   `README.md`, `plugins/gateflow/README.md`, `docs/gateflow.index`, and `releases.md`
-   all describe the same version and component counts.
-5. For a real release, create a git tag and GitHub release only after validation passes.
+3. 검증이 실패하면, 태깅 전에 보고된 패키지 연결 문제를 수정.
+4. `plugins/gateflow/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`,
+   `README.md`, `plugins/gateflow/README.md`, `docs/gateflow.index`, `releases.md`이
+   모두 동일한 버전과 구성 요소 개수를 기술하는지 확인.
+5. 실제 릴리스의 경우, 검증이 통과한 후에만 git 태그와 GitHub 릴리스를 생성.
 
-## Output
+## 출력
 
-Report:
-- version being prepared
-- component inventory
-- validation failures, if any
-- files that must change before release
-- final tag command when ready
+보고:
+- 준비 중인 버전
+- 구성 요소 인벤토리
+- 검증 실패(있는 경우)
+- 릴리스 전에 변경해야 하는 파일
+- 준비되면 최종 태그 커맨드

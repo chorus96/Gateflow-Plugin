@@ -11,11 +11,11 @@ allowed-tools:
   - WebSearch
 ---
 
-# GateFlow Pin Mapping Command
+# GateFlow Pin Mapping 커맨드
 
-Generate FPGA constraint files with correct pin assignments.
+올바른 핀 할당이 있는 FPGA 제약 파일을 생성합니다.
 
-## Usage
+## 사용법
 
 ```
 /gf-pinmap arty-a7-35t                          # Full constraints for board
@@ -23,12 +23,12 @@ Generate FPGA constraint files with correct pin assignments.
 /gf-pinmap icebreaker uart                       # Map UART on iCEBreaker
 ```
 
-## Output
+## 출력
 
-Generates constraint file in correct format:
-- Xilinx: `.xdc` with PACKAGE_PIN + IOSTANDARD
-- Lattice iCE40: `.pcf` with set_io
-- Gowin: `.cst` with IO_LOC
-- Lattice ECP5: `.lpf` with LOCATE + IOBUF
+올바른 형식으로 제약 파일을 생성:
+- Xilinx: PACKAGE_PIN + IOSTANDARD가 있는 `.xdc`
+- Lattice iCE40: set_io가 있는 `.pcf`
+- Gowin: IO_LOC가 있는 `.cst`
+- Lattice ECP5: LOCATE + IOBUF가 있는 `.lpf`
 
-Safety: curated database first, web search requires user confirmation.
+안전: 선별 데이터베이스 우선, 웹 검색은 사용자 확인이 필요합니다.

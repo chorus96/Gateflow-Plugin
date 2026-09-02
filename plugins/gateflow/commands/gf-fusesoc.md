@@ -9,19 +9,19 @@ allowed-tools:
   - Glob
 ---
 
-# GateFlow FuseSoC Command
+# GateFlow FuseSoC 커맨드
 
-Generate a FuseSoC `.core` file from the current project.
+현재 프로젝트로부터 FuseSoC `.core` 파일을 생성합니다.
 
-## Usage
+## 사용법
 
 ```
 /gf-fusesoc                   # Auto-detect and generate
 /gf-fusesoc --target synth    # Generate with synthesis target
 ```
 
-## Output
+## 출력
 
-- `<project>.core` — FuseSoC core file with filesets, targets, tool configs
+- `<project>.core` — filesets, targets, 도구 구성이 포함된 FuseSoC core 파일
 
-Scans `rtl/`, `tb/`, constraints, and `.gateflow/project.yaml`.
+`rtl/`, `tb/`, 제약, `.gateflow/project.yaml`을 스캔합니다.

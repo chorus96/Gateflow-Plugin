@@ -12,11 +12,11 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GateFlow IP Detection Command
+# GateFlow IP Detection 커맨드
 
-Scan your hardware codebase for missing modules, IP opportunities, and CDC violations.
+하드웨어 코드베이스에서 누락된 모듈, IP 기회, CDC 위반을 스캔합니다.
 
-## Usage
+## 사용법
 
 ```
 /gf-detect                    # Full scan of rtl/ directory
@@ -25,27 +25,27 @@ Scan your hardware codebase for missing modules, IP opportunities, and CDC viola
 /gf-detect src/               # Scan specific directory
 ```
 
-## What It Finds
+## 찾아내는 것
 
-1. **Missing modules** — Instantiated but never defined
-2. **Stub modules** — Defined but empty (TODO/FIXME markers)
-3. **IP opportunities** — Ad-hoc code that could use verified IP blocks
-4. **CDC violations** — Clock domain crossings without synchronizers
-5. **Vendor IP** — Vendor primitives that have open-source alternatives
+1. **누락 모듈** — 인스턴스화되었으나 정의되지 않음
+2. **스텁 모듈** — 정의되었으나 비어 있음 (TODO/FIXME 마커)
+3. **IP 기회** — 검증된 IP 블록을 쓸 수 있는 임시 코드
+4. **CDC 위반** — 동기화기가 없는 클럭 도메인 크로싱
+5. **벤더 IP** — 오픈소스 대안이 있는 벤더 프리미티브
 
-## Output
+## 출력
 
-Shows a report with:
-- Module dependency graph
-- Missing implementations with suggested IP blocks
-- CDC issues ranked by severity
-- Auto-fill options (if --auto-fill flag)
+다음을 포함한 보고서를 표시:
+- 모듈 의존성 그래프
+- 제안 IP 블록과 함께 누락 구현
+- 심각도로 순위가 매겨진 CDC 문제
+- 자동 채움 옵션 (--auto-fill 플래그가 있으면)
 
-## Auto-Fill Mode
+## 자동 채움 모드
 
-With `--auto-fill`, after showing the report:
-1. Presents each gap with a suggested action
-2. Asks user to approve/skip each one
-3. Dispatches agents to implement approved actions
-4. Runs lint on all new code
-5. Reports final status
+`--auto-fill`을 쓰면, 보고서 표시 후:
+1. 각 빈틈을 제안 조치와 함께 제시
+2. 각각을 승인/건너뛰기하도록 사용자에게 요청
+3. 승인된 조치를 구현하도록 에이전트를 파견
+4. 모든 새 코드에 lint 실행
+5. 최종 상태 보고

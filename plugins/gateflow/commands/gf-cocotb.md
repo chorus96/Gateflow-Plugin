@@ -9,20 +9,20 @@ allowed-tools:
   - Glob
 ---
 
-# GateFlow Cocotb Command
+# GateFlow Cocotb 커맨드
 
-Generate Python-based testbenches using Cocotb.
+Cocotb를 사용해 Python 기반 테스트벤치를 생성합니다.
 
-## Usage
+## 사용법
 
 ```
 /gf-cocotb rtl/counter.sv                      # Auto-generate tests
 /gf-cocotb rtl/fifo.sv "test full and empty"    # Specific test focus
 ```
 
-## Output
+## 출력
 
-- `test_<module>.py` — Cocotb test file
-- `Makefile` — Cocotb simulation makefile
+- `test_<module>.py` — Cocotb 테스트 파일
+- `Makefile` — Cocotb 시뮬레이션 makefile
 
-Requires: `pip install cocotb`
+요구 사항: `pip install cocotb`

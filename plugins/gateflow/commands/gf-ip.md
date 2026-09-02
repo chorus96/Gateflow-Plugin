@@ -9,9 +9,9 @@ allowed-tools:
   - Glob
 ---
 
-# GateFlow IP Library Command
+# GateFlow IP Library 커맨드
 
-## Usage
+## 사용법
 
 ```
 /gf-ip list                  # Show all available IP blocks
@@ -19,20 +19,20 @@ allowed-tools:
 /gf-ip add fifo_sync         # Install block into current project
 ```
 
-## Execution
+## 실행
 
 ### list
-Read all `${CLAUDE_PLUGIN_ROOT}/ip/*/block.yaml` files.
-Display: name, description, verification status.
+모든 `${CLAUDE_PLUGIN_ROOT}/ip/*/block.yaml` 파일을 읽음.
+표시: 이름, 설명, 검증 상태.
 
 ### info <block>
-Read `${CLAUDE_PLUGIN_ROOT}/ip/<block>/block.yaml`.
-Display: description, parameters, ports, formal proofs, dependencies.
+`${CLAUDE_PLUGIN_ROOT}/ip/<block>/block.yaml`을 읽음.
+표시: 설명, 파라미터, 포트, formal 증명, 의존성.
 
 ### add <block>
-1. Read block.yaml for metadata
-2. Copy `rtl/*.sv` to project `rtl/` directory
-3. Copy `tb/*.sv` to project `tb/` directory
-4. Copy `formal/*` to project `formal/` directory
-5. Update `.gateflow/project.yaml` — add to `ip_blocks` list
-6. Report what was installed and how to instantiate
+1. 메타데이터를 위해 block.yaml을 읽음
+2. `rtl/*.sv`를 프로젝트 `rtl/` 디렉터리로 복사
+3. `tb/*.sv`를 프로젝트 `tb/` 디렉터리로 복사
+4. `formal/*`를 프로젝트 `formal/` 디렉터리로 복사
+5. `.gateflow/project.yaml` 갱신 — `ip_blocks` 목록에 추가
+6. 무엇이 설치되었고 어떻게 인스턴스화하는지 보고

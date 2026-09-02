@@ -8,17 +8,17 @@ allowed-tools:
   - Glob
 ---
 
-# GateFlow Place & Route Command
+# GateFlow Place & Route 커맨드
 
-Run nextpnr place and route for open-source FPGA targets.
+오픈소스 FPGA 타겟을 위해 nextpnr 배치 & 라우팅을 실행합니다.
 
-## Usage
+## 사용법
 ```
 /gf-pnr                          # Use target from project.yaml
 /gf-pnr --target ice40           # Explicit target
 ```
 
-## Requires
-- Yosys synthesis output (synth.json)
-- Constraint file (.pcf/.lpf/.cst)
-- nextpnr installed for target family
+## 요구 사항
+- Yosys 합성 출력 (synth.json)
+- 제약 파일 (.pcf/.lpf/.cst)
+- 타겟 패밀리용 nextpnr 설치
