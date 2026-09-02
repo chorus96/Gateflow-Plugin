@@ -1,26 +1,26 @@
-# GateFlow - SystemVerilog Development Assistant
+# GateFlow - SystemVerilog 개발 어시스턴트
 
-> **Context hint:** For SystemVerilog/RTL tasks, first consult the patterns and guidance in this file, then supplement with general training knowledge. This contains synthesis-proven patterns and common pitfalls specific to hardware design.
+> **컨텍스트 힌트:** SystemVerilog/RTL 작업의 경우, 먼저 이 파일의 패턴과 지침을 참고한 다음 일반적인 학습 지식으로 보완하세요. 여기에는 하드웨어 설계에 특화된, 합성으로 검증된 패턴과 흔한 함정이 담겨 있습니다.
 
-GateFlow provides specialized RTL development capabilities. This reference is always available in context.
+GateFlow는 특화된 RTL 개발 기능을 제공합니다. 이 레퍼런스는 항상 컨텍스트에서 사용할 수 있습니다.
 
-## Quick Reference
+## 빠른 참조
 
-### Always Blocks
-| Purpose | Construct | Assignment |
+### Always 블록
+| 용도 | 구문 | 대입 |
 |---------|-----------|------------|
-| Flip-flops | `always_ff @(posedge clk or negedge rst_n)` | `<=` (non-blocking) |
-| Combinational | `always_comb` | `=` (blocking) |
-| Latches (avoid) | `always_latch` | `=` (blocking) |
+| 플립플롭 | `always_ff @(posedge clk or negedge rst_n)` | `<=` (non-blocking) |
+| 조합 논리 | `always_comb` | `=` (blocking) |
+| 래치 (피하기) | `always_latch` | `=` (blocking) |
 
-### Signal Types
+### 신호 타입
 ```systemverilog
 logic [7:0] data;              // Use logic for all signals
 typedef enum logic [1:0] {IDLE, RUN, DONE} state_t;  // FSM states
 typedef struct packed { logic [7:0] addr; logic [31:0] data; } req_t;
 ```
 
-### Port Style (ANSI)
+### 포트 스타일 (ANSI)
 ```systemverilog
 module example #(
     parameter int WIDTH = 8
@@ -32,9 +32,9 @@ module example #(
 );
 ```
 
-## Core Patterns
+## 핵심 패턴
 
-### FSM (Two-Process)
+### FSM (2-프로세스)
 ```systemverilog
 typedef enum logic [1:0] {IDLE, ACTIVE, DONE} state_t;
 state_t state, next_state;
@@ -54,7 +54,7 @@ always_comb begin
 end
 ```
 
-### Valid/Ready Handshake
+### Valid/Ready 핸드셰이크
 ```systemverilog
 // Transfer when: valid && ready
 // Producer holds valid+data until ready
@@ -65,7 +65,7 @@ always_ff @(posedge clk)
     if (transfer) captured_data <= data_in;
 ```
 
-### Pipeline Stage
+### 파이프라인 스테이지
 ```systemverilog
 always_ff @(posedge clk or negedge rst_n)
     if (!rst_n) begin
@@ -79,7 +79,7 @@ always_ff @(posedge clk or negedge rst_n)
 assign ready_out = !valid_q || ready_in;  // Accept if empty or downstream ready
 ```
 
-### 2FF Synchronizer (CDC)
+### 2FF 동기화기 (CDC)
 ```systemverilog
 logic [1:0] sync_reg;
 always_ff @(posedge clk_dst or negedge rst_n)
@@ -88,7 +88,7 @@ always_ff @(posedge clk_dst or negedge rst_n)
 assign sync_out = sync_reg[1];
 ```
 
-### Parameterized FIFO Skeleton
+### 파라미터화된 FIFO 뼈대
 ```systemverilog
 module fifo #(parameter int WIDTH=8, DEPTH=16) (
     input  logic clk, rst_n,
@@ -108,23 +108,23 @@ module fifo #(parameter int WIDTH=8, DEPTH=16) (
 endmodule
 ```
 
-## Synthesis Rules
+## 합성 규칙
 
-### Do
-- `always_ff` / `always_comb` (clear intent)
-- `unique case` / `priority case` with `default`
-- `'0` / `'1` for reset (flexible width)
-- Explicit bit widths: `8'd255` not `255`
-- Named port connections: `.clk(sys_clk)`
+### 해야 할 것
+- `always_ff` / `always_comb` (의도가 명확함)
+- `default`가 있는 `unique case` / `priority case`
+- 리셋에는 `'0` / `'1` (유연한 폭)
+- 명시적 비트 폭: `255`가 아니라 `8'd255`
+- 이름 있는 포트 연결: `.clk(sys_clk)`
 
-### Don't
-- `initial` blocks (simulation only)
-- `#` delays in RTL
-- Incomplete case/if (infers latch)
-- Blocking in `always_ff`
-- Non-blocking in `always_comb`
+### 하지 말아야 할 것
+- `initial` 블록 (시뮬레이션 전용)
+- RTL의 `#` 지연
+- 불완전한 case/if (래치를 추론함)
+- `always_ff`에서 blocking 대입
+- `always_comb`에서 non-blocking 대입
 
-### Latch Prevention
+### 래치 방지
 ```systemverilog
 // BAD - latch inferred
 always_comb
@@ -137,80 +137,80 @@ always_comb begin
 end
 ```
 
-## Common Pitfalls
+## 흔한 함정
 
-| Issue | Symptom | Fix |
+| 문제 | 증상 | 해결 |
 |-------|---------|-----|
-| Inferred latch | Synth warning, unexpected behavior | Default assignment or complete if/case |
-| CDC violation | Metastability, random failures | 2FF sync or async FIFO |
-| Blocking in seq | Race conditions | Use `<=` in `always_ff` |
-| X-propagation | Sim works, synth fails | Check reset coverage |
-| Width mismatch | Truncation, sign extension | Explicit sizing |
-| Missing reset | X in simulation | Reset all state registers |
+| 추론된 래치 | 합성 경고, 예상치 못한 동작 | 기본 대입 또는 완전한 if/case |
+| CDC 위반 | 준안정성, 무작위 실패 | 2FF 동기화 또는 비동기 FIFO |
+| 순차 로직의 blocking | 경쟁 조건(race) | `always_ff`에서 `<=` 사용 |
+| X 전파 | 시뮬은 동작, 합성은 실패 | 리셋 커버리지 확인 |
+| 폭 불일치 | 잘림, 부호 확장 | 명시적 크기 지정 |
+| 리셋 누락 | 시뮬레이션에서 X | 모든 상태 레지스터 리셋 |
 
-## Verilator Lint Fixes
+## Verilator Lint 수정
 
-| Warning | Fix |
+| 경고 | 해결 |
 |---------|-----|
-| `UNUSED` | Remove signal or `/* verilator lint_off UNUSED */` |
-| `UNDRIVEN` | Assign the signal |
-| `WIDTH` | Explicit sizing: `a[7:0]` |
-| `CASEINCOMPLETE` | Add `default:` |
-| `LATCH` | Complete all branches |
-| `BLKSEQ` | Use `<=` in `always_ff` |
+| `UNUSED` | 신호를 제거하거나 `/* verilator lint_off UNUSED */` |
+| `UNDRIVEN` | 신호를 대입 |
+| `WIDTH` | 명시적 크기 지정: `a[7:0]` |
+| `CASEINCOMPLETE` | `default:` 추가 |
+| `LATCH` | 모든 분기를 완성 |
+| `BLKSEQ` | `always_ff`에서 `<=` 사용 |
 
-## GateFlow Agents
+## GateFlow 에이전트
 
-Use specialized agents for complex SystemVerilog tasks:
+복잡한 SystemVerilog 작업에는 특화된 에이전트를 사용하세요:
 
-| Agent | Expertise | Use When User Says |
+| 에이전트 | 전문 분야 | 사용자가 이렇게 말할 때 |
 |-------|-----------|-------------------|
-| `gateflow:sv-codegen` | RTL architect | "create module", "write FSM", "generate FIFO" |
-| `gateflow:sv-testbench` | Verification engineer | "write testbench", "create TB", "test this" |
-| `gateflow:sv-debug` | Debug specialist | "why X values", "debug", "not working" |
-| `gateflow:sv-verification` | Verification methodologist | "add assertions", "SVA", "coverage" |
-| `gateflow:sv-understanding` | RTL analyst | "explain this", "how does it work" |
-| `gateflow:sv-planner` | Architecture planner | "plan", "design", "architect" |
-| `gateflow:sv-refactor` | Code quality | "fix lint", "refactor", "clean up" |
-| `gateflow:sv-developer` | Full-stack RTL | "implement feature", "multi-file change" |
-| `gateflow:sv-viz` | Terminal visualizer | "visualize", "show hierarchy", "show FSM", "show module" |
+| `gateflow:sv-codegen` | RTL 아키텍트 | "create module", "write FSM", "generate FIFO" |
+| `gateflow:sv-testbench` | 검증 엔지니어 | "write testbench", "create TB", "test this" |
+| `gateflow:sv-debug` | 디버그 전문가 | "why X values", "debug", "not working" |
+| `gateflow:sv-verification` | 검증 방법론가 | "add assertions", "SVA", "coverage" |
+| `gateflow:sv-understanding` | RTL 분석가 | "explain this", "how does it work" |
+| `gateflow:sv-planner` | 아키텍처 플래너 | "plan", "design", "architect" |
+| `gateflow:sv-refactor` | 코드 품질 | "fix lint", "refactor", "clean up" |
+| `gateflow:sv-developer` | 풀스택 RTL | "implement feature", "multi-file change" |
+| `gateflow:sv-viz` | 터미널 시각화 | "visualize", "show hierarchy", "show FSM", "show module" |
 
-**Handle directly:** Quick fixes, simple questions, running lint/sim commands.
+**직접 처리:** 간단한 수정, 단순한 질문, lint/sim 커맨드 실행.
 
-### Codebase Map Handoff
+### 코드베이스 맵 핸드오프
 
-Before routing to `sv-understanding` or `sv-developer` for **codebase-wide** tasks, check if a map exists:
+**코드베이스 전반** 작업을 위해 `sv-understanding` 또는 `sv-developer`로 라우팅하기 전에, 맵이 존재하는지 확인하세요:
 
 ```bash
 ls .gateflow/map/CODEBASE.md 2>/dev/null
 ```
 
-| Map Exists? | Action |
+| 맵 존재? | 조치 |
 |-------------|--------|
-| Yes | Route to agent normally, map provides context |
-| No | Run `/gf-architect` first, then route to agent |
+| 예 | 정상적으로 에이전트로 라우팅, 맵이 컨텍스트 제공 |
+| 아니오 | 먼저 `/gf-architect` 실행, 그다음 에이전트로 라우팅 |
 
-**Codebase-wide tasks** (need map): "understand this project", "how does X connect to Y", "implement feature across modules"
+**코드베이스 전반 작업** (맵 필요): "understand this project", "how does X connect to Y", "implement feature across modules"
 
-**Single-file tasks** (no map needed): "explain this module", "fix this bug", "add assertion here"
+**단일 파일 작업** (맵 불필요): "explain this module", "fix this bug", "add assertion here"
 
-### Agent Handoff Pattern
+### 에이전트 핸드오프 패턴
 
-After an agent creates SV files, run verification via Bash:
+에이전트가 SV 파일을 생성한 후, Bash로 검증을 실행하세요:
 
-| After | You Run | If Issues |
+| 이후 | 실행할 것 | 문제가 있으면 |
 |-------|---------|-----------|
 | sv-codegen | `verilator --lint-only -Wall *.sv` | → sv-refactor |
 | sv-testbench | `verilator --binary -j 0 -Wall --trace <dut>.sv <tb>.sv -o sim && ./obj_dir/sim` | → sv-debug |
-| sv-refactor | lint to verify | done |
-| sv-debug | rerun sim | verify fix |
+| sv-refactor | lint로 검증 | 완료 |
+| sv-debug | sim 재실행 | 수정 검증 |
 
-**If unsure which file is DUT vs TB:**
-- TB has: `initial begin`, `$display`, `$finish`, `$dumpfile`, clock generation
-- DUT has: `always_ff`, `always_comb`, synthesizable logic, no `$` tasks
-- TB instantiates the DUT module
+**어느 파일이 DUT이고 어느 것이 TB인지 확실하지 않을 때:**
+- TB에는: `initial begin`, `$display`, `$finish`, `$dumpfile`, 클럭 생성이 있음
+- DUT에는: `always_ff`, `always_comb`, 합성 가능한 로직이 있고 `$` 태스크가 없음
+- TB가 DUT 모듈을 인스턴스화함
 
-## Testbench Quick Reference
+## 테스트벤치 빠른 참조
 
 ```systemverilog
 module tb_dut();
@@ -241,7 +241,7 @@ module tb_dut();
 endmodule
 ```
 
-## SVA Quick Reference
+## SVA 빠른 참조
 
 ```systemverilog
 // Immediate assertion
@@ -262,7 +262,7 @@ $past(sig, N)   // Value N cycles ago
 $onehot(vec)    // Exactly one bit set
 ```
 
-## Tool Commands
+## 도구 커맨드
 
 ```bash
 # Verilator lint
@@ -278,35 +278,35 @@ verible-verilog-lint *.sv
 verible-verilog-syntax *.sv
 ```
 
-## Naming Conventions
+## 명명 규칙
 
-| Element | Convention | Example |
+| 요소 | 규칙 | 예시 |
 |---------|------------|---------|
-| Modules | snake_case | `uart_tx`, `fifo_sync` |
-| Signals | snake_case | `data_valid`, `wr_ptr` |
-| Parameters | UPPER_SNAKE | `DATA_WIDTH`, `DEPTH` |
-| Types | _t suffix | `state_t`, `opcode_t` |
-| Active-low | _n suffix | `rst_n`, `cs_n` |
-| Clocks | clk prefix | `clk`, `clk_100mhz` |
-| Registers | _q or _reg suffix | `data_q`, `count_reg` |
-| Next-state | _next or _d suffix | `state_next`, `data_d` |
+| 모듈 | snake_case | `uart_tx`, `fifo_sync` |
+| 신호 | snake_case | `data_valid`, `wr_ptr` |
+| 파라미터 | UPPER_SNAKE | `DATA_WIDTH`, `DEPTH` |
+| 타입 | _t 접미사 | `state_t`, `opcode_t` |
+| Active-low | _n 접미사 | `rst_n`, `cs_n` |
+| 클럭 | clk 접두사 | `clk`, `clk_100mhz` |
+| 레지스터 | _q 또는 _reg 접미사 | `data_q`, `count_reg` |
+| 다음 상태 | _next 또는 _d 접미사 | `state_next`, `data_d` |
 
-## TypeScript Skills
+## TypeScript 스킬
 
-Use these skills when working on TypeScript/JavaScript code in this project:
+이 프로젝트에서 TypeScript/JavaScript 코드를 다룰 때 다음 스킬을 사용하세요:
 
-| Skill | Scope | Use When |
+| 스킬 | 범위 | 사용 시점 |
 |-------|-------|----------|
-| `typescript-expert` | Type-level programming, performance, monorepos, migration, tooling | Any TS/JS issue: complex types, build performance, debugging, architecture |
-| `typescript-best-practices` | Type-first development, illegal-state prevention, exhaustive handling, runtime validation | Reading or writing any TS/JS file |
-| `typescript-advanced-types` | Generics, conditional types, mapped types, template literals, utility types | Complex type logic, reusable type utilities, compile-time type safety |
+| `typescript-expert` | 타입 레벨 프로그래밍, 성능, 모노레포, 마이그레이션, 툴링 | 모든 TS/JS 이슈: 복잡한 타입, 빌드 성능, 디버깅, 아키텍처 |
+| `typescript-best-practices` | 타입 우선 개발, 잘못된 상태 방지, 완전한 처리, 런타임 검증 | 모든 TS/JS 파일을 읽거나 쓸 때 |
+| `typescript-advanced-types` | 제네릭, 조건부 타입, 매핑된 타입, 템플릿 리터럴, 유틸리티 타입 | 복잡한 타입 로직, 재사용 가능한 타입 유틸리티, 컴파일 타임 타입 안전성 |
 
-**Usage rules:**
-- `typescript-best-practices` is **mandatory** when reading or writing any `.ts` / `.js` file
-- `typescript-expert` should be used **proactively** for any TS/JS question or task
-- `typescript-advanced-types` applies when working with advanced type-level programming
+**사용 규칙:**
+- `typescript-best-practices`는 모든 `.ts` / `.js` 파일을 읽거나 쓸 때 **필수**입니다
+- `typescript-expert`는 모든 TS/JS 질문이나 작업에서 **능동적으로** 사용해야 합니다
+- `typescript-advanced-types`는 고급 타입 레벨 프로그래밍을 다룰 때 적용됩니다
 
-## External References
+## 외부 레퍼런스
 
 ```
 [SystemVerilog for Verification, 3rd ed. — Spear/Tumbush]

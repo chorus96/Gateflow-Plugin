@@ -1,23 +1,23 @@
-# Animation Capture System for design-brain-memory
+# design-brain-memory를 위한 애니메이션 캡처 시스템
 
-**Date:** 2026-02-19
-**Status:** Approved
-**Scope:** Full runtime observation with passive scroll detection
+**날짜:** 2026-02-19
+**상태:** 승인됨
+**범위:** 수동 스크롤 감지를 갖춘 전체 런타임 관찰
 
-## Problem
+## 문제
 
-The current motion capture in design-brain-memory stores raw CSS property strings (`transition: all 0.3s ease-in-out`) with no semantic understanding. It cannot detect GSAP, Lottie, Framer Motion, scroll-triggered effects, physics-based motion, animation sequencing, or keyframe data.
+현재 design-brain-memory의 모션 캡처는 원시 CSS 프로퍼티 문자열(`transition: all 0.3s ease-in-out`)을 의미론적 이해 없이 저장합니다. GSAP, Lottie, Framer Motion, 스크롤 트리거 효과, 물리 기반 모션, 애니메이션 시퀀싱, 키프레임 데이터를 감지할 수 없습니다.
 
-## Decision Record
+## 결정 기록
 
-- **Scope**: Full runtime observation (library detection, Web Animations API, rAF sampling, passive scroll detection)
-- **Scroll handling**: Passive detection only (detect ScrollTrigger/IntersectionObserver usage, don't simulate scrolling)
-- **Output format**: Rich markdown sections grouped by motion intent
-- **Additional features**: Physics parameter detection, animation grouping/stagger detection
+- **범위**: 전체 런타임 관찰 (라이브러리 감지, Web Animations API, rAF 샘플링, 수동 스크롤 감지)
+- **스크롤 처리**: 수동 감지만 (ScrollTrigger/IntersectionObserver 사용 감지, 스크롤 시뮬레이션은 하지 않음)
+- **출력 형식**: 모션 의도별로 그룹화된 풍부한 마크다운 섹션
+- **추가 기능**: 물리 파라미터 감지, 애니메이션 그룹화/스태거 감지
 
-## Data Model
+## 데이터 모델
 
-### Core Types
+### 핵심 타입
 
 ```typescript
 type AnimationLibrary = 'css' | 'gsap' | 'lottie' | 'framer-motion' | 'react-spring' | 'motion-one' | 'unknown';
@@ -79,77 +79,77 @@ interface AnimationToken {
 }
 ```
 
-### Backward Compatibility
+### 하위 호환성
 
-Old `MotionToken` fields map to `rawTransition`, `rawAnimation`, `rawTransform`. The render layer checks for new fields and falls back to old format. Existing database entries remain valid.
+기존 `MotionToken` 필드는 `rawTransition`, `rawAnimation`, `rawTransform`로 매핑됩니다. 렌더 레이어는 새 필드를 확인하고 기존 형식으로 폴백합니다. 기존 데이터베이스 항목은 유효하게 유지됩니다.
 
-## Extraction Architecture
+## 추출 아키텍처
 
-Five-layer observer script injected via Agent Browser `eval`:
+Agent Browser `eval`을 통해 주입되는 5계층 옵저버 스크립트:
 
-### Layer 1: Library Detection
-- Check `window.gsap` (+ version), `window.lottie`/`window.bodymovin`, `<lottie-player>` elements
-- Detect ScrollTrigger via `typeof ScrollTrigger !== 'undefined'`
-- Framer Motion: heuristic via WAAPI animations on elements with `data-framer-*` attributes
-- React Spring / Motion One: detected via WAAPI or MutationObserver style patterns
+### 레이어 1: 라이브러리 감지
+- `window.gsap`(+ 버전), `window.lottie`/`window.bodymovin`, `<lottie-player>` 요소 확인
+- `typeof ScrollTrigger !== 'undefined'`를 통한 ScrollTrigger 감지
+- Framer Motion: `data-framer-*` 속성이 있는 요소의 WAAPI 애니메이션을 통한 휴리스틱
+- React Spring / Motion One: WAAPI 또는 MutationObserver 스타일 패턴을 통해 감지
 
-### Layer 2: Web Animations API
-- `document.getAnimations()` captures CSS animations, transitions, and WAAPI animations
-- Extract `effect.getKeyframes()` for full keyframe data
-- Extract `effect.getComputedTiming()` for structured timing
+### 레이어 2: Web Animations API
+- `document.getAnimations()`가 CSS 애니메이션, 트랜지션, WAAPI 애니메이션을 캡처
+- 전체 키프레임 데이터를 위해 `effect.getKeyframes()` 추출
+- 구조화된 타이밍을 위해 `effect.getComputedTiming()` 추출
 
-### Layer 3: GSAP Introspection (conditional)
-- `gsap.globalTimeline.getChildren(true, true, true)` enumerates all tweens
-- Extract: `targets()`, `duration()`, `vars` (properties, easing), `startTime()`
-- ScrollTrigger: `ScrollTrigger.getAll()` for scroll-bound animation metadata
+### 레이어 3: GSAP 인트로스펙션 (조건부)
+- `gsap.globalTimeline.getChildren(true, true, true)`가 모든 트윈을 열거
+- 추출: `targets()`, `duration()`, `vars`(properties, easing), `startTime()`
+- ScrollTrigger: 스크롤 바인딩 애니메이션 메타데이터를 위한 `ScrollTrigger.getAll()`
 
-### Layer 4: Lottie Extraction (conditional)
-- `lottie.getRegisteredAnimations()` or `<lottie-player>` elements
-- Extract: `animationData` summary (frameRate, totalFrames, duration, layer count)
-- Also detect network requests for `.json` files matching Lottie schema (v, fr, ip, op, layers)
+### 레이어 4: Lottie 추출 (조건부)
+- `lottie.getRegisteredAnimations()` 또는 `<lottie-player>` 요소
+- 추출: `animationData` 요약 (frameRate, totalFrames, duration, 레이어 수)
+- Lottie 스키마(v, fr, ip, op, layers)와 일치하는 `.json` 파일의 네트워크 요청도 감지
 
-### Layer 5: Passive Scroll Detection
-- Detect `ScrollTrigger` instances and their configuration
-- Detect `IntersectionObserver` usage via checking if constructor has been called
-- Detect CSS `ScrollTimeline` / `ViewTimeline` via `document.getAnimations()` timeline type
-- Detect `scroll-snap` CSS properties
+### 레이어 5: 수동 스크롤 감지
+- `ScrollTrigger` 인스턴스와 그 구성을 감지
+- 생성자가 호출되었는지 확인하여 `IntersectionObserver` 사용 감지
+- `document.getAnimations()` 타임라인 타입을 통해 CSS `ScrollTimeline` / `ViewTimeline` 감지
+- `scroll-snap` CSS 프로퍼티 감지
 
-## Motion Intent Classification
+## 모션 의도 분류
 
-Heuristic based on animated properties in keyframes:
+키프레임에서 애니메이션되는 프로퍼티에 기반한 휴리스틱:
 
-| Animated Properties | Intent |
+| 애니메이션 프로퍼티 | 의도 |
 |---|---|
-| `opacity` only | `fade` |
+| `opacity`만 | `fade` |
 | `translateX/Y` | `slide` |
 | `scale` / `scaleX/Y` | `scale` |
 | `rotate` / `rotateX/Y/Z` | `rotate` |
 | `backgroundColor`, `color`, `borderColor` | `color-shift` |
-| `clip-path`, `height`/`width` animating from 0 | `reveal` |
-| Overshoot + oscillation in values | `spring` or `bounce` |
-| Multiple property types | `complex` |
+| `clip-path`, 0에서 애니메이션되는 `height`/`width` | `reveal` |
+| 값의 오버슈트 + 진동 | `spring` 또는 `bounce` |
+| 여러 프로퍼티 타입 | `complex` |
 
-## Physics Detection
+## 물리 감지
 
-Analyze keyframe value sequences for overshoot/oscillation:
-1. Identify if animated value exceeds final value then returns (overshoot)
-2. Count oscillation crossings
-3. If oscillations with decreasing amplitude: `spring`
-4. If single overshoot + sharp return: `bounce`
-5. Store: oscillation count, overshoot percentage
-6. For GSAP tweens with known ease strings (e.g., `elastic`, `bounce`, `back`), map directly
+키프레임 값 시퀀스에서 오버슈트/진동을 분석:
+1. 애니메이션 값이 최종 값을 초과했다가 되돌아오는지 식별 (오버슈트)
+2. 진동 교차 횟수 계산
+3. 진폭이 감소하는 진동이면: `spring`
+4. 단일 오버슈트 + 급격한 복귀면: `bounce`
+5. 저장: 진동 횟수, 오버슈트 백분율
+6. 알려진 ease 문자열(예: `elastic`, `bounce`, `back`)이 있는 GSAP 트윈은 직접 매핑
 
-## Animation Grouping
+## 애니메이션 그룹화
 
-Two detection heuristics:
-1. **Stagger**: Elements sharing same animation name/keyframes with incremental delays
-2. **Temporal clustering**: Animations starting within 50ms window on DOM siblings or shared-parent elements
+두 가지 감지 휴리스틱:
+1. **스태거**: 동일한 애니메이션 이름/키프레임을 공유하며 증분 지연을 갖는 요소들
+2. **시간적 클러스터링**: DOM 형제 또는 부모를 공유하는 요소에서 50ms 창 안에 시작하는 애니메이션들
 
-Group structure: lead element (earliest start) + followers with computed stagger delays.
+그룹 구조: 리드 요소(가장 이른 시작) + 계산된 스태거 지연을 갖는 팔로워들.
 
-## Markdown Rendering
+## 마크다운 렌더링
 
-Grouped by motion intent with library attribution:
+라이브러리 표기와 함께 모션 의도별로 그룹화:
 
 ```markdown
 ## Motion System
@@ -183,23 +183,23 @@ Grouped by motion intent with library attribution:
 - **hero-enter**: `.hero-title` (lead) -> `.hero-subtitle` (+200ms) -> `.hero-cta` (+400ms)
 ```
 
-## Files Changed
+## 변경된 파일
 
-| File | Change |
+| 파일 | 변경 |
 |------|--------|
-| `src/types.ts` | Replace `MotionToken` with `AnimationToken`, add supporting types |
-| `src/extractFromUrl.ts` | New `ANIMATION_OBSERVER_SCRIPT`, integrate into capture pipeline |
-| `src/render.ts` | New `renderMotionSection()` with grouped markdown |
-| `src/scan.ts` | Enhanced regex for `@keyframes`, library import detection |
-| `src/llm.ts` | Updated enrichment prompt for new token structure |
-| `src/query.ts` | Updated search fields for new token format |
-| `src/store.ts` | Backward-compatible handling of old MotionToken data |
+| `src/types.ts` | `MotionToken`을 `AnimationToken`으로 교체, 지원 타입 추가 |
+| `src/extractFromUrl.ts` | 새 `ANIMATION_OBSERVER_SCRIPT`, 캡처 파이프라인에 통합 |
+| `src/render.ts` | 그룹화된 마크다운을 갖춘 새 `renderMotionSection()` |
+| `src/scan.ts` | `@keyframes`에 대한 향상된 정규식, 라이브러리 import 감지 |
+| `src/llm.ts` | 새 토큰 구조를 위한 보강 프롬프트 갱신 |
+| `src/query.ts` | 새 토큰 형식을 위한 검색 필드 갱신 |
+| `src/store.ts` | 기존 MotionToken 데이터의 하위 호환 처리 |
 
-## Implementation Order
+## 구현 순서
 
-1. Types (`types.ts`) - new interfaces
-2. Extraction script (`extractFromUrl.ts`) - the observer layers
-3. Classification logic - intent, physics, grouping (can be in extractFromUrl or a new `classify.ts`)
-4. Rendering (`render.ts`) - new markdown output
-5. Supporting updates (`scan.ts`, `llm.ts`, `query.ts`, `store.ts`)
-6. Testing - verify against real sites with known animations
+1. 타입 (`types.ts`) - 새 인터페이스
+2. 추출 스크립트 (`extractFromUrl.ts`) - 옵저버 레이어
+3. 분류 로직 - 의도, 물리, 그룹화 (extractFromUrl 또는 새 `classify.ts`에 둘 수 있음)
+4. 렌더링 (`render.ts`) - 새 마크다운 출력
+5. 지원 갱신 (`scan.ts`, `llm.ts`, `query.ts`, `store.ts`)
+6. 테스트 - 알려진 애니메이션이 있는 실제 사이트로 검증

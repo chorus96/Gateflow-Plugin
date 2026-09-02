@@ -1,63 +1,63 @@
-# Phase 3: Cherry-Picking + Taste Diff
+# Phase 3: 체리피킹 + Taste Diff
 
-## Goal
-Score a codebase against a taste profile, and cherry-pick specific components from inspirations.
+## 목표
+taste 프로필 대비 코드베이스를 점수화하고, 인스퍼레이션에서 특정 컴포넌트를 체리픽합니다.
 
-**Depends on**: Phase 1 types only (reads TasteProfile from disk, doesn't import from Phase 2)
+**의존성**: Phase 1 타입만 (디스크에서 TasteProfile을 읽으며 Phase 2에서 import하지 않음)
 
-## New file: `src/tasteDiff.ts` (~200 lines)
+## 새 파일: `src/tasteDiff.ts` (~200줄)
 
-### Key functions
+### 핵심 함수
 
 **`computeTasteDiff(codebaseTokens, taste)`** → `TasteDiffResult`
-- Compare codebase `ScanTokens` against a `TasteProfile`
-- Returns alignment score (0-100) and actionable deltas
+- 코드베이스 `ScanTokens`를 `TasteProfile`과 비교
+- 정렬 점수(0-100)와 실행 가능한 델타를 반환
 
 **`scoreTaste(options)`** → `{ scanResult, diff }`
-- Combines `scanDesignSystem` + `computeTasteDiff`
+- `scanDesignSystem` + `computeTasteDiff`를 결합
 - Options: `{ rootDir, projectId, scanPath }`
 
 **`cherryPickComponent(options)`** → `ComponentCherryPick`
-- Cherry-pick a component from an inspiration
+- 인스퍼레이션에서 컴포넌트를 체리픽
 - Options: `{ rootDir, projectId, componentKind, sourceUrlOrId, index?, note? }`
 
-**`colorDistance(hex1, hex2)`** → `number` (private)
-- Simplified HSL delta for taste matching
+**`colorDistance(hex1, hex2)`** → `number` (비공개)
+- taste 매칭을 위한 단순화된 HSL 델타
 
-**`closestTasteColor(hex, palette)`** → `{ hex, distance }` (private)
-- Find closest taste palette color for a given hex
+**`closestTasteColor(hex, palette)`** → `{ hex, distance }` (비공개)
+- 주어진 hex에 가장 가까운 taste 팔레트 색상을 찾음
 
-### Diff algorithm details
+### Diff 알고리즘 세부 사항
 
-#### Color alignment (0-100)
-- For each codebase color, find closest taste palette color via HSL distance
-- Colors within distance < 15 = aligned, 15-30 = close, >30 = mismatch
-- Score = (aligned + close*0.5) / total * 100
-- Deltas: list mismatched colors with closest suggestion
+#### 색상 정렬 (0-100)
+- 각 코드베이스 색상마다 HSL 거리로 가장 가까운 taste 팔레트 색상을 찾음
+- 거리 < 15 = 정렬됨, 15-30 = 근접, >30 = 불일치
+- 점수 = (정렬 + 근접*0.5) / 전체 * 100
+- 델타: 가장 가까운 제안과 함께 불일치 색상을 나열
 
-#### Typography alignment (0-100)
-- Check if codebase fonts ∈ {primaryFont, secondaryFont} → 100 per match
-- Extra fonts penalized: -20 per extra font family
-- Size alignment: check if codebase sizes ∈ taste scale → bonus
+#### 타이포그래피 정렬 (0-100)
+- 코드베이스 폰트가 {primaryFont, secondaryFont}에 속하는지 확인 → 매치당 100
+- 추가 폰트에는 페널티: 추가 폰트 패밀리당 -20
+- 크기 정렬: 코드베이스 크기가 taste 스케일에 속하는지 확인 → 보너스
 
-#### Spacing alignment (0-100)
-- Parse codebase spacing values to px
-- Check each against taste `spacing.scale` (allow ±2px tolerance)
-- Score = % of values on-scale
+#### 간격(spacing) 정렬 (0-100)
+- 코드베이스 간격 값을 px로 파싱
+- 각각을 taste `spacing.scale`과 대조 (±2px 허용)
+- 점수 = 스케일에 맞는 값의 %
 
-#### Motion alignment (0-100)
-- Duration match: codebase durations ∈ taste durations → 50 points
-- Easing match: check if codebase uses similar easing → 30 points
-- Intensity match: motion count matches intensity level → 20 points
+#### 모션 정렬 (0-100)
+- Duration 매치: 코드베이스 durations가 taste durations에 속함 → 50점
+- Easing 매치: 코드베이스가 유사한 easing을 쓰는지 확인 → 30점
+- Intensity 매치: 모션 개수가 강도 레벨과 일치 → 20점
 
-### Cherry-pick resolution chain for `sourceUrlOrId`
-1. Exact match on `InspirationRecord.id`
-2. Exact match on `InspirationRecord.url`
-3. Hostname match (extract domain, find inspiration with same domain)
+### `sourceUrlOrId`의 체리픽 해석 체인
+1. `InspirationRecord.id`와 정확히 일치
+2. `InspirationRecord.url`과 정확히 일치
+3. 호스트명 일치 (도메인 추출, 같은 도메인의 인스퍼레이션을 찾음)
 
-### TUI rendering (add to `src/tasteRenderer.ts`)
+### TUI 렌더링 (`src/tasteRenderer.ts`에 추가)
 
-**`renderTasteDiff(diff)`** — Renders alignment bars and deltas:
+**`renderTasteDiff(diff)`** — 정렬 막대와 델타를 렌더링:
 
 ```
   ┌─ Taste Alignment ────────────────────────────┐
@@ -76,20 +76,20 @@ Score a codebase against a taste profile, and cherry-pick specific components fr
   ✔ Spacing 92% on taste grid
 ```
 
-## Existing functions to reuse
+## 재사용할 기존 함수
 
-| Function | File |
+| 함수 | 파일 |
 |----------|------|
 | `scanDesignSystem()` | `src/scan.ts` |
 | `loadTasteProfile()` | `src/store.ts` |
 | `loadDatabase()`, `findProject()` | `src/store.ts` |
 
-## Verification
+## 검증
 
 ```bash
 npm run build && npm test
 # Manual: node dist/cli.js taste score . --project demo
 ```
 
-## Status
-- [ ] Pending
+## 상태
+- [ ] 대기 중

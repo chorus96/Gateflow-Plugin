@@ -1,25 +1,25 @@
-# Phase 5: LLM Generation + Skill + CLI Wiring
+# Phase 5: LLM 생성 + 스킬 + CLI 연결
 
-## Goal
-Generate design tokens/components from taste profile, update CLI with all taste commands, update skill.
+## 목표
+taste 프로필로부터 디자인 토큰/컴포넌트를 생성하고, 모든 taste 커맨드로 CLI를 갱신하며, 스킬을 갱신합니다.
 
-**Depends on**: Phase 1 types + `runDesignLlm` from `llm.ts`
+**의존성**: Phase 1 타입 + `llm.ts`의 `runDesignLlm`
 
-**CLI wiring** imports from Phases 2-4, so this should finalize AFTER 2-4 are done. The `tasteGenerate.ts` file itself has no Phase 2-4 dependencies.
+**CLI 연결**은 Phase 2-4에서 import하므로, 2-4가 완료된 후에 마무리해야 합니다. `tasteGenerate.ts` 파일 자체는 Phase 2-4 의존성이 없습니다.
 
-## New file: `src/tasteGenerate.ts` (~200 lines)
+## 새 파일: `src/tasteGenerate.ts` (~200줄)
 
-### Key functions
+### 핵심 함수
 
 **`generateDesignTokens(taste)`** → `string`
-- Generate CSS custom properties from taste profile (no LLM needed, deterministic)
+- taste 프로필로부터 CSS 커스텀 프로퍼티를 생성 (LLM 불필요, 결정적)
 
 **`generateFromTaste(options)`** → `{ code, explanation }`
-- Generate a component or page using LLM + taste profile as context
+- LLM + taste 프로필을 컨텍스트로 사용해 컴포넌트나 페이지를 생성
 - Options: `{ taste, target, componentKind?, llm, framework? }`
 - Target: `'component' | 'page' | 'tokens'`
 
-### Token generation output (deterministic, no LLM)
+### 토큰 생성 출력 (결정적, LLM 없음)
 
 ```css
 :root {
@@ -60,7 +60,7 @@ Generate design tokens/components from taste profile, update CLI with all taste 
 }
 ```
 
-### LLM generation prompt template
+### LLM 생성 프롬프트 템플릿
 
 ```
 You are a frontend developer. Generate production-ready {framework} code matching this taste profile.
@@ -83,49 +83,49 @@ Output: Single code block, then a 2-sentence explanation.
 
 ---
 
-## CLI Wiring (modify `src/cli.ts`)
+## CLI 연결 (`src/cli.ts` 수정)
 
-Add `taste` command group with subcommands:
+서브커맨드가 있는 `taste` 커맨드 그룹 추가:
 
 ### `taste build <urls...>`
-- Build taste profile from one or more URLs
+- 하나 이상의 URL로부터 taste 프로필을 생성
 - Options: `--project`, `--name`, `--headed`, `--llm-base-url`, `--llm-api-key`, `--llm-model`
-- Calls `buildTasteProfile()`
+- `buildTasteProfile()` 호출
 
 ### `taste show`
-- Display current profile
+- 현재 프로필을 표시
 - Options: `--project`, `--json`
-- Loads + renders taste profile
+- taste 프로필을 로드 + 렌더링
 
 ### `taste pick`
-- Cherry-pick a component
-- Required: `--component`, `--from`
+- 컴포넌트를 체리픽
+- 필수: `--component`, `--from`
 - Options: `--project`, `--note`
-- Calls `cherryPickComponent()`
+- `cherryPickComponent()` 호출
 
 ### `taste score [path]`
-- Score codebase against taste
+- taste 대비 코드베이스를 점수화
 - Options: `--project`
-- Calls `scoreTaste()`
+- `scoreTaste()` 호출
 
 ### `taste ask`
-- Answer clarifying questions
+- 명확화 질문에 답변
 - Options: `--project`, `--answer`
-- Calls `nextClarifyingQuestion()` + `applyDecision()`
+- `nextClarifyingQuestion()` + `applyDecision()` 호출
 
 ### `taste generate`
-- Generate code from taste
+- taste로부터 코드를 생성
 - Options: `--project`, `--target`, `--component`, `--framework`, `--llm-*`
-- Calls `generateFromTaste()`
+- `generateFromTaste()` 호출
 
-### Default command routing
-Bare `npx design-brain-memory stripe.com linear.app` should route to `taste build`.
+### 기본 커맨드 라우팅
+아무 인자 없는 `npx design-brain-memory stripe.com linear.app`는 `taste build`로 라우팅되어야 함.
 
 ---
 
-## Skill update (`skills/design-brain/SKILL.md`)
+## 스킬 갱신 (`skills/design-brain/SKILL.md`)
 
-Add section:
+섹션 추가:
 
 ```markdown
 ## Taste Profile Context
@@ -148,7 +148,7 @@ Commands:
 - `design-brain-memory taste generate --target tokens --project <id>` — emit CSS vars
 ```
 
-## Verification
+## 검증
 
 ```bash
 npm run build && npm test
@@ -159,5 +159,5 @@ node dist/cli.js taste score . --project demo
 node dist/cli.js taste generate --target tokens --project demo
 ```
 
-## Status
-- [ ] Pending
+## 상태
+- [ ] 대기 중

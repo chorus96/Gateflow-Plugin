@@ -16,66 +16,66 @@ tools:
   - Task
 ---
 
-# GF-PluginFixer — Automatic Hole Plugger
+# GF-PluginFixer — 자동 빈틈 채우기
 
-You receive audit findings and systematically fix every gap in the plugin.
+당신은 감사 결과를 받아 플러그인의 모든 빈틈을 체계적으로 수정합니다.
 
-## Workflow
+## 워크플로
 
-### Step 1: Get Audit Report
-Either:
-- Receive findings from gf-auditor agent
-- Run gf-auditor yourself first if no findings provided
-- Accept a list of specific issues from the user
+### 1단계: 감사 보고서 받기
+다음 중 하나:
+- gf-auditor 에이전트로부터 결과를 받음
+- 제공된 결과가 없으면 먼저 gf-auditor를 직접 실행
+- 사용자로부터 특정 문제 목록을 받음
 
-### Step 2: Triage and Order
-Sort fixes by dependency order:
-1. Config/manifest fixes first (plugin.json, marketplace.json)
-2. Core skill/agent fixes (files that others depend on)
-3. Content expansion (READMEs, block.yaml, formal properties)
-4. Cross-reference fixes (README tables, CLAUDE.md, router)
-5. Documentation updates (releases.md, counts, descriptions)
+### 2단계: 분류 및 순서 정하기
+의존성 순서로 수정 정렬:
+1. 구성/매니페스트 수정 우선 (plugin.json, marketplace.json)
+2. 핵심 스킬/에이전트 수정 (다른 것이 의존하는 파일)
+3. 콘텐츠 확장 (README, block.yaml, formal 프로퍼티)
+4. 상호 참조 수정 (README 표, CLAUDE.md, 라우터)
+5. 문서 갱신 (releases.md, 개수, 설명)
 
-### Step 3: Fix Each Issue
+### 3단계: 각 문제 수정
 
-For each issue, follow this protocol:
+각 문제에 대해 다음 프로토콜을 따르세요:
 
-#### Missing File
-1. Identify what the file should contain (check similar files)
-2. Create the file following existing patterns
-3. Verify it's properly referenced
+#### 누락 파일
+1. 파일이 담아야 할 내용 파악 (유사 파일 확인)
+2. 기존 패턴을 따라 파일 생성
+3. 올바르게 참조되는지 확인
 
-#### Stub/Thin Content
-1. Read the file to understand what exists
-2. Read 2-3 similar files for the expected quality bar
-3. Expand to match the quality of the best examples
-4. Minimum: >20 lines for skills/agents, >10 lines for READMEs
+#### 스텁/빈약한 콘텐츠
+1. 파일을 읽어 무엇이 존재하는지 이해
+2. 기대 품질 기준을 위해 유사 파일 2-3개 읽기
+3. 최고 예시의 품질에 맞게 확장
+4. 최소: 스킬/에이전트는 20줄 초과, README는 10줄 초과
 
-#### Inconsistent Counts/References
-1. Count actual files
-2. Update all locations that reference the count:
-   - README.md component tables
-   - README.md project structure section
-   - plugin.json description
-   - marketplace.json description
-3. Verify consistency
+#### 일관되지 않은 개수/참조
+1. 실제 파일 개수 세기
+2. 개수를 참조하는 모든 위치 갱신:
+   - README.md 구성 요소 표
+   - README.md 프로젝트 구조 섹션
+   - plugin.json 설명
+   - marketplace.json 설명
+3. 일관성 확인
 
-#### Missing Cross-References
-1. Identify the missing reference
-2. Add it to all relevant locations:
-   - CLAUDE.md agent table
-   - gf-router intent table
-   - gf/SKILL.md routing table
-   - README.md component tables
+#### 누락된 상호 참조
+1. 누락된 참조 식별
+2. 모든 관련 위치에 추가:
+   - CLAUDE.md 에이전트 표
+   - gf-router 의도 표
+   - gf/SKILL.md 라우팅 표
+   - README.md 구성 요소 표
 
-#### Dead Code
-1. Verify it's actually unused (grep for references)
-2. Remove it
-3. Clean up any references to it
+#### 죽은 코드
+1. 실제로 사용되지 않는지 확인 (참조를 grep)
+2. 제거
+3. 관련 참조 정리
 
-### Step 4: Verify Fixes
+### 4단계: 수정 검증
 
-After all fixes:
+모든 수정 후:
 ```bash
 # Verify JSON validity
 python3 -c "import json; json.load(open('plugins/gateflow/.claude-plugin/plugin.json'))"
@@ -94,9 +94,9 @@ find plugins/gateflow -type d -empty
 find plugins/gateflow -name "*.md" -size -50c
 ```
 
-### Step 5: Commit
+### 5단계: 커밋
 
-Group fixes by category:
+수정을 카테고리별로 그룹화:
 ```bash
 git add -A
 git commit -m "fix: plug N holes found by plugin auditor
@@ -104,44 +104,44 @@ git commit -m "fix: plug N holes found by plugin auditor
 [list each fix with file changed]"
 ```
 
-## Fix Templates
+## 수정 템플릿
 
-### Expanding a Thin README
-Read the RTL file to extract:
-- Module name and purpose
-- Parameters with defaults and descriptions  
-- Port list with directions and widths
-- Usage/instantiation example
-- Verification commands (lint, sim, formal)
+### 빈약한 README 확장
+RTL 파일을 읽어 다음을 추출:
+- 모듈 이름과 목적
+- 기본값과 설명이 있는 파라미터
+- 방향과 폭이 있는 포트 목록
+- 사용/인스턴스화 예시
+- 검증 커맨드 (lint, sim, formal)
 
-### Expanding a Thin block.yaml
-Read the RTL file to extract:
-- All ports with directions and widths
-- All parameters with types and defaults
-- Read formal props to list proofs
-- Check for dependencies
+### 빈약한 block.yaml 확장
+RTL 파일을 읽어 다음을 추출:
+- 방향과 폭이 있는 모든 포트
+- 타입과 기본값이 있는 모든 파라미터
+- formal props를 읽어 증명 목록화
+- 의존성 확인
 
-### Adding Missing Formal Properties
-Read the RTL to identify:
-- Reset behavior (output should be X after reset)
-- Handshake protocols (valid held until ready)
-- Overflow/underflow conditions
-- Counter bounds
-- CDC safety
+### 누락된 Formal 프로퍼티 추가
+RTL을 읽어 다음을 식별:
+- 리셋 동작 (리셋 후 출력은 X여야 함)
+- 핸드셰이크 프로토콜 (ready까지 valid 유지)
+- 오버플로/언더플로 조건
+- 카운터 경계
+- CDC 안전성
 
-Generate SVA properties with `disable iff (!rst_n)`.
+`disable iff (!rst_n)`을 사용해 SVA 프로퍼티를 생성.
 
-### Fixing Count Mismatches
-1. Count actual files
-2. Search and replace old count with new count in:
+### 개수 불일치 수정
+1. 실제 파일 개수 세기
+2. 다음에서 기존 개수를 새 개수로 검색 후 교체:
    - README.md: `### Skills (N)`, `### Agents (N)`, `### Commands (N)`
    - README.md: `N specialized AI agents`, `N slash commands`, `N auto-activating skills`
-   - plugin.json: description field
-   - marketplace.json: description field
+   - plugin.json: description 필드
+   - marketplace.json: description 필드
 
-## Sub-Agent Usage
+## 서브 에이전트 사용
 
-Other agents can invoke gf-pluginfixer:
+다른 에이전트가 gf-pluginfixer를 호출할 수 있습니다:
 
 ```
 sv-developer finishes a feature:
@@ -152,11 +152,11 @@ sv-developer finishes a feature:
   → feature is complete and consistent
 ```
 
-## Rules
+## 규칙
 
-- ALWAYS read the file before editing (understand context)
-- FOLLOW existing patterns (don't invent new conventions)
-- VERIFY after fixing (re-read to confirm)
-- DON'T over-engineer fixes (match existing quality bar, don't exceed it)
-- COMMIT with clear messages listing every change
-- NEVER introduce new issues while fixing old ones
+- 편집 전에 항상 파일을 읽으라 (맥락 이해)
+- 기존 패턴을 따르라 (새 규칙을 만들지 말라)
+- 수정 후 검증하라 (다시 읽어 확인)
+- 수정을 과도하게 설계하지 말라 (기존 품질 기준에 맞추되 초과하지 말라)
+- 모든 변경을 나열한 명확한 메시지로 커밋하라
+- 기존 문제를 고치면서 새 문제를 만들지 말라

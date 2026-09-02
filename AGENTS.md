@@ -1,9 +1,9 @@
-# GateFlow Docs Index
+# GateFlow 문서 인덱스
 
-IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning.
-Read the referenced files before answering SystemVerilog questions.
+중요: 사전 학습 기반 추론보다 검색 기반 추론을 우선하세요.
+SystemVerilog 질문에 답하기 전에 참조된 파일을 읽으세요.
 
-## Index
+## 인덱스
 
 ```
 [Gateflow]|root: .
@@ -16,25 +16,25 @@ Read the referenced files before answering SystemVerilog questions.
 |hooks:{hooks/hooks.json}
 ```
 
-## File Purposes
+## 파일 용도
 
-| Path | Purpose |
+| 경로 | 용도 |
 |------|---------|
-| `CLAUDE.md` | SV patterns, lint fixes, conventions, Spear/Tumbush book index |
-| `skills/gf/SKILL.md` | Main orchestrator - routes tasks, runs verification loops |
-| `skills/gf-plan/SKILL.md` | Hardware design planner with Mermaid diagrams |
-| `skills/gf-architect/SKILL.md` | Codebase mapping and analysis |
-| `agents/sv-*.md` | Specialized agents (codegen, testbench, debug, etc.) |
-| `commands/gf-*.md` | Slash commands for specific actions |
+| `CLAUDE.md` | SV 패턴, lint 수정, 규칙, Spear/Tumbush 책 인덱스 |
+| `skills/gf/SKILL.md` | 메인 오케스트레이터 - 작업 라우팅, 검증 루프 실행 |
+| `skills/gf-plan/SKILL.md` | Mermaid 다이어그램이 포함된 하드웨어 설계 플래너 |
+| `skills/gf-architect/SKILL.md` | 코드베이스 매핑 및 분석 |
+| `agents/sv-*.md` | 특화 에이전트 (codegen, testbench, debug 등) |
+| `commands/gf-*.md` | 특정 동작을 위한 슬래시 커맨드 |
 
-## Retrieval Order
+## 검색 순서
 
-1. Check `CLAUDE.md` for SV syntax/patterns
-2. Check relevant `agents/*.md` for task-specific guidance
-3. Check `skills/*/SKILL.md` for workflow orchestration
-4. Check `commands/*.md` for command implementations
+1. SV 구문/패턴은 `CLAUDE.md` 확인
+2. 작업별 지침은 관련 `agents/*.md` 확인
+3. 워크플로 오케스트레이션은 `skills/*/SKILL.md` 확인
+4. 커맨드 구현은 `commands/*.md` 확인
 
-## External References
+## 외부 레퍼런스
 
 ```
 [SystemVerilog for Verification, 3rd ed. — Spear/Tumbush]

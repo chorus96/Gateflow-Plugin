@@ -1,30 +1,30 @@
-# Animation Capture System Implementation Plan
+# 애니메이션 캡처 시스템 구현 계획
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Claude에게:** 필수 서브 스킬: superpowers:executing-plans를 사용하여 이 계획을 작업 단위로 구현하세요.
 
-**Goal:** Replace the shallow MotionToken (4 raw CSS strings) with a rich AnimationToken system that detects animation libraries (GSAP, Lottie, Framer Motion), extracts keyframes via Web Animations API, classifies motion intent, detects physics-based animations, and groups staggered sequences.
+**목표:** 얕은 MotionToken(원시 CSS 문자열 4개)을, 애니메이션 라이브러리(GSAP, Lottie, Framer Motion)를 감지하고 Web Animations API로 키프레임을 추출하며 모션 의도를 분류하고 물리 기반 애니메이션을 감지하며 스태거된 시퀀스를 그룹화하는 풍부한 AnimationToken 시스템으로 교체합니다.
 
-**Architecture:** A new `ANIMATION_OBSERVER_SCRIPT` is injected into the page via Agent Browser `eval` alongside the existing extraction. It runs 5 detection layers (library detection, WAAPI, GSAP introspection, Lottie extraction, passive scroll detection). Results are post-processed in Node by a new `classify.ts` module that handles motion intent classification, physics detection, and animation grouping. The render layer outputs rich grouped markdown sections.
+**아키텍처:** 새 `ANIMATION_OBSERVER_SCRIPT`가 기존 추출과 함께 Agent Browser `eval`을 통해 페이지에 주입됩니다. 5개의 감지 레이어(라이브러리 감지, WAAPI, GSAP 인트로스펙션, Lottie 추출, 수동 스크롤 감지)를 실행합니다. 결과는 모션 의도 분류, 물리 감지, 애니메이션 그룹화를 처리하는 새 `classify.ts` 모듈에 의해 Node에서 후처리됩니다. 렌더 레이어는 풍부하게 그룹화된 마크다운 섹션을 출력합니다.
 
-**Tech Stack:** TypeScript (strict, ESM, NodeNext), Node.js 20+, node:test for testing, Agent Browser CLI for browser automation.
+**기술 스택:** TypeScript (strict, ESM, NodeNext), Node.js 20+, 테스트용 node:test, 브라우저 자동화용 Agent Browser CLI.
 
-**Project root:** `/Users/arnavdas/packages/design-brain-memory`
+**프로젝트 루트:** `/Users/arnavdas/packages/design-brain-memory`
 
-**Build:** `npm run build` (tsc)
-**Test:** `npm run build && node --test tests/*.test.mjs`
+**빌드:** `npm run build` (tsc)
+**테스트:** `npm run build && node --test tests/*.test.mjs`
 
 ---
 
-### Task 1: Add AnimationToken types
+### 작업 1: AnimationToken 타입 추가
 
-**Files:**
-- Modify: `src/types.ts`
+**파일:**
+- 수정: `src/types.ts`
 
-**Step 1: Write the new types**
+**1단계: 새 타입 작성**
 
-Replace `MotionToken` (lines 26-31) and add all supporting types. Keep `MotionToken` as a deprecated alias for backward compatibility.
+`MotionToken`(26-31행)을 교체하고 모든 지원 타입을 추가합니다. 하위 호환성을 위해 `MotionToken`을 사용 중단(deprecated) 별칭으로 유지합니다.
 
-In `src/types.ts`, replace lines 26-31:
+`src/types.ts`에서 26-31행을 교체:
 
 ```typescript
 // OLD:
@@ -36,7 +36,7 @@ export interface MotionToken {
 }
 ```
 
-With:
+다음으로 교체:
 
 ```typescript
 /* ─── Animation capture types ─── */
@@ -108,22 +108,22 @@ export interface MotionToken {
 }
 ```
 
-**Step 2: Update DesignAnalysis**
+**2단계: DesignAnalysis 갱신**
 
-Change the `motion` field in `DesignAnalysis` (line 78) to support both old and new tokens:
+`DesignAnalysis`(78행)의 `motion` 필드를 기존 및 새 토큰 모두 지원하도록 변경:
 
 ```typescript
 // In DesignAnalysis, change line 78:
 motion: (MotionToken | AnimationToken)[];
 ```
 
-**Step 3: Build to verify types compile**
+**3단계: 타입이 컴파일되는지 빌드로 확인**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
 
-Expected: Type errors in files that reference MotionToken fields directly. This is expected — we'll fix them in subsequent tasks.
+예상: MotionToken 필드를 직접 참조하는 파일에서 타입 오류. 이는 예상된 것으로 — 이후 작업에서 수정합니다.
 
-**Step 4: Commit**
+**4단계: 커밋**
 
 ```bash
 git add src/types.ts
@@ -132,15 +132,15 @@ git commit -m "feat(types): add AnimationToken with library detection, physics, 
 
 ---
 
-### Task 2: Create classify.ts with tests (TDD)
+### 작업 2: 테스트와 함께 classify.ts 생성 (TDD)
 
-**Files:**
-- Create: `src/classify.ts`
-- Create: `tests/classify.test.mjs`
+**파일:**
+- 생성: `src/classify.ts`
+- 생성: `tests/classify.test.mjs`
 
-**Step 1: Write the failing tests**
+**1단계: 실패하는 테스트 작성**
 
-Create `tests/classify.test.mjs`:
+`tests/classify.test.mjs` 생성:
 
 ```javascript
 import test from 'node:test';
@@ -340,15 +340,15 @@ test('detectAnimationGroups: unrelated animations not grouped', () => {
 });
 ```
 
-**Step 2: Run tests to verify they fail**
+**2단계: 테스트가 실패하는지 실행하여 확인**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/classify.test.mjs`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/classify.test.mjs`
 
-Expected: FAIL — `../dist/classify.js` does not exist.
+예상: FAIL — `../dist/classify.js`가 존재하지 않음.
 
-**Step 3: Write the classify.ts implementation**
+**3단계: classify.ts 구현 작성**
 
-Create `src/classify.ts`:
+`src/classify.ts` 생성:
 
 ```typescript
 import type { AnimationToken, KeyframeStop, PhysicsParams, AnimationGroup } from './types.js';
@@ -578,13 +578,13 @@ function keyframeSignature(keyframes?: KeyframeStop[]): string {
 }
 ```
 
-**Step 4: Build and run tests**
+**4단계: 빌드 후 테스트 실행**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/classify.test.mjs`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/classify.test.mjs`
 
-Expected: All tests PASS.
+예상: 모든 테스트 PASS.
 
-**Step 5: Commit**
+**5단계: 커밋**
 
 ```bash
 git add src/classify.ts tests/classify.test.mjs
@@ -593,16 +593,16 @@ git commit -m "feat: add motion classification, physics detection, animation gro
 
 ---
 
-### Task 3: Write ANIMATION_OBSERVER_SCRIPT
+### 작업 3: ANIMATION_OBSERVER_SCRIPT 작성
 
-**Files:**
-- Modify: `src/extractFromUrl.ts`
+**파일:**
+- 수정: `src/extractFromUrl.ts`
 
-This is the core browser-injected script. It runs inside the page via Agent Browser `eval` and returns raw animation data that the Node-side classify.ts will process.
+이것은 핵심 브라우저 주입 스크립트입니다. Agent Browser `eval`을 통해 페이지 내부에서 실행되며 Node 측 classify.ts가 처리할 원시 애니메이션 데이터를 반환합니다.
 
-**Step 1: Add the script constant after EXTRACTION_SCRIPT**
+**1단계: EXTRACTION_SCRIPT 뒤에 스크립트 상수 추가**
 
-Add this after `EXTRACTION_SCRIPT` (after line 324) in `src/extractFromUrl.ts`:
+`src/extractFromUrl.ts`에서 `EXTRACTION_SCRIPT`(324행 뒤)에 다음을 추가:
 
 ```typescript
 const ANIMATION_OBSERVER_SCRIPT = String.raw`(() => {
@@ -810,13 +810,13 @@ const ANIMATION_OBSERVER_SCRIPT = String.raw`(() => {
 })();`;
 ```
 
-**Step 2: Build to verify the script string compiles**
+**2단계: 스크립트 문자열이 컴파일되는지 빌드로 확인**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
 
-Expected: Compiles (the script is just a string constant).
+예상: 컴파일됨 (스크립트는 단지 문자열 상수임).
 
-**Step 3: Commit**
+**3단계: 커밋**
 
 ```bash
 git add src/extractFromUrl.ts
@@ -825,14 +825,14 @@ git commit -m "feat: add ANIMATION_OBSERVER_SCRIPT with 5-layer detection"
 
 ---
 
-### Task 4: Wire the animation observer into the extraction pipeline
+### 작업 4: 애니메이션 옵저버를 추출 파이프라인에 연결
 
-**Files:**
-- Modify: `src/extractFromUrl.ts`
+**파일:**
+- 수정: `src/extractFromUrl.ts`
 
-**Step 1: Add imports for classify.ts and AnimationToken**
+**1단계: classify.ts와 AnimationToken에 대한 import 추가**
 
-At top of `src/extractFromUrl.ts`, update imports:
+`src/extractFromUrl.ts` 상단에서 import 갱신:
 
 ```typescript
 import type {
@@ -846,9 +846,9 @@ import type {
 import { classifyMotionIntent, detectPhysics, detectAnimationGroups, classifyGsapEasing } from './classify.js';
 ```
 
-**Step 2: Add the raw-to-AnimationToken conversion function**
+**2단계: raw→AnimationToken 변환 함수 추가**
 
-After `ANIMATION_OBSERVER_SCRIPT`, add:
+`ANIMATION_OBSERVER_SCRIPT` 뒤에 추가:
 
 ```typescript
 interface RawAnimObserverResult {
@@ -1022,9 +1022,9 @@ function convertObserverResult(raw: RawAnimObserverResult): AnimationToken[] {
 }
 ```
 
-**Step 3: Integrate into captureDesignFromUrl**
+**3단계: captureDesignFromUrl에 통합**
 
-In `captureDesignFromUrl`, after the viewport loop but before interactive state capture (around line 653), add the animation observer call:
+`captureDesignFromUrl`에서 뷰포트 루프 뒤, 대화형 상태 캡처 전(653행 부근)에 애니메이션 옵저버 호출을 추가:
 
 ```typescript
     // Run animation observer script (once, at desktop viewport)
@@ -1044,7 +1044,7 @@ In `captureDesignFromUrl`, after the viewport loop but before interactive state 
     }
 ```
 
-Then in the return block (around line 673), merge animation tokens with the legacy motion array:
+그다음 return 블록(673행 부근)에서 애니메이션 토큰을 레거시 motion 배열과 병합:
 
 ```typescript
     // Merge: prefer new AnimationTokens, fall back to legacy MotionTokens
@@ -1065,13 +1065,13 @@ Then in the return block (around line 673), merge animation tokens with the lega
     };
 ```
 
-**Step 4: Build**
+**4단계: 빌드**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
 
-Expected: Compiles. Some type errors may arise in other files referencing `motion` — handle in Task 6.
+예상: 컴파일됨. `motion`을 참조하는 다른 파일에서 일부 타입 오류가 발생할 수 있음 — 작업 6에서 처리.
 
-**Step 5: Commit**
+**5단계: 커밋**
 
 ```bash
 git add src/extractFromUrl.ts
@@ -1080,14 +1080,14 @@ git commit -m "feat: integrate animation observer into extraction pipeline"
 
 ---
 
-### Task 5: Update render.ts for rich motion sections
+### 작업 5: 풍부한 모션 섹션을 위해 render.ts 갱신
 
-**Files:**
-- Modify: `src/render.ts`
+**파일:**
+- 수정: `src/render.ts`
 
-**Step 1: Add AnimationToken import and type guard**
+**1단계: AnimationToken import와 타입 가드 추가**
 
-Update imports at top:
+상단의 import 갱신:
 
 ```typescript
 import type {
@@ -1102,7 +1102,7 @@ import type {
 } from './types.js';
 ```
 
-Add a type guard function:
+타입 가드 함수 추가:
 
 ```typescript
 function isAnimationToken(token: MotionToken | AnimationToken): token is AnimationToken {
@@ -1110,9 +1110,9 @@ function isAnimationToken(token: MotionToken | AnimationToken): token is Animati
 }
 ```
 
-**Step 2: Replace aggregateMotion with new grouped rendering**
+**2단계: aggregateMotion을 새 그룹화 렌더링으로 교체**
 
-Replace the `aggregateMotion` function (lines 71-84) with:
+`aggregateMotion` 함수(71-84행)를 다음으로 교체:
 
 ```typescript
 function aggregateMotion(records: InspirationRecord[]): Array<(MotionToken | AnimationToken) & { count: number }> {
@@ -1133,7 +1133,7 @@ function aggregateMotion(records: InspirationRecord[]): Array<(MotionToken | Ani
 }
 ```
 
-**Step 3: Add renderRichMotionSection helper**
+**3단계: renderRichMotionSection 헬퍼 추가**
 
 ```typescript
 function renderRichMotionSection(tokens: Array<(MotionToken | AnimationToken) & { count: number }>): string {
@@ -1264,9 +1264,9 @@ function renderRichMotionSection(tokens: Array<(MotionToken | AnimationToken) & 
 }
 ```
 
-**Step 4: Update renderTokens to use the new function**
+**4단계: 새 함수를 사용하도록 renderTokens 갱신**
 
-In `renderTokens` (around line 261), replace the motion rendering:
+`renderTokens`(261행 부근)에서 모션 렌더링을 교체:
 
 ```typescript
 // OLD:
@@ -1277,18 +1277,18 @@ motion:
   `# ${project.name} Motion Brain\n\n` + mdTable(['Transition', 'Animation', 'Selector', 'Occurrences'], motionRows) + '\n',
 ```
 
-Replace with:
+다음으로 교체:
 
 ```typescript
 motion:
   `# ${project.name} Motion Brain\n\n` + renderRichMotionSection(motion) + '\n',
 ```
 
-(Remove the `motionRows` variable.)
+(`motionRows` 변수를 제거.)
 
-**Step 5: Update renderInspiration to handle AnimationToken**
+**5단계: AnimationToken을 처리하도록 renderInspiration 갱신**
 
-In `renderInspiration` (around lines 135-140), replace:
+`renderInspiration`(135-140행 부근)에서 교체:
 
 ```typescript
   const motionRows = record.analysis.motion.slice(0, 80).map((motion) => [
@@ -1299,7 +1299,7 @@ In `renderInspiration` (around lines 135-140), replace:
   ]);
 ```
 
-With:
+다음으로 교체:
 
 ```typescript
   const motionContent = renderRichMotionSection(
@@ -1307,7 +1307,7 @@ With:
   );
 ```
 
-And replace the Motion table output (around line 202):
+그리고 Motion 테이블 출력(202행 부근)을 교체:
 
 ```typescript
 // OLD:
@@ -1317,13 +1317,13 @@ And replace the Motion table output (around line 202):
 + `## Motion\n\n${motionContent}\n\n`
 ```
 
-**Step 6: Build**
+**6단계: 빌드**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
 
-Expected: Compiles.
+예상: 컴파일됨.
 
-**Step 7: Commit**
+**7단계: 커밋**
 
 ```bash
 git add src/render.ts
@@ -1332,17 +1332,17 @@ git commit -m "feat: rich grouped markdown rendering for animation tokens"
 
 ---
 
-### Task 6: Update supporting files (scan, llm, query, commands)
+### 작업 6: 지원 파일 갱신 (scan, llm, query, commands)
 
-**Files:**
-- Modify: `src/scan.ts`
-- Modify: `src/llm.ts`
-- Modify: `src/query.ts`
-- Modify: `src/commands.ts`
+**파일:**
+- 수정: `src/scan.ts`
+- 수정: `src/llm.ts`
+- 수정: `src/query.ts`
+- 수정: `src/commands.ts`
 
-**Step 1: Update scan.ts — add @keyframes regex and animation library detection**
+**1단계: scan.ts 갱신 — @keyframes 정규식과 애니메이션 라이브러리 감지 추가**
 
-In `src/scan.ts`, add new regex patterns after line 60:
+`src/scan.ts`에서 60행 뒤에 새 정규식 패턴을 추가:
 
 ```typescript
 const KEYFRAME_RE = /@keyframes\s+([\w-]+)/g;
@@ -1351,7 +1351,7 @@ const FRAMER_IMPORT_RE = /(?:from\s+['"]framer-motion|from\s+['"]motion)/g;
 const LOTTIE_IMPORT_RE = /(?:from\s+['"]lottie-web|from\s+['"]@lottiefiles)/g;
 ```
 
-Update `scanCssContent` to track keyframe names (add to the function before the return):
+키프레임 이름을 추적하도록 `scanCssContent`를 갱신 (return 전에 함수에 추가):
 
 ```typescript
   // Keyframe definitions
@@ -1365,7 +1365,7 @@ Update `scanCssContent` to track keyframe names (add to the function before the 
   }
 ```
 
-Update `designAnalysisToScanTokens` (lines 314-327) to handle both token types:
+두 토큰 타입을 모두 처리하도록 `designAnalysisToScanTokens`(314-327행)를 갱신:
 
 ```typescript
 export function designAnalysisToScanTokens(analysis: DesignAnalysis): ScanTokens {
@@ -1399,11 +1399,11 @@ export function designAnalysisToScanTokens(analysis: DesignAnalysis): ScanTokens
 }
 ```
 
-Add the `AnimationToken` and `MotionToken` imports at the top of scan.ts.
+scan.ts 상단에 `AnimationToken`과 `MotionToken` import를 추가.
 
-**Step 2: Update llm.ts — richer motion context in prompt**
+**2단계: llm.ts 갱신 — 프롬프트에 더 풍부한 모션 컨텍스트**
 
-In `src/llm.ts`, update the `buildPrompt` function's motion line (line 175):
+`src/llm.ts`에서 `buildPrompt` 함수의 motion 줄(175행)을 갱신:
 
 ```typescript
 // OLD:
@@ -1421,13 +1421,13 @@ const motionList = input.analysis.motion.slice(0, 12).map((m) => {
 }).join(', ');
 ```
 
-Add `AnimationToken` import.
+`AnimationToken` import를 추가.
 
-Also update `enrichImageWithLlmVision` (line 327) — the motion construction from vision should return MotionToken (legacy), which is fine since images can't detect runtime animations.
+또한 `enrichImageWithLlmVision`(327행)을 갱신 — 비전에서의 모션 구성은 MotionToken(레거시)을 반환해야 하며, 이미지가 런타임 애니메이션을 감지할 수 없으므로 문제없음.
 
-**Step 3: Update query.ts — search new token fields**
+**3단계: query.ts 갱신 — 새 토큰 필드 검색**
 
-In `src/query.ts`, update the inspiration text builder (line 102):
+`src/query.ts`에서 인스퍼레이션 텍스트 빌더(102행)를 갱신:
 
 ```typescript
 // OLD:
@@ -1444,9 +1444,9 @@ inspiration.analysis.motion.map((m) => {
 }).join(' '),
 ```
 
-**Step 4: Update commands.ts — fingerprint handles both types**
+**4단계: commands.ts 갱신 — fingerprint가 두 타입을 모두 처리**
 
-In `src/commands.ts`, update the `computeFingerprint` function (line 34):
+`src/commands.ts`에서 `computeFingerprint` 함수(34행)를 갱신:
 
 ```typescript
 // OLD:
@@ -1463,13 +1463,13 @@ motion: input.analysis.motion.slice(0, 20).map((m) => {
 }),
 ```
 
-**Step 5: Build and run all tests**
+**5단계: 빌드 후 모든 테스트 실행**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/*.test.mjs`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/*.test.mjs`
 
-Expected: All existing tests pass. The `designAnalysisToScanTokens` test should still pass since it uses MotionToken format and the code handles both.
+예상: 기존의 모든 테스트 통과. `designAnalysisToScanTokens` 테스트는 MotionToken 형식을 사용하고 코드가 둘 다 처리하므로 여전히 통과해야 함.
 
-**Step 6: Commit**
+**6단계: 커밋**
 
 ```bash
 git add src/scan.ts src/llm.ts src/query.ts src/commands.ts
@@ -1478,20 +1478,20 @@ git commit -m "feat: update scan, llm, query, commands for AnimationToken suppor
 
 ---
 
-### Task 7: Update existing scan test for backward compatibility
+### 작업 7: 하위 호환성을 위해 기존 scan 테스트 갱신
 
-**Files:**
-- Modify: `tests/scan.test.mjs`
+**파일:**
+- 수정: `tests/scan.test.mjs`
 
-**Step 1: Verify the existing designAnalysisToScanTokens test still works**
+**1단계: 기존 designAnalysisToScanTokens 테스트가 여전히 동작하는지 확인**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/scan.test.mjs`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/scan.test.mjs`
 
-Expected: PASS — the test uses legacy MotionToken format which is still supported.
+예상: PASS — 테스트는 여전히 지원되는 레거시 MotionToken 형식을 사용함.
 
-**Step 2: Add a test for AnimationToken conversion**
+**2단계: AnimationToken 변환에 대한 테스트 추가**
 
-Add to `tests/scan.test.mjs`:
+`tests/scan.test.mjs`에 추가:
 
 ```javascript
 test('designAnalysisToScanTokens handles AnimationToken format', () => {
@@ -1528,13 +1528,13 @@ test('designAnalysisToScanTokens handles AnimationToken format', () => {
 });
 ```
 
-**Step 3: Run tests**
+**3단계: 테스트 실행**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/scan.test.mjs`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build && node --test tests/scan.test.mjs`
 
-Expected: All PASS.
+예상: 모두 PASS.
 
-**Step 4: Commit**
+**4단계: 커밋**
 
 ```bash
 git add tests/scan.test.mjs
@@ -1543,31 +1543,31 @@ git commit -m "test: add AnimationToken backward-compatibility test for scan"
 
 ---
 
-### Task 8: Final build, full test suite, and verification
+### 작업 8: 최종 빌드, 전체 테스트 스위트, 검증
 
-**Files:** None new
+**파일:** 새 파일 없음
 
-**Step 1: Full build**
+**1단계: 전체 빌드**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && npm run build`
 
-Expected: No errors.
+예상: 오류 없음.
 
-**Step 2: Run full test suite**
+**2단계: 전체 테스트 스위트 실행**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && node --test tests/*.test.mjs`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && node --test tests/*.test.mjs`
 
-Expected: All tests pass (util, query, persona, scan, classify).
+예상: 모든 테스트 통과 (util, query, persona, scan, classify).
 
-**Step 3: Verify exported types**
+**3단계: export된 타입 확인**
 
-Run: `cd /Users/arnavdas/packages/design-brain-memory && grep -r "AnimationToken" dist/types.d.ts`
+실행: `cd /Users/arnavdas/packages/design-brain-memory && grep -r "AnimationToken" dist/types.d.ts`
 
-Expected: `AnimationToken` is exported in the declaration file.
+예상: `AnimationToken`이 선언 파일에 export됨.
 
-**Step 4: Commit**
+**4단계: 커밋**
 
-If any fixes were needed, commit them:
+수정이 필요했다면 커밋:
 
 ```bash
 git add -A

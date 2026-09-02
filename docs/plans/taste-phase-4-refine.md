@@ -1,56 +1,56 @@
-# Phase 4: Interactive Refinement
+# Phase 4: 대화형 정제
 
-## Goal
-Detect conflicts between inspirations and generate clarifying questions. Apply user decisions to refine the taste profile.
+## 목표
+인스퍼레이션 간 충돌을 감지하고 명확화 질문을 생성합니다. 사용자 결정을 적용하여 taste 프로필을 정제합니다.
 
-**Depends on**: Phase 1 types only
+**의존성**: Phase 1 타입만
 
-## New file: `src/tasteRefine.ts` (~150 lines)
+## 새 파일: `src/tasteRefine.ts` (~150줄)
 
-### Key functions
+### 핵심 함수
 
 **`detectConflicts(inspirations)`** → `TasteConflict[]`
-- Detect conflicts across inspirations
-- Called by Phase 2's `buildTasteProfile`, but can also be called standalone
+- 인스퍼레이션 전반의 충돌을 감지
+- Phase 2의 `buildTasteProfile`이 호출하지만, 독립적으로도 호출 가능
 
 **`nextClarifyingQuestion(profile)`** → `{ conflict, question, options } | null`
-- Generate the next clarifying question from unresolved conflicts
-- Returns null if no conflicts remain
+- 해결되지 않은 충돌로부터 다음 명확화 질문을 생성
+- 남은 충돌이 없으면 null 반환
 
 **`applyDecision(options)`** → `TasteDecision`
-- Apply a user's answer to a conflict, creating a `TasteDecision`
-- Marks the conflict as resolved
+- 충돌에 대한 사용자의 답변을 적용하여 `TasteDecision`을 생성
+- 충돌을 해결됨으로 표시
 - Options: `{ rootDir, projectId, conflictIndex, answer }`
 
-### Conflict detection rules
+### 충돌 감지 규칙
 
-#### Color conflicts
-- Group top-5 colors from each inspiration by source
-- If top-3 colors from different sources have HSL distance > 40 → conflict
-- Description: "Your inspirations show different dominant colors"
-- Options: list each source's top color with source name
+#### 색상 충돌
+- 각 인스퍼레이션의 상위 5개 색상을 소스별로 그룹화
+- 서로 다른 소스의 상위 3개 색상이 HSL 거리 > 40이면 → 충돌
+- 설명: "인스퍼레이션들이 서로 다른 주요 색상을 보입니다"
+- 옵션: 소스 이름과 함께 각 소스의 최상위 색상을 나열
 
-#### Typography conflicts
-- Extract primary font (most frequent) from each inspiration
-- If different inspirations use different primary fonts → conflict
-- Description: "Different inspirations use different primary fonts"
-- Options: list each font with source name
+#### 타이포그래피 충돌
+- 각 인스퍼레이션에서 주 폰트(가장 빈번한 것)를 추출
+- 서로 다른 인스퍼레이션이 서로 다른 주 폰트를 쓰면 → 충돌
+- 설명: "서로 다른 인스퍼레이션이 서로 다른 주 폰트를 사용합니다"
+- 옵션: 소스 이름과 함께 각 폰트를 나열
 
-#### Spacing conflicts
-- Detect base unit per inspiration (most common divisor: 4 or 8)
-- If base units differ → conflict
+#### 간격(spacing) 충돌
+- 인스퍼레이션별 기본 단위 감지 (가장 흔한 약수: 4 또는 8)
+- 기본 단위가 다르면 → 충돌
 
-#### Shape conflicts (border-radius)
-- Extract most common border-radius from each inspiration's components
-- If they cluster around different values (>2px difference) → conflict
-- Description: "Your inspirations show different corner radiuses"
-- Options: "8px (stripe.com)", "6px (linear.app)", "12px (vercel.com)"
+#### 형태 충돌 (border-radius)
+- 각 인스퍼레이션 컴포넌트에서 가장 흔한 border-radius를 추출
+- 서로 다른 값 주위로 몰리면(>2px 차이) → 충돌
+- 설명: "인스퍼레이션들이 서로 다른 모서리 반경을 보입니다"
+- 옵션: "8px (stripe.com)", "6px (linear.app)", "12px (vercel.com)"
 
-#### Motion conflicts
-- Extract dominant duration from each inspiration
-- If durations differ significantly (>100ms) → conflict
+#### 모션 충돌
+- 각 인스퍼레이션에서 주된 duration을 추출
+- durations가 크게 다르면(>100ms) → 충돌
 
-### Question format
+### 질문 형식
 ```
 Your inspirations show different corner radiuses:
   1. 8px (from stripe.com) — rounded but restrained
@@ -59,19 +59,19 @@ Your inspirations show different corner radiuses:
 Which do you prefer? [1/2/3/custom]:
 ```
 
-## Existing functions to reuse
+## 재사용할 기존 함수
 
-| Function | File |
+| 함수 | 파일 |
 |----------|------|
 | `loadTasteProfile()`, `saveTasteProfile()` | `src/store.ts` |
 | `makeId()`, `nowIso()` | `src/util.ts` |
 | `confirmPrompt()` | `src/interactive.ts` |
 
-## Verification
+## 검증
 
 ```bash
 npm run build && npm test
 ```
 
-## Status
-- [ ] Pending
+## 상태
+- [ ] 대기 중

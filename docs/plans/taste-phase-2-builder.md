@@ -1,13 +1,13 @@
-# Phase 2: Taste Builder Core
+# Phase 2: Taste 빌더 코어
 
-## Goal
-Create `buildTasteProfile()` — aggregates multiple inspirations into a TasteProfile.
+## 목표
+`buildTasteProfile()` 생성 — 여러 인스퍼레이션을 하나의 TasteProfile로 집계합니다.
 
-**Depends on**: Phase 1 types + exported aggregation functions from `render.ts`
+**의존성**: Phase 1 타입 + `render.ts`에서 export된 집계 함수
 
-## New files
+## 새 파일
 
-### `src/taste.ts` (~250 lines)
+### `src/taste.ts` (~250줄)
 
 ```typescript
 import { aggregateColors, aggregateTypography, aggregateComponents, aggregateMotion } from './render.js';
@@ -19,9 +19,9 @@ import { looksLikeUrl, normalizeToUrl } from './scan.js';
 import type { TasteProfile, InspirationRecord, DesignAnalysis, ... } from './types.js';
 ```
 
-#### Key functions
+#### 핵심 함수
 
-**`buildTasteProfile(options)`** — Build or update a taste profile from multiple URL/inspiration sources.
+**`buildTasteProfile(options)`** — 여러 URL/인스퍼레이션 소스로부터 taste 프로필을 생성하거나 갱신.
 
 Options:
 ```typescript
@@ -35,54 +35,54 @@ Options:
 }
 ```
 
-Returns: `Promise<TasteProfile>`
+반환: `Promise<TasteProfile>`
 
-#### Algorithm for `buildTasteProfile`:
-1. For each URL: call `theatricalScan(url)` (or headless variant) → get `DesignAnalysis`
-2. Also `ingestInspiration()` for each → store in the project (reuse existing pipeline)
-3. Load all project inspirations from database
-4. Call `aggregateColors()`, `aggregateTypography()`, `aggregateComponents()`, `aggregateMotion()` on all inspirations
-5. Run each `derive*Preference()` function
-6. Build `ScanTokens` from aggregated data → `computeScore()` → `assignPersona()`
-7. Detect conflicts (see Phase 4 interface)
-8. If LLM available: generate narrative + principles
-9. Save TasteProfile
-10. Return it
+#### `buildTasteProfile` 알고리즘:
+1. 각 URL마다: `theatricalScan(url)`(또는 headless 변형) 호출 → `DesignAnalysis` 획득
+2. 각 항목마다 `ingestInspiration()`도 호출 → 프로젝트에 저장 (기존 파이프라인 재사용)
+3. 데이터베이스에서 모든 프로젝트 인스퍼레이션 로드
+4. 모든 인스퍼레이션에 대해 `aggregateColors()`, `aggregateTypography()`, `aggregateComponents()`, `aggregateMotion()` 호출
+5. 각 `derive*Preference()` 함수 실행
+6. 집계 데이터로부터 `ScanTokens` 생성 → `computeScore()` → `assignPersona()`
+7. 충돌 감지 (Phase 4 인터페이스 참고)
+8. LLM 사용 가능 시: 내러티브 + 원칙 생성
+9. TasteProfile 저장
+10. 반환
 
 #### Headless vs Headed
-- Default: use `captureDesignFromUrl()` from `extractFromUrl.ts` (headless, fast)
-- With `--headed`: use `theatricalScan()` from `theatrical.ts` (visible browser)
-- Both produce `DesignAnalysis` — same downstream pipeline
+- 기본: `extractFromUrl.ts`의 `captureDesignFromUrl()` 사용 (headless, 빠름)
+- `--headed` 사용 시: `theatrical.ts`의 `theatricalScan()` 사용 (보이는 브라우저)
+- 둘 다 `DesignAnalysis`를 생성 — 동일한 다운스트림 파이프라인
 
-#### Private derive functions
+#### 비공개 derive 함수
 
 **`deriveColorPreference(colors, inspirations)`** → `TasteColorPreference`
-- Determines harmony type, hue range, saturation/lightness bias
+- 하모니 타입, 색상(hue) 범위, 채도/명도 편향을 결정
 
 **`deriveTypographyPreference(typography)`** → `TasteTypographyPreference`
-- Picks primary/secondary font by frequency, detects scale type
+- 빈도로 주/보조 폰트 선택, 스케일 타입 감지
 
 **`deriveSpacingPreference(components)`** → `TasteSpacingPreference`
-- Detects base unit (4 or 8), builds scale, computes grid alignment
+- 기본 단위(4 또는 8) 감지, 스케일 생성, 그리드 정렬 계산
 
 **`deriveMotionPreference(motion)`** → `TasteMotionPreference`
-- Picks dominant easing/durations, classifies intensity
+- 주된 easing/durations 선택, 강도 분류
 
 **`deriveComponentPreference(components)`** → `TasteComponentPreference`
-- Derives border-radius, shadow style from component tokens
+- 컴포넌트 토큰에서 border-radius, 그림자 스타일 도출
 
 ---
 
-### `src/tasteRenderer.ts` (~200 lines)
+### `src/tasteRenderer.ts` (~200줄)
 
-TUI rendering for taste profiles (ANSI boxes like `scanRenderer.ts`).
+taste 프로필을 위한 TUI 렌더링 (`scanRenderer.ts` 같은 ANSI 박스).
 
-#### Functions
+#### 함수
 
-**`renderTasteProfile(profile)`** — Full taste card output
-**`renderTasteProfileCompact(profile)`** — One-line summary
+**`renderTasteProfile(profile)`** — 전체 taste 카드 출력
+**`renderTasteProfileCompact(profile)`** — 한 줄 요약
 
-#### Output format
+#### 출력 형식
 
 ```
   ┌─ Taste Profile ──────────────────────────────┐
@@ -126,9 +126,9 @@ TUI rendering for taste profiles (ANSI boxes like `scanRenderer.ts`).
   ⚠ 2 conflicts detected. Run: taste ask --project my-app
 ```
 
-## Existing functions to reuse (DO NOT reimplement)
+## 재사용할 기존 함수 (재구현하지 말 것)
 
-| Function | File |
+| 함수 | 파일 |
 |----------|------|
 | `theatricalScan()` | `src/theatrical.ts` |
 | `captureDesignFromUrl()` | `src/extractFromUrl.ts` |
@@ -144,12 +144,12 @@ TUI rendering for taste profiles (ANSI boxes like `scanRenderer.ts`).
 | `makeId()`, `nowIso()`, `slugify()` | `src/util.ts` |
 | `loadDatabase()`, `findProject()` | `src/store.ts` |
 
-## Verification
+## 검증
 
 ```bash
 npm run build && npm test
 # Manual: node dist/cli.js taste stripe.com --project demo
 ```
 
-## Status
-- [ ] Pending
+## 상태
+- [ ] 대기 중

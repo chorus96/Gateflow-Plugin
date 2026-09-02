@@ -1,8 +1,8 @@
-# Skills (Root Navigation)
+# 스킬 (루트 내비게이션)
 
-This folder is a root-level navigation mirror for GateFlow skills.
+이 폴더는 GateFlow 스킬을 위한 루트 레벨 내비게이션 미러입니다.
 
-Source of truth:
+원본(source of truth):
 - `plugins/gateflow/skills/`
 
-Each skill subfolder here links to the corresponding source files so agents and humans can discover skills from repo root.
+여기의 각 스킬 하위 폴더는 대응하는 원본 파일로 연결되어, 에이전트와 사람이 저장소 루트에서 스킬을 발견할 수 있습니다.

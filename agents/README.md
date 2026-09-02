@@ -1,8 +1,8 @@
-# Agents (Root Navigation)
+# 에이전트 (루트 내비게이션)
 
-This folder is a root-level navigation mirror for GateFlow agents.
+이 폴더는 GateFlow 에이전트를 위한 루트 레벨 내비게이션 미러입니다.
 
-Source of truth:
+원본(source of truth):
 - `plugins/gateflow/agents/`
 
-Each file here links to the corresponding source file so agents and humans can discover agent docs from repo root.
+여기의 각 파일은 대응하는 원본 파일로 연결되어, 에이전트와 사람이 저장소 루트에서 에이전트 문서를 발견할 수 있습니다.

@@ -14,34 +14,34 @@ tools:
   - Grep
 ---
 
-# SV-Synth — Synthesis Agent
+# SV-Synth — 합성 에이전트
 
-## Critical: Yosys SystemVerilog Limitations
+## 중요: Yosys SystemVerilog 한계
 
-### Supported (safe)
-- `always_ff`, `always_comb` (basic usage)
-- `logic` type, `typedef enum`, basic `struct packed`
-- `parameter`, `localparam`, standard operators
+### 지원됨 (안전)
+- `always_ff`, `always_comb` (기본 사용)
+- `logic` 타입, `typedef enum`, 기본 `struct packed`
+- `parameter`, `localparam`, 표준 연산자
 
-### NOT Supported (will cause errors)
+### 미지원 (오류 발생)
 - `interface` / `modport` / `virtual interface`
-- `class`, `bind` statements
-- Complex `struct`, parameterized types in some contexts
-- `assert property` (silently ignored — not an error)
+- `class`, `bind` 문
+- 복잡한 `struct`, 일부 맥락의 파라미터화 타입
+- `assert property` (조용히 무시됨 — 오류 아님)
 
-### Pre-Synthesis Check
+### 합성 전 검사
 
-Before Yosys, scan for unsupported constructs:
+Yosys 전에 미지원 구문을 스캔:
 ```bash
 grep -rn "^\s*interface\s\|^\s*modport\s\|^\s*class\s\|^\s*bind\s" <files>
 ```
 
-If found, warn user with options:
-1. Rewrite to Verilog-2005 compatible subset
-2. Use vendor tools (Vivado/Quartus) for full SV
-3. Continue anyway (synthesis will likely fail)
+발견되면 옵션과 함께 사용자에게 경고:
+1. Verilog-2005 호환 서브셋으로 재작성
+2. 전체 SV를 위해 벤더 도구(Vivado/Quartus) 사용
+3. 그래도 계속 (합성이 실패할 가능성 높음)
 
-## Synthesis Flow
+## 합성 흐름
 
 ```bash
 yosys -p "
@@ -52,17 +52,17 @@ yosys -p "
 "
 ```
 
-## Target Mapping
+## 타겟 매핑
 
-| Board Family | Yosys Target |
+| 보드 패밀리 | Yosys 타겟 |
 |-------------|-------------|
 | Lattice iCE40 | `synth_ice40` |
 | Lattice ECP5 | `synth_ecp5` |
 | Gowin | `synth_gowin` |
-| Xilinx 7-series | `synth_xilinx` (limited) |
-| Generic | `synth` |
+| Xilinx 7-series | `synth_xilinx` (제한적) |
+| 일반 | `synth` |
 
-## Result Presentation
+## 결과 제시
 
 ```
 Synthesis Results for [module]:
@@ -73,7 +73,7 @@ Synthesis Results for [module]:
   DSP:    0   / 8    (0.0%)
 ```
 
-## Return Format
+## 반환 형식
 
 ```
 ---GATEFLOW-RETURN---

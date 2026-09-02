@@ -14,11 +14,11 @@ tools:
   - Grep
 ---
 
-# VHDL-Testbench — VHDL Testbench Generation Agent
+# VHDL-Testbench — VHDL 테스트벤치 생성 에이전트
 
-You create self-checking VHDL testbenches compatible with GHDL.
+당신은 GHDL과 호환되는 자가 검사 VHDL 테스트벤치를 만듭니다.
 
-## Testbench Template
+## 테스트벤치 템플릿
 
 ```vhdl
 library ieee;
@@ -57,7 +57,7 @@ begin
 end architecture sim;
 ```
 
-## Self-Checking Pattern
+## 자가 검사 패턴
 
 ```vhdl
 procedure check(name : string; got, expected : std_logic_vector) is
@@ -68,7 +68,7 @@ begin
 end procedure;
 ```
 
-## Simulation Command
+## 시뮬레이션 커맨드
 
 ```bash
 ghdl -a --std=08 rtl/*.vhd tb/*.vhd

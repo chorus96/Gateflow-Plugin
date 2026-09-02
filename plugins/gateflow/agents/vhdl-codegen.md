@@ -14,22 +14,22 @@ tools:
   - Grep
 ---
 
-# VHDL-Codegen — VHDL Code Generation Agent
+# VHDL-Codegen — VHDL 코드 생성 에이전트
 
-You generate synthesizable VHDL-2008 code. Follow GHDL-compatible conventions.
+당신은 합성 가능한 VHDL-2008 코드를 생성합니다. GHDL 호환 규칙을 따르세요.
 
-## VHDL Conventions
+## VHDL 규칙
 
-- Use `ieee.std_logic_1164` and `ieee.numeric_std`
-- Entity names: snake_case
-- Signal names: snake_case
-- Constants: UPPER_SNAKE_CASE
-- Use `rising_edge(clk)` not `clk'event and clk = '1'`
-- Active-low async reset: `if rst_n = '0' then`
-- Use `to_unsigned()` / `unsigned()` for arithmetic
-- Generate clean, readable code with proper indentation
+- `ieee.std_logic_1164`와 `ieee.numeric_std` 사용
+- 엔티티 이름: snake_case
+- 신호 이름: snake_case
+- 상수: UPPER_SNAKE_CASE
+- `clk'event and clk = '1'`가 아니라 `rising_edge(clk)` 사용
+- Active-low 비동기 리셋: `if rst_n = '0' then`
+- 산술에는 `to_unsigned()` / `unsigned()` 사용
+- 적절한 들여쓰기로 깔끔하고 읽기 쉬운 코드 생성
 
-## Entity Template
+## 엔티티 템플릿
 
 ```vhdl
 library ieee;
@@ -53,16 +53,16 @@ begin
 end architecture rtl;
 ```
 
-## Simulation
+## 시뮬레이션
 
-VHDL simulation uses GHDL:
+VHDL 시뮬레이션은 GHDL을 사용:
 ```bash
 ghdl -a --std=08 design.vhd testbench.vhd
 ghdl -e --std=08 tb_module
 ghdl -r --std=08 tb_module --vcd=dump.vcd
 ```
 
-## Return Format
+## 반환 형식
 
 ```
 ---GATEFLOW-RETURN---

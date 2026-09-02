@@ -1,11 +1,11 @@
-# Phase 1: Foundation (MUST go first)
+# Phase 1: 기반 (반드시 먼저 진행)
 
-## Goal
-Add all shared types to `types.ts`, add taste storage to `store.ts`, export `runCompletion` wrapper from `llm.ts`, export aggregation functions from `render.ts`.
+## 목표
+`types.ts`에 모든 공유 타입 추가, `store.ts`에 taste 저장소 추가, `llm.ts`에서 `runCompletion` 래퍼 export, `render.ts`에서 집계 함수 export.
 
-## Files to modify
+## 수정할 파일
 
-### `src/types.ts` — Append all taste profile types (~90 lines)
+### `src/types.ts` — 모든 taste 프로필 타입 추가 (~90줄)
 
 ```typescript
 /* ─── Taste Profile types ─── */
@@ -114,7 +114,7 @@ export interface TasteDelta {
 }
 ```
 
-### `src/store.ts` — Add taste profile storage (+25 lines)
+### `src/store.ts` — taste 프로필 저장소 추가 (+25줄)
 
 ```typescript
 export function tasteDir(rootDir: string): string {
@@ -138,7 +138,7 @@ export async function saveTasteProfile(rootDir: string, profile: TasteProfile): 
 }
 ```
 
-### `src/llm.ts` — Export `runDesignLlm` wrapper (+8 lines)
+### `src/llm.ts` — `runDesignLlm` 래퍼 export (+8줄)
 
 ```typescript
 export async function runDesignLlm(params: {
@@ -151,26 +151,26 @@ export async function runDesignLlm(params: {
 }
 ```
 
-### `src/render.ts` — Export aggregation functions (+4 lines)
+### `src/render.ts` — 집계 함수 export (+4줄)
 
-Add `export` keyword to each function definition:
+각 함수 정의에 `export` 키워드 추가:
 - `aggregateColors`
 - `aggregateTypography`
 - `aggregateComponents`
 - `aggregateMotion`
 
-### `src/index.ts` — Add taste exports (+10 lines)
+### `src/index.ts` — taste export 추가 (+10줄)
 
 ```typescript
 export { loadTasteProfile, saveTasteProfile } from './store.js';
 export type { TasteProfile, TasteDiffResult, ComponentCherryPick, TasteDecision, TasteConflict } from './types.js';
 ```
 
-## Verification
+## 검증
 
 ```bash
 cd packages/design-brain-memory && npm run build && npm test
 ```
 
-## Status
-- [ ] Pending
+## 상태
+- [ ] 대기 중
