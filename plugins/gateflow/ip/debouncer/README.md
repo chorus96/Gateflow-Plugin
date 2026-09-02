@@ -1,15 +1,15 @@
-# debouncer — Button Debouncer
+# debouncer — 버튼 디바운서
 
-Counter-based debouncer with clean output and single-cycle edge detection.
+깔끔한 출력과 단일 사이클 에지 감지를 갖춘 카운터 기반 디바운서.
 
-## Parameters
+## 파라미터
 
-| Name | Default | Description |
+| 이름 | 기본값 | 설명 |
 |------|---------|-------------|
-| CLK_FREQ | 100_000_000 | Clock frequency in Hz |
-| DEBOUNCE_MS | 20 | Debounce time in milliseconds |
+| CLK_FREQ | 100_000_000 | 클럭 주파수 (Hz) |
+| DEBOUNCE_MS | 20 | 디바운스 시간 (밀리초) |
 
-## Instantiation
+## 인스턴스화
 
 ```systemverilog
 debouncer #(
@@ -25,15 +25,15 @@ debouncer #(
 );
 ```
 
-## How It Works
+## 동작 방식
 
-1. Input goes through 2FF synchronizer (CDC-safe)
-2. Counter increments while input differs from output
-3. When counter reaches threshold, output switches
-4. Edge detection generates single-cycle rise/fall pulses
+1. 입력이 2FF 동기화기를 통과 (CDC 안전)
+2. 입력이 출력과 다른 동안 카운터가 증가
+3. 카운터가 임계값에 도달하면 출력이 전환됨
+4. 에지 감지가 단일 사이클 rise/fall 펄스를 생성
 
-## Verification
+## 검증
 
 - **Lint**: `verilator --lint-only -Wall rtl/debouncer.sv`
-- **Sim**: Bouncy input test with rapid toggles
-- **Formal**: Edges are single-cycle, no simultaneous rise+fall
+- **Sim**: 빠른 토글이 있는 튀는 입력 테스트
+- **Formal**: 에지는 단일 사이클, 동시 rise+fall 없음

@@ -1,8 +1,8 @@
 # uart — UART TX+RX
 
-Configurable baud rate UART with 8N1 format.
+8N1 형식의 구성 가능한 보드레이트 UART.
 
-## Instantiation
+## 인스턴스화
 ```systemverilog
 uart_tx #(.CLK_FREQ(100_000_000), .BAUD_RATE(115200)) u_tx (
     .clk(clk), .rst_n(rst_n),

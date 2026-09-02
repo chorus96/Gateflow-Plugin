@@ -1,20 +1,20 @@
-# OpenClaw Integration Guide
+# OpenClaw 통합 가이드
 
-GateFlow is available as an OpenClaw skill, enabling autonomous hardware
-design through the OpenClaw AI agent framework.
+GateFlow는 OpenClaw 스킬로 제공되어, OpenClaw AI 에이전트 프레임워크를 통해
+자율 하드웨어 설계를 가능하게 합니다.
 
-## What This Enables
+## 이것이 가능하게 하는 것
 
-- **Autonomous hardware design**: "Design me an SPI controller for my Arty A7"
-- **Always-on hardware CI**: OpenClaw monitors repos, auto-runs lint/sim/formal
-- **Multi-agent workflows**: OpenClaw orchestration + GateFlow hardware agents
+- **자율 하드웨어 설계**: "Design me an SPI controller for my Arty A7"
+- **상시 하드웨어 CI**: OpenClaw가 저장소를 모니터링하고 lint/sim/formal을 자동 실행
+- **다중 에이전트 워크플로**: OpenClaw 오케스트레이션 + GateFlow 하드웨어 에이전트
 
-## Publishing to ClawHub
+## ClawHub에 게시
 
-GateFlow publishes as a verified skill on ClawHub (not community-submitted,
-for security — see Bitdefender audit findings on community skills).
+GateFlow는 ClawHub에서 검증된 스킬로 게시됩니다 (보안을 위해 커뮤니티 제출이 아님
+— 커뮤니티 스킬에 대한 Bitdefender 감사 결과 참고).
 
-### Skill Configuration
+### 스킬 구성
 
 ```yaml
 # openclaw-skill.yaml
@@ -48,9 +48,9 @@ capabilities:
   - board_targeting
 ```
 
-### MCP Interface
+### MCP 인터페이스
 
-OpenClaw communicates with GateFlow via MCP (Model Context Protocol):
+OpenClaw는 MCP(Model Context Protocol)를 통해 GateFlow와 통신합니다:
 
 ```json
 {
@@ -70,20 +70,20 @@ OpenClaw communicates with GateFlow via MCP (Model Context Protocol):
 }
 ```
 
-## Security
+## 보안
 
-- GateFlow skill is published as **verified/official** on ClawHub
-- All hardware-destructive operations require explicit user confirmation:
-  - `/gf-flash` (programming FPGA)
-  - Pin mapping from web search
-  - File overwrites
-- OpenClaw's sandbox isolates GateFlow execution
+- GateFlow 스킬은 ClawHub에서 **검증됨/공식**으로 게시됨
+- 모든 하드웨어 파괴적 작업은 명시적 사용자 확인이 필요:
+  - `/gf-flash` (FPGA 프로그래밍)
+  - 웹 검색에서의 핀 매핑
+  - 파일 덮어쓰기
+- OpenClaw의 샌드박스가 GateFlow 실행을 격리
 
-## Ecosystem Combinations
+## 생태계 조합
 
-| OpenClaw + GateFlow + ... | Result |
+| OpenClaw + GateFlow + ... | 결과 |
 |---------------------------|--------|
-| KiCad | Natural language → schematic |
-| openFPGALoader | Natural language → running hardware |
-| GitHub Actions | Automated hardware CI/CD |
-| Ollama (local LLM) | Fully offline hardware development |
+| KiCad | 자연어 → 회로도 |
+| openFPGALoader | 자연어 → 동작하는 하드웨어 |
+| GitHub Actions | 자동화된 하드웨어 CI/CD |
+| Ollama (로컬 LLM) | 완전 오프라인 하드웨어 개발 |

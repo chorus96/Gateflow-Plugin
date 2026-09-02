@@ -1,19 +1,19 @@
-# OpenLane Integration — ASIC Tapeout
+# OpenLane 통합 — ASIC 테이프아웃
 
-OpenLane is the complete RTL-to-GDSII flow for free chip fabrication
-via Efabless. Enables "natural language → verified RTL → silicon."
+OpenLane은 Efabless를 통한 무료 칩 제작을 위한 완전한 RTL-to-GDSII 흐름입니다.
+"자연어 → 검증된 RTL → 실리콘"을 가능하게 합니다.
 
-## What This Enables
+## 이것이 가능하게 하는 것
 
-- ASIC tapeout targeting SKY130 (SkyWater 130nm) and GF180 (GlobalFoundries 180nm)
-- Full flow: RTL → synthesis → floorplan → placement → routing → signoff → GDSII
-- Free fabrication through Efabless shuttle runs
+- SKY130 (SkyWater 130nm)과 GF180 (GlobalFoundries 180nm)을 대상으로 하는 ASIC 테이프아웃
+- 전체 흐름: RTL → 합성 → 플로어플랜 → 배치 → 라우팅 → 사인오프 → GDSII
+- Efabless shuttle 런을 통한 무료 제작
 
-## The Ultimate Demo
+## 궁극의 데모
 
-"I described a chip in English and taped it out for free."
+"영어로 칩을 설명하고 무료로 테이프아웃했습니다."
 
-## Setup
+## 설정
 
 ```bash
 # Install OpenLane
@@ -24,16 +24,16 @@ pip install openlane
 volare enable --pdk sky130 <version>
 ```
 
-## Usage with GateFlow (Future)
+## GateFlow와 함께 사용 (예정)
 
 ```
 /gf-tapeout rtl/top.sv --pdk sky130 --die-area "0 0 500 500"
 ```
 
-## Status: Phase 5+ (Future)
+## 상태: Phase 5+ (예정)
 
-This integration requires:
-- OpenLane expertise and careful validation
-- PDK-specific design rules
-- Timing closure at ASIC scale
-- Extensive DRC/LVS verification
+이 통합에는 다음이 필요합니다:
+- OpenLane 전문성과 신중한 검증
+- PDK별 설계 규칙
+- ASIC 규모의 타이밍 클로저
+- 광범위한 DRC/LVS 검증

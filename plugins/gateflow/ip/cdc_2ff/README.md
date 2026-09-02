@@ -1,8 +1,8 @@
-# cdc_2ff — 2-Flip-Flop Synchronizer
+# cdc_2ff — 2-플립플롭 동기화기
 
-Single-bit clock domain crossing synchronizer.
+단일 비트 클럭 도메인 크로싱 동기화기.
 
-## Instantiation
+## 인스턴스화
 ```systemverilog
 cdc_2ff #(.STAGES(2)) u_sync (
     .clk      (dest_clk),

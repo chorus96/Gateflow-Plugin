@@ -1,16 +1,16 @@
-# axi4lite_slave — AXI4-Lite Register Slave
+# axi4lite_slave — AXI4-Lite 레지스터 슬레이브
 
-Parameterized register file with full AXI4-Lite interface and byte strobes.
+바이트 스트로브와 완전한 AXI4-Lite 인터페이스를 갖춘 파라미터화된 레지스터 파일.
 
-## Parameters
+## 파라미터
 
-| Name | Default | Description |
+| 이름 | 기본값 | 설명 |
 |------|---------|-------------|
-| ADDR_WIDTH | 8 | Address bus width |
-| DATA_WIDTH | 32 | Data bus width |
-| NUM_REGS | 16 | Number of registers |
+| ADDR_WIDTH | 8 | 주소 버스 폭 |
+| DATA_WIDTH | 32 | 데이터 버스 폭 |
+| NUM_REGS | 16 | 레지스터 수 |
 
-## Instantiation
+## 인스턴스화
 
 ```systemverilog
 axi4lite_slave #(
@@ -40,8 +40,8 @@ axi4lite_slave #(
 );
 ```
 
-## Verification
+## 검증
 
 - **Lint**: `verilator --lint-only -Wall rtl/axi4lite_slave.sv`
-- **Sim**: Self-checking testbench with read-after-write verification
-- **Formal**: Write response follows write completion
+- **Sim**: 쓰기 후 읽기 검증이 있는 자가 검사 테스트벤치
+- **Formal**: 쓰기 완료 후 쓰기 응답이 따라옴

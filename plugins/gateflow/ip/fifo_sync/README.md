@@ -1,8 +1,8 @@
-# fifo_sync — Synchronous FIFO
+# fifo_sync — 동기 FIFO
 
-Parameterized synchronous FIFO with full/empty flags.
+full/empty 플래그를 갖춘 파라미터화된 동기 FIFO.
 
-## Instantiation
+## 인스턴스화
 
 ```systemverilog
 fifo_sync #(.WIDTH(8), .DEPTH(16)) u_fifo (
@@ -17,7 +17,7 @@ fifo_sync #(.WIDTH(8), .DEPTH(16)) u_fifo (
 );
 ```
 
-## Verification
+## 검증
 
 - **Lint**: `verilator --lint-only -Wall rtl/fifo_sync.sv`
 - **Sim**: `verilator --binary -j0 --trace -Irtl tb/tb_fifo_sync.sv rtl/fifo_sync.sv && ./obj_dir/Vtb_fifo_sync`

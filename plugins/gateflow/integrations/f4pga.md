@@ -1,15 +1,15 @@
-# F4PGA Integration — "The GCC of FPGAs"
+# F4PGA 통합 — "FPGA의 GCC"
 
-F4PGA is a fully open-source FPGA toolchain that extends GateFlow's
-synthesis coverage to Xilinx 7-series via Project X-Ray.
+F4PGA는 완전한 오픈소스 FPGA 툴체인으로, Project X-Ray를 통해
+GateFlow의 합성 커버리지를 Xilinx 7-series로 확장합니다.
 
-## What This Enables
+## 이것이 가능하게 하는 것
 
-- Xilinx 7-series support (Artix-7, Spartan-7) without Vivado
-- Unified open-source flow: Yosys → nextpnr-xilinx → bitstream
-- `/gf-synth --backend f4pga` for broader device support
+- Vivado 없이 Xilinx 7-series 지원 (Artix-7, Spartan-7)
+- 통합 오픈소스 흐름: Yosys → nextpnr-xilinx → bitstream
+- 더 넓은 디바이스 지원을 위한 `/gf-synth --backend f4pga`
 
-## Setup
+## 설정
 
 ```bash
 # Install F4PGA
@@ -21,18 +21,18 @@ export F4PGA_INSTALL_DIR=~/f4pga
 export FPGA_FAM=xc7
 ```
 
-## Usage with GateFlow
+## GateFlow와 함께 사용
 
-When target board uses Xilinx 7-series AND user prefers open-source:
+목표 보드가 Xilinx 7-series를 사용하고 사용자가 오픈소스를 선호할 때:
 ```
 /gf-synth --backend f4pga rtl/top.sv
 ```
 
-GateFlow auto-detects F4PGA availability and offers it as an alternative
-to Vivado for supported devices.
+GateFlow는 F4PGA 가용성을 자동 감지하고 지원 디바이스에 대해
+Vivado의 대안으로 제공합니다.
 
-## Supported Devices (via Project X-Ray)
+## 지원 디바이스 (Project X-Ray를 통해)
 
 - Artix-7: xc7a35t, xc7a50t, xc7a100t, xc7a200t
 - Spartan-7: xc7s6, xc7s15, xc7s25, xc7s50
-- Partial: Kintex-7 (experimental)
+- 부분 지원: Kintex-7 (실험적)

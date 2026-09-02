@@ -1,8 +1,8 @@
-# GateFlow CI/CD Templates
+# GateFlow CI/CD 템플릿
 
-GitHub Actions and GitLab CI templates for hardware projects.
+하드웨어 프로젝트를 위한 GitHub Actions 및 GitLab CI 템플릿.
 
-## GitHub Actions — Lint + Sim on Every PR
+## GitHub Actions — 모든 PR에서 Lint + Sim
 
 ```yaml
 # .github/workflows/gateflow-ci.yml
@@ -92,12 +92,12 @@ formal:
   only: [main]
 ```
 
-## Usage
+## 사용법
 
-Copy the appropriate template into your project:
+적절한 템플릿을 프로젝트에 복사:
 ```bash
 mkdir -p .github/workflows
 cp ci-templates.md .github/workflows/gateflow-ci.yml
 ```
 
-Or ask GateFlow: "Set up CI/CD for my hardware project"
+또는 GateFlow에 요청: "Set up CI/CD for my hardware project"

@@ -1,15 +1,15 @@
-# spi_master — SPI Master
+# spi_master — SPI 마스터
 
-SPI master supporting all 4 CPOL/CPHA modes with configurable clock divider.
+구성 가능한 클럭 분주기와 함께 4가지 CPOL/CPHA 모드 전부를 지원하는 SPI 마스터.
 
-## Parameters
+## 파라미터
 
-| Name | Default | Description |
+| 이름 | 기본값 | 설명 |
 |------|---------|-------------|
 | CLK_DIV | 4 | SCLK = clk / (2 * CLK_DIV) |
-| DATA_WIDTH | 8 | Bits per transfer |
+| DATA_WIDTH | 8 | 전송당 비트 |
 
-## Instantiation
+## 인스턴스화
 
 ```systemverilog
 spi_master #(.CLK_DIV(4), .DATA_WIDTH(8)) u_spi (
@@ -29,17 +29,17 @@ spi_master #(.CLK_DIV(4), .DATA_WIDTH(8)) u_spi (
 );
 ```
 
-## SPI Modes
+## SPI 모드
 
-| Mode | CPOL | CPHA | Capture Edge |
+| 모드 | CPOL | CPHA | 캡처 에지 |
 |------|------|------|-------------|
-| 0 | 0 | 0 | Rising |
-| 1 | 0 | 1 | Falling |
-| 2 | 1 | 0 | Falling |
-| 3 | 1 | 1 | Rising |
+| 0 | 0 | 0 | 상승 |
+| 1 | 0 | 1 | 하강 |
+| 2 | 1 | 0 | 하강 |
+| 3 | 1 | 1 | 상승 |
 
-## Verification
+## 검증
 
 - **Lint**: `verilator --lint-only -Wall rtl/spi_master.sv`
-- **Sim**: Loopback test (MOSI → MISO)
-- **Formal**: CS_N low during transfer, SCLK only toggles when active
+- **Sim**: 루프백 테스트 (MOSI → MISO)
+- **Formal**: 전송 중 CS_N 낮음, SCLK는 활성일 때만 토글

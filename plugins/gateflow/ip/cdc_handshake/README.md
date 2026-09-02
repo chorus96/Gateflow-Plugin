@@ -1,14 +1,14 @@
-# cdc_handshake — Multi-Bit Handshake Synchronizer
+# cdc_handshake — 멀티비트 핸드셰이크 동기화기
 
-Req/ack protocol for safely crossing multi-bit data between clock domains.
+클럭 도메인 간에 멀티비트 데이터를 안전하게 넘기기 위한 req/ack 프로토콜.
 
-## Parameters
+## 파라미터
 
-| Name | Default | Description |
+| 이름 | 기본값 | 설명 |
 |------|---------|-------------|
-| WIDTH | 8 | Data width in bits |
+| WIDTH | 8 | 데이터 폭 (비트) |
 
-## Instantiation
+## 인스턴스화
 
 ```systemverilog
 cdc_handshake #(.WIDTH(8)) u_cdc (
@@ -24,16 +24,16 @@ cdc_handshake #(.WIDTH(8)) u_cdc (
 );
 ```
 
-## How It Works
+## 동작 방식
 
-1. Source presents data + asserts `src_valid`
-2. When `src_ready` is high, data is captured and req toggles
-3. Req crosses to destination domain via 2FF synchronizer
-4. Destination captures data, pulses `dst_valid`, sends ack back
-5. Ack crosses back, `src_ready` re-asserts
+1. 소스가 데이터를 제시하고 `src_valid`를 assert
+2. `src_ready`가 높을 때, 데이터가 캡처되고 req가 토글됨
+3. Req가 2FF 동기화기를 통해 목적지 도메인으로 넘어감
+4. 목적지가 데이터를 캡처하고 `dst_valid`를 펄스하며 ack를 돌려보냄
+5. Ack가 다시 넘어오고 `src_ready`가 재차 assert됨
 
-## Verification
+## 검증
 
 - **Lint**: `verilator --lint-only -Wall rtl/cdc_handshake.sv`
-- **Sim**: Cross-domain data transfer test
-- **Formal**: Backpressure and data stability properties
+- **Sim**: 도메인 간 데이터 전송 테스트
+- **Formal**: 백프레셔와 데이터 안정성 프로퍼티

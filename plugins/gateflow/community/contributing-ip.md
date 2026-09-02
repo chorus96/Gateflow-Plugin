@@ -1,20 +1,20 @@
-# Contributing IP Blocks
+# IP 블록 기여
 
-Submit verified IP blocks to GateFlow's library.
+검증된 IP 블록을 GateFlow 라이브러리에 제출하세요.
 
-## Requirements
+## 요구 사항
 
-Every IP block MUST include:
-1. `rtl/*.sv` — Lint-clean RTL (Verilator -Wall, zero warnings)
-2. `tb/tb_*.sv` — Self-checking testbench (pass/fail counters)
-3. `formal/*_props.sv` — SVA formal properties
-4. `formal/*.sby` — SymbiYosys configuration
-5. `block.yaml` — Metadata (name, version, parameters, ports)
-6. `README.md` — Usage guide with instantiation example
+모든 IP 블록은 반드시 다음을 포함해야 합니다:
+1. `rtl/*.sv` — lint 클린 RTL (Verilator -Wall, 경고 0)
+2. `tb/tb_*.sv` — 자가 검사 테스트벤치 (pass/fail 카운터)
+3. `formal/*_props.sv` — SVA formal 프로퍼티
+4. `formal/*.sby` — SymbiYosys 구성
+5. `block.yaml` — 메타데이터 (name, version, parameters, ports)
+6. `README.md` — 인스턴스화 예시가 있는 사용 가이드
 
-## Verification Pipeline
+## 검증 파이프라인
 
-Submitted blocks must pass:
+제출된 블록은 다음을 통과해야 합니다:
 ```bash
 # Lint
 verilator --lint-only -Wall rtl/*.sv
@@ -27,9 +27,9 @@ verilator --binary -j0 --trace --top-module tb_<name> -Irtl tb/*.sv rtl/*.sv
 sby -f formal/<name>.sby
 ```
 
-All three must PASS before acceptance.
+수락 전에 세 가지 모두 PASS해야 합니다.
 
-## block.yaml Schema
+## block.yaml 스키마
 
 ```yaml
 name: block_name

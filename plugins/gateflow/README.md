@@ -1,20 +1,20 @@
 # GateFlow
 
-**The open-source AI hardware platform.** Design, verify, synthesize, release, and deploy working RTL from natural language. 20 agents. 27 skills. 21 commands. 8 verified IP blocks.
+**오픈소스 AI 하드웨어 플랫폼.** 자연어로 동작하는 RTL을 설계, 검증, 합성, 릴리스, 배포합니다. 에이전트 20개. 스킬 27개. 커맨드 21개. 검증된 IP 블록 8개.
 
 ```bash
 claude plugin add codejunkie99/Gateflow-Plugin
 ```
 
-> Say what you want to build. GateFlow plans it, builds it in parallel, lints it, simulates it, and hands you working code.
+> 만들고 싶은 것을 말하세요. GateFlow가 계획하고, 병렬로 빌드하고, lint하고, 시뮬레이션하고, 동작하는 코드를 건네줍니다.
 
 ![GateFlow v2.3.1 Update](assets/update-2.3.1.svg)
 
 ---
 
-## What It Does
+## 하는 일
 
-**End-to-end RTL development.** Not just code generation — full verification loops that iterate until your design actually works.
+**종단 간 RTL 개발.** 단순한 코드 생성이 아니라 — 설계가 실제로 동작할 때까지 반복하는 완전한 검증 루프.
 
 ```
 "Create a FIFO with AXI-Stream interface and test it"
@@ -25,13 +25,13 @@ claude plugin add codejunkie99/Gateflow-Plugin
     → delivers lint-clean, sim-passing code
 ```
 
-**Formal verification from English.** Describe what to prove, get SVA properties + SymbiYosys proofs.
+**영어로 하는 정형 검증.** 증명할 것을 설명하면, SVA 프로퍼티 + SymbiYosys 증명을 얻습니다.
 
 ```
 "Prove the FIFO never overflows" → SVA assertions + .sby config + proof result
 ```
 
-**Synthesis + Place & Route.** Target real hardware with open-source tools.
+**합성 + 배치 & 라우팅.** 오픈소스 도구로 실제 하드웨어를 대상으로 합니다.
 
 ```
 "Synthesize for iCEBreaker" → Yosys → nextpnr → bitstream → flash
@@ -39,77 +39,77 @@ claude plugin add codejunkie99/Gateflow-Plugin
 
 ---
 
-## The Stack
+## 스택
 
-### 20 Agents
+### 에이전트 20개
 
-| Agent | What It Does |
+| 에이전트 | 하는 일 |
 |-------|-------------|
-| `sv-codegen` | Synthesizable RTL from specs |
-| `sv-testbench` | Self-checking testbenches |
-| `sv-debug` | Root-cause simulation failures |
-| `sv-verification` | SVA assertions + coverage |
-| `sv-formal` | Formal proofs (SymbiYosys) |
-| `sv-synth` | Yosys synthesis optimization |
-| `sv-refactor` | Lint fixes, code cleanup |
-| `sv-planner` | Architecture plans before code |
-| `sv-developer` | Complex multi-file changes |
-| `sv-orchestrator` | Parallel component builds |
-| `sv-understanding` | Code explanation + analysis |
-| `sv-tutor` | Interactive SV teaching |
-| `sv-viz` | Terminal hierarchy/FSM diagrams |
-| `sv-pinmap` | Board-aware pin constraints |
-| `sv-ip-scanner` | Auto-detect missing IP + CDC issues |
-| `vhdl-codegen` | VHDL-2008 generation (GHDL) |
-| `vhdl-testbench` | VHDL testbenches |
-| `pcb-designer` | KiCad schematic + PCB |
-| `gf-auditor` | Plugin health checks |
-| `gf-pluginfixer` | Auto-fix plugin issues |
+| `sv-codegen` | 명세로부터 합성 가능한 RTL |
+| `sv-testbench` | 자가 검사 테스트벤치 |
+| `sv-debug` | 시뮬레이션 실패의 근본 원인 |
+| `sv-verification` | SVA 어서션 + 커버리지 |
+| `sv-formal` | 정형 증명 (SymbiYosys) |
+| `sv-synth` | Yosys 합성 최적화 |
+| `sv-refactor` | lint 수정, 코드 정리 |
+| `sv-planner` | 코드 전 아키텍처 계획 |
+| `sv-developer` | 복잡한 다중 파일 변경 |
+| `sv-orchestrator` | 병렬 컴포넌트 빌드 |
+| `sv-understanding` | 코드 설명 + 분석 |
+| `sv-tutor` | 대화형 SV 교육 |
+| `sv-viz` | 터미널 계층/FSM 다이어그램 |
+| `sv-pinmap` | 보드 인식 핀 제약 |
+| `sv-ip-scanner` | 누락 IP + CDC 문제 자동 감지 |
+| `vhdl-codegen` | VHDL-2008 생성 (GHDL) |
+| `vhdl-testbench` | VHDL 테스트벤치 |
+| `pcb-designer` | KiCad 회로도 + PCB |
+| `gf-auditor` | 플러그인 헬스 체크 |
+| `gf-pluginfixer` | 플러그인 문제 자동 수정 |
 
-### 27 Skills
+### 스킬 27개
 
-| Category | Skills |
+| 카테고리 | 스킬 |
 |----------|--------|
-| **Orchestration** | `/gf` (main), `/gf-build` (parallel), `/gf-router`, `/gf-expand` |
-| **Planning** | `/gf-plan`, `/gf-architect`, `/gf-project` |
-| **Verification** | `/gf-lint`, `/gf-sim`, `/gf-formal`, `/gf-cocotb` |
-| **IP & Protocols** | `/gf-ip`, `/gf-ip-detect`, `/gf-protocols` |
-| **Hardware** | `/gf-pcb`, `/gf-pnr`, `/gf-pinmap`, `/gf-fusesoc` |
-| **Learning** | `/gf-learn`, `/gf-learn-ctx` |
-| **Visualization** | `/gf-viz` |
-| **Terminal** | `/gf-tui` |
-| **Release** | `/gf-release` |
-| **Reference** | `tb-best-practices`, `/gf-build` |
+| **오케스트레이션** | `/gf` (메인), `/gf-build` (병렬), `/gf-router`, `/gf-expand` |
+| **계획** | `/gf-plan`, `/gf-architect`, `/gf-project` |
+| **검증** | `/gf-lint`, `/gf-sim`, `/gf-formal`, `/gf-cocotb` |
+| **IP & 프로토콜** | `/gf-ip`, `/gf-ip-detect`, `/gf-protocols` |
+| **하드웨어** | `/gf-pcb`, `/gf-pnr`, `/gf-pinmap`, `/gf-fusesoc` |
+| **학습** | `/gf-learn`, `/gf-learn-ctx` |
+| **시각화** | `/gf-viz` |
+| **터미널** | `/gf-tui` |
+| **릴리스** | `/gf-release` |
+| **레퍼런스** | `tb-best-practices`, `/gf-build` |
 
-### 21 Commands
+### 커맨드 21개
 
-| Command | Description |
+| 커맨드 | 설명 |
 |---------|-------------|
-| `/gf-lint` | Verilator lint with structured output |
-| `/gf-sim` | Compile + simulate with Verilator |
-| `/gf-fix` | Auto-fix lint warnings |
-| `/gf-gen` | Scaffold modules and testbenches |
-| `/gf-scan` | Index project files |
-| `/gf-map` | Map codebase architecture |
-| `/gf-doctor` | Check environment + dependencies |
-| `/gf-formal` | Formal verification (SymbiYosys) |
-| `/gf-ip` | Manage verified IP library |
-| `/gf-detect` | Scan for missing IP + CDC issues |
-| `/gf-boards` | Query board pinouts |
-| `/gf-pinmap` | Generate constraint files |
-| `/gf-pnr` | Place & route (nextpnr) |
-| `/gf-flash` | Program FPGA (openFPGALoader) |
-| `/gf-pcb` | Generate KiCad schematic/PCB |
-| `/gf-cocotb` | Python testbenches (Cocotb) |
-| `/gf-fusesoc` | FuseSoC .core files |
-| `/gf-demo` | Interactive demo |
-| `/gf-audit` | Plugin health audit |
-| `/gf-tui` | Local terminal console |
-| `/gf-release` | Release readiness validation |
+| `/gf-lint` | 구조화된 출력의 Verilator lint |
+| `/gf-sim` | Verilator로 컴파일 + 시뮬레이션 |
+| `/gf-fix` | lint 경고 자동 수정 |
+| `/gf-gen` | 모듈과 테스트벤치 스캐폴드 |
+| `/gf-scan` | 프로젝트 파일 인덱싱 |
+| `/gf-map` | 코드베이스 아키텍처 매핑 |
+| `/gf-doctor` | 환경 + 의존성 점검 |
+| `/gf-formal` | 정형 검증 (SymbiYosys) |
+| `/gf-ip` | 검증된 IP 라이브러리 관리 |
+| `/gf-detect` | 누락 IP + CDC 문제 스캔 |
+| `/gf-boards` | 보드 핀아웃 조회 |
+| `/gf-pinmap` | 제약 파일 생성 |
+| `/gf-pnr` | 배치 & 라우팅 (nextpnr) |
+| `/gf-flash` | FPGA 프로그래밍 (openFPGALoader) |
+| `/gf-pcb` | KiCad 회로도/PCB 생성 |
+| `/gf-cocotb` | Python 테스트벤치 (Cocotb) |
+| `/gf-fusesoc` | FuseSoC .core 파일 |
+| `/gf-demo` | 대화형 데모 |
+| `/gf-audit` | 플러그인 헬스 감사 |
+| `/gf-tui` | 로컬 터미널 콘솔 |
+| `/gf-release` | 릴리스 준비 상태 검증 |
 
-### Local CLI
+### 로컬 CLI
 
-From the repository root:
+저장소 루트에서:
 
 ```bash
 python3 tools/gateflow_cli.py status
@@ -120,28 +120,28 @@ python3 tools/gateflow_cli.py agents create "CDC Reviewer" \
 python3 tools/gateflow_cli.py shell
 ```
 
-Inside the keyboard dashboard, press `a` to create a new agent.
+키보드 대시보드 내부에서 `a`를 눌러 새 에이전트를 생성.
 
-### 8 Verified IP Blocks
+### 검증된 IP 블록 8개
 
-Every block ships with RTL + testbench + formal properties + docs.
+모든 블록은 RTL + 테스트벤치 + formal 프로퍼티 + 문서와 함께 제공됩니다.
 
-| Block | Description |
+| 블록 | 설명 |
 |-------|-------------|
-| `fifo_sync` | Synchronous FIFO (parameterized) |
-| `fifo_async` | Async FIFO with Gray code CDC |
-| `cdc_2ff` | 2-flip-flop synchronizer |
-| `cdc_handshake` | Multi-bit handshake synchronizer |
-| `uart` | UART TX+RX (configurable baud) |
-| `spi_master` | SPI master (all 4 modes) |
-| `axi4lite_slave` | AXI4-Lite register slave |
-| `debouncer` | Button debouncer + edge detect |
+| `fifo_sync` | 동기 FIFO (파라미터화됨) |
+| `fifo_async` | Gray 코드 CDC의 비동기 FIFO |
+| `cdc_2ff` | 2-플립플롭 동기화기 |
+| `cdc_handshake` | 멀티비트 핸드셰이크 동기화기 |
+| `uart` | UART TX+RX (구성 가능한 보드레이트) |
+| `spi_master` | SPI 마스터 (4가지 모드 전부) |
+| `axi4lite_slave` | AXI4-Lite 레지스터 슬레이브 |
+| `debouncer` | 버튼 디바운서 + 에지 감지 |
 
-### 4 Board Configs
+### 보드 구성 4개
 
-Pre-verified pin assignments with full constraint files.
+전체 제약 파일과 함께 사전 검증된 핀 할당.
 
-| Board | FPGA | Constraint |
+| 보드 | FPGA | 제약 |
 |-------|------|-----------|
 | Arty A7-35T | Xilinx XC7A35T | `.xdc` |
 | Basys 3 | Xilinx XC7A35T | `.xdc` |
@@ -150,7 +150,7 @@ Pre-verified pin assignments with full constraint files.
 
 ---
 
-## How It Works
+## 동작 방식
 
 ```
 User request
@@ -173,28 +173,28 @@ User request
      +-- Deliver working, lint-clean, tested code
 ```
 
-**Every fix goes through agents.** No direct edits. Structured result blocks (`GATEFLOW-RESULT`) drive the loop. Max 3 retries before asking for human guidance.
+**모든 수정은 에이전트를 거칩니다.** 직접 편집 없음. 구조화된 결과 블록(`GATEFLOW-RESULT`)이 루프를 구동합니다. 사람의 지침을 요청하기 전 최대 3회 재시도.
 
 ---
 
-## Supported Tools
+## 지원 도구
 
-| Tool | Purpose | Install |
+| 도구 | 목적 | 설치 |
 |------|---------|---------|
-| **Verilator** | Lint + simulation | `brew install verilator` |
-| **Yosys** | Synthesis | `brew install yosys` |
-| **nextpnr** | Place & route | `brew install nextpnr` |
-| **SymbiYosys** | Formal verification | `pip install symbiyosys` |
-| **openFPGALoader** | FPGA programming | `brew install openfpgaloader` |
-| **KiCad** | PCB design | `brew install --cask kicad` |
-| **Cocotb** | Python testbenches | `pip install cocotb` |
-| **GHDL** | VHDL simulation | `brew install ghdl` |
+| **Verilator** | lint + 시뮬레이션 | `brew install verilator` |
+| **Yosys** | 합성 | `brew install yosys` |
+| **nextpnr** | 배치 & 라우팅 | `brew install nextpnr` |
+| **SymbiYosys** | 정형 검증 | `pip install symbiyosys` |
+| **openFPGALoader** | FPGA 프로그래밍 | `brew install openfpgaloader` |
+| **KiCad** | PCB 설계 | `brew install --cask kicad` |
+| **Cocotb** | Python 테스트벤치 | `pip install cocotb` |
+| **GHDL** | VHDL 시뮬레이션 | `brew install ghdl` |
 
-Run `/gf-doctor` to check what's installed.
+`/gf-doctor`를 실행해 무엇이 설치되었는지 확인하세요.
 
 ---
 
-## Quick Start
+## 빠른 시작
 
 ```bash
 # Install
@@ -227,8 +227,8 @@ python3 tools/gateflow_cli.py shell
 
 ---
 
-## License
+## 라이선스
 
 [BSL-1.1](LICENSE)
 
-Built by [@Av1dlive](https://x.com/Av1dlive)
+[@Av1dlive](https://x.com/Av1dlive)가 만들었습니다
