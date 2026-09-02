@@ -15,39 +15,39 @@ allowed-tools:
   - WebFetch
 ---
 
-# GF-Pinmap — Board-Aware Pin Mapping
+# GF-Pinmap — 보드 인식 핀 매핑
 
-## Workflow
+## 워크플로
 
-1. **Identify board** — Check `.gateflow/project.yaml` target.board or ask user
-2. **Check curated database first**:
+1. **보드 식별** — `.gateflow/project.yaml`의 target.board를 확인하거나 사용자에게 질문
+2. **선별 데이터베이스 우선 확인**:
    ```bash
    ls ${CLAUDE_PLUGIN_ROOT}/boards/<board>/board.yaml 2>/dev/null
    ```
-3. **If board found**: Read board.yaml, generate constraint file
-4. **If board NOT found**: Web search as fallback, require user confirmation
-5. **Cross-reference** generated constraints with RTL port list
-6. **Output** constraint file in correct format for target FPGA
+3. **보드를 찾으면**: board.yaml을 읽고 제약 파일 생성
+4. **보드를 찾지 못하면**: 폴백으로 웹 검색, 사용자 확인 필요
+5. 생성된 제약을 RTL 포트 목록과 **상호 참조**
+6. 목표 FPGA에 맞는 올바른 형식으로 제약 파일 **출력**
 
-## Curated Board Flow
+## 선별 보드 흐름
 
-1. Read `boards/<board>/board.yaml` for pin data
-2. Read `boards/<board>/constraints.*` for template
-3. Map RTL ports → board pins based on user's peripheral selection
-4. Generate complete constraint file with:
+1. 핀 데이터를 위해 `boards/<board>/board.yaml`을 읽음
+2. 템플릿을 위해 `boards/<board>/constraints.*`를 읽음
+3. 사용자의 주변장치 선택에 기반해 RTL 포트 → 보드 핀 매핑
+4. 다음을 갖춘 완전한 제약 파일 생성:
    - PACKAGE_PIN
-   - IOSTANDARD (from board.yaml)
-   - DRIVE strength (default 12mA for outputs)
-   - SLEW rate (default SLOW)
-   - PULLUP for active-low signals
+   - IOSTANDARD (board.yaml에서)
+   - DRIVE 강도 (출력 기본 12mA)
+   - SLEW 레이트 (기본 SLOW)
+   - Active-low 신호용 PULLUP
 
-## Web Search Fallback
+## 웹 검색 폴백
 
-Only when board is NOT in curated database:
+보드가 선별 데이터베이스에 없을 때만:
 
-1. Search: `"<board name>" constraint file site:github.com`
-2. Search: `"<board name>" pinout .xdc OR .pcf OR .lpf`
-3. Present findings to user with WARNING:
+1. 검색: `"<board name>" constraint file site:github.com`
+2. 검색: `"<board name>" pinout .xdc OR .pcf OR .lpf`
+3. 경고와 함께 결과를 사용자에게 제시:
    ```
    Found constraint data for <board> via web search.
    Source: <url>
@@ -60,17 +60,17 @@ Only when board is NOT in curated database:
 
    Apply these constraints? [Y/n]
    ```
-4. NEVER auto-apply web-searched data
+4. 웹 검색 데이터를 자동 적용하지 말 것
 
-## Safety
+## 안전
 
-- Never guess pin assignments
-- Always include IOSTANDARD (missing = synthesis error or hardware damage)
-- Check voltage bank compatibility
-- Warn if mixing I/O standards in the same bank
-- Active-low signals get PULLUP
+- 핀 할당을 절대 추측하지 말 것
+- 항상 IOSTANDARD 포함 (누락 = 합성 오류 또는 하드웨어 손상)
+- 전압 뱅크 호환성 확인
+- 같은 뱅크에서 I/O 표준을 혼용하면 경고
+- Active-low 신호는 PULLUP를 받음
 
-## GATEFLOW-RESULT Format
+## GATEFLOW-RESULT 형식
 
 ```
 ---GATEFLOW-RESULT---
@@ -84,31 +84,31 @@ DETAILS: <summary>
 ---END-GATEFLOW-RESULT---
 ```
 
-## I/O Standard Reference
+## I/O 표준 레퍼런스
 
-| IOSTANDARD | Voltage | Max Speed | Typical Use |
+| IOSTANDARD | 전압 | 최대 속도 | 전형적 용도 |
 |---|---|---|---|
-| LVCMOS33 | 3.3V | ~100 MHz | GPIO, LEDs, UART, SPI |
-| LVCMOS25 | 2.5V | ~150 MHz | Mixed-voltage |
-| LVCMOS18 | 1.8V | ~200 MHz | Modern peripherals |
-| LVDS_25 | 2.5V diff | ~1 Gbps | High-speed serial |
+| LVCMOS33 | 3.3V | ~100 MHz | GPIO, LED, UART, SPI |
+| LVCMOS25 | 2.5V | ~150 MHz | 혼합 전압 |
+| LVCMOS18 | 1.8V | ~200 MHz | 최신 주변장치 |
+| LVDS_25 | 2.5V diff | ~1 Gbps | 고속 시리얼 |
 | SSTL15 | 1.5V | ~800 MHz | DDR3 |
 | TMDS_33 | 3.3V | ~750 Mbps | HDMI/DVI |
 
-## Common Pin Mapping Mistakes
+## 흔한 핀 매핑 실수
 
-1. **Missing IOSTANDARD** -> Defaults may damage hardware. Always specify.
-2. **Mixing I/O standards in same bank** -> All pins in a bank share VCCO.
-3. **Floating inputs** -> Add PULLUP/PULLDOWN to unused inputs.
-4. **No termination on high-speed** -> Use ODT for DDR, 100-ohm for LVDS.
-5. **Wrong DRIVE strength** -> 4mA for LEDs, 8-12mA for SPI.
-6. **Forgetting create_clock** -> No timing analysis without it.
+1. **IOSTANDARD 누락** -> 기본값이 하드웨어를 손상시킬 수 있음. 항상 지정.
+2. **같은 뱅크에서 I/O 표준 혼용** -> 뱅크의 모든 핀이 VCCO를 공유.
+3. **플로팅 입력** -> 미사용 입력에 PULLUP/PULLDOWN 추가.
+4. **고속에 종단 없음** -> DDR에는 ODT, LVDS에는 100옴 사용.
+5. **잘못된 DRIVE 강도** -> LED는 4mA, SPI는 8-12mA.
+6. **create_clock 누락** -> 그것 없이는 타이밍 분석이 없음.
 
-## PMOD Mapping Patterns
+## PMOD 매핑 패턴
 
-Standard PMOD pinout: pins 1-4 (top row I/O), 5 (GND), 6 (VCC), 7-10 (bottom row I/O), 11 (GND), 12 (VCC).
+표준 PMOD 핀아웃: 핀 1-4 (상단 행 I/O), 5 (GND), 6 (VCC), 7-10 (하단 행 I/O), 11 (GND), 12 (VCC).
 
-| PMOD Type | Pin 1 | Pin 2 | Pin 3 | Pin 4 |
+| PMOD 타입 | 핀 1 | 핀 2 | 핀 3 | 핀 4 |
 |---|---|---|---|---|
 | Type 2 (SPI) | CS_N | MOSI | MISO | SCLK |
 | Type 3 (UART) | CTS | TXD | RXD | RTS |

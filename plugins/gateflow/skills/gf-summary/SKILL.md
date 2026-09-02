@@ -16,15 +16,15 @@ allowed-tools:
   - Bash
   - Read
 
-# GateFlow Summary Skill
+# GateFlow Summary 스킬
 
-Summarizes Verilator lint and simulation output into a clean, readable report.
+Verilator lint 및 시뮬레이션 출력을 깔끔하고 읽기 쉬운 보고서로 요약합니다.
 
-## Instructions
+## 지침
 
-When invoked, analyze the most recent Verilator output or run a new lint check and present results as:
+호출되면, 가장 최근 Verilator 출력을 분석하거나 새 lint 검사를 실행하고 결과를 다음과 같이 제시:
 
-### Summary Format
+### 요약 형식
 
 ```
 ## Lint Summary: <filename>
@@ -48,19 +48,19 @@ When invoked, analyze the most recent Verilator output or run a new lint check a
 2. <next fix>
 ```
 
-## Trigger Patterns
+## 트리거 패턴
 
-Activate when user says:
+사용자가 다음과 같이 말할 때 활성화:
 - "summarize lint"
 - "lint summary"
 - "what's wrong with"
 - "show lint results"
 
-## Example
+## 예시
 
-**Input:** Verilator output with WIDTH and UNUSED warnings
+**입력:** WIDTH 및 UNUSED 경고가 있는 Verilator 출력
 
-**Output:**
+**출력:**
 ```
 ## Lint Summary: sync_fifo.sv
 
@@ -82,16 +82,16 @@ Activate when user says:
 2. Clean up UNUSED signals
 ```
 
-## Usage
+## 사용법
 
 ```
 /gf-summary                    # Summarize last lint output
 /gf-summary sync_fifo.sv       # Run lint and summarize for specific file
 ```
 
-When given a file path, run:
+파일 경로가 주어지면, 실행:
 ```bash
 verilator --lint-only -Wall <file> 2>&1
 ```
 
-Then parse and present the summary.
+그다음 파싱하고 요약을 제시.

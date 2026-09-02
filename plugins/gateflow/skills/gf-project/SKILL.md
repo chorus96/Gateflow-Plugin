@@ -7,13 +7,13 @@ description: >
 user-invocable: false
 ---
 
-# GF Project — Project Context Management
+# GF Project — 프로젝트 컨텍스트 관리
 
-## Project File Location
+## 프로젝트 파일 위치
 
-`.gateflow/project.yaml` in the project root.
+프로젝트 루트의 `.gateflow/project.yaml`.
 
-## Schema
+## 스키마
 
 ```yaml
 name: my-project
@@ -28,36 +28,36 @@ constraints: null   # path to constraint file
 ip_blocks: []       # installed IP block names
 ```
 
-## Auto-Detection
+## 자동 감지
 
-When this skill is invoked, it:
+이 스킬이 호출되면:
 
-1. Checks if `.gateflow/project.yaml` exists
-2. If not, creates it with defaults by scanning:
-   - HDL: check file extensions in project (`.sv` = systemverilog, `.v` = verilog, `.vhd` = vhdl)
-   - Sources: glob for `**/*.sv`, `**/*.v`, `**/*.vhd`
-   - Top module: find modules not instantiated by others
-3. If board is not set and user mentions a board, update it
+1. `.gateflow/project.yaml`이 존재하는지 확인
+2. 없으면, 스캔하여 기본값으로 생성:
+   - HDL: 프로젝트의 파일 확장자를 확인 (`.sv` = systemverilog, `.v` = verilog, `.vhd` = vhdl)
+   - Sources: `**/*.sv`, `**/*.v`, `**/*.vhd`를 glob
+   - Top module: 다른 것에 의해 인스턴스화되지 않은 모듈을 찾음
+3. 보드가 설정되지 않았고 사용자가 보드를 언급하면, 갱신
 
-## Usage by Other Skills
+## 다른 스킬의 사용
 
-Any skill that needs project context should:
+프로젝트 컨텍스트가 필요한 스킬은:
 
 ```bash
 cat .gateflow/project.yaml 2>/dev/null
 ```
 
-If the file doesn't exist, invoke this skill to create it.
+파일이 없으면, 이 스킬을 호출해 생성.
 
-## Board Memory
+## 보드 기억
 
-When a user mentions a board name in natural language (e.g., "I'm using an Arty A7"),
-persist it to `.gateflow/project.yaml` under `target.board`. Do not ask again unless
-the user switches boards or starts a new project.
+사용자가 자연어로 보드 이름을 언급하면(예: "I'm using an Arty A7"),
+`.gateflow/project.yaml`의 `target.board`에 지속. 사용자가 보드를 바꾸거나
+새 프로젝트를 시작하지 않는 한 다시 묻지 말 것.
 
-Board memory is per-project, not global. Different projects target different boards.
+보드 기억은 전역이 아니라 프로젝트별입니다. 서로 다른 프로젝트는 서로 다른 보드를 대상으로 합니다.
 
-## GATEFLOW-RESULT Format
+## GATEFLOW-RESULT 형식
 
 ```
 ---GATEFLOW-RESULT---
@@ -72,7 +72,7 @@ DETAILS: <summary>
 ---END-GATEFLOW-RESULT---
 ```
 
-## Extended Schema
+## 확장 스키마
 
 ```yaml
 simulation:
@@ -93,7 +93,7 @@ verification:
   lint_tool: verilator
 ```
 
-## Project Templates
+## 프로젝트 템플릿
 
 ### iCE40 FPGA
 ```yaml
@@ -105,7 +105,7 @@ simulation: {tool: verilator, trace_format: fst}
 synthesis: {tool: yosys, target_family: ice40, optimization: area}
 ```
 
-### Simulation Only
+### 시뮬레이션 전용
 ```yaml
 name: sim-project
 top_module: top
@@ -115,12 +115,13 @@ simulation: {tool: verilator, timeout: 500000, trace_format: fst, defines: [SIMU
 synthesis: {tool: null}
 ```
 
-## Health Check
+## 헬스 체크
 
-| Check | Pass Condition |
+| 검사 | 통과 조건 |
 |---|---|
-| Schema valid | name, top_module, hdl exist |
-| Sources exist | All listed files found |
-| Top module found | grep for `module <top>` in sources |
-| Constraints match target | .xdc for Xilinx, .pcf for iCE40, .lpf for ECP5, .cst for Gowin |
-| Tools installed | which <sim_tool>, which <synth_tool> |
+| 스키마 유효 | name, top_module, hdl 존재 |
+| Sources 존재 | 나열된 모든 파일이 발견됨 |
+| Top module 발견 | sources에서 `module <top>`를 grep |
+| 제약이 타겟과 일치 | Xilinx는 .xdc, iCE40은 .pcf, ECP5는 .lpf, Gowin은 .cst |
+| 도구 설치됨 | which <sim_tool>, which <synth_tool> |
+```

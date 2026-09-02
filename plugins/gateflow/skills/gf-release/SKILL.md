@@ -21,42 +21,42 @@ allowed-tools:
   - Glob
   - Grep
 
-# GF-Release -- Release Readiness
+# GF-Release -- 릴리스 준비 상태
 
-Use this workflow before tagging or publishing GateFlow.
+GateFlow를 태깅하거나 게시하기 전에 이 워크플로를 사용하세요.
 
-## Required Inputs
+## 필수 입력
 
-- Target version, for example `2.5.0`
-- Whether this is check-only or a release-prep edit
+- 목표 버전, 예를 들어 `2.5.0`
+- 이것이 검사 전용인지 릴리스 준비 편집인지 여부
 
-If no version is provided, inspect `plugins/gateflow/.claude-plugin/plugin.json`
-and propose the next semver version based on the changes:
+버전이 제공되지 않으면, `plugins/gateflow/.claude-plugin/plugin.json`을
+검토하고 변경 사항에 기반해 다음 semver 버전을 제안:
 
-| Change Type | Version Bump |
+| 변경 유형 | 버전 상향 |
 |---|---|
-| Metadata, docs, or packaging fix | Patch |
-| New command, skill, agent, IP, or board | Minor |
-| Breaking plugin layout or workflow change | Major |
+| 메타데이터, 문서, 패키징 수정 | Patch |
+| 신규 커맨드, 스킬, 에이전트, IP, 보드 | Minor |
+| 플러그인 레이아웃 또는 워크플로의 파괴적 변경 | Major |
 
-## Release Checks
+## 릴리스 검사
 
-Run the deterministic validator from the repo root:
+저장소 루트에서 결정적 검증기를 실행:
 
 ```bash
 python3 tools/validate_gateflow.py --version <target-version>
 ```
 
-The validator must pass before creating a tag. It checks:
-- plugin and marketplace JSON version consistency
-- component counts in descriptions and READMEs
-- `docs/gateflow.index` coverage for every command, skill, and agent
-- root-level mirrors for every command-adjacent skill and agent file
-- a release note entry for the target version
+태그를 만들기 전에 검증기가 통과해야 합니다. 검사 항목:
+- 플러그인과 마켓플레이스 JSON 버전 일관성
+- 설명과 README의 구성 요소 개수
+- 모든 커맨드, 스킬, 에이전트에 대한 `docs/gateflow.index` 커버리지
+- 모든 커맨드 인접 스킬 및 에이전트 파일의 루트 레벨 미러
+- 목표 버전에 대한 릴리스 노트 항목
 
-## Prep Workflow
+## 준비 워크플로
 
-1. Count actual components:
+1. 실제 구성 요소 개수 세기:
 
 ```bash
 find plugins/gateflow/agents -maxdepth 1 -name '*.md' | wc -l
@@ -64,31 +64,31 @@ find plugins/gateflow/skills -maxdepth 2 -name 'SKILL.md' | wc -l
 find plugins/gateflow/commands -maxdepth 1 -name '*.md' | wc -l
 ```
 
-2. Update version strings:
+2. 버전 문자열 갱신:
 - `plugins/gateflow/.claude-plugin/plugin.json`
 - `.claude-plugin/marketplace.json`
 
-3. Update release-facing docs:
+3. 릴리스 대상 문서 갱신:
 - `README.md`
 - `plugins/gateflow/README.md`
 - `docs/gateflow.index`
 - `releases.md`
 
-4. Run validator and focused tests:
+4. 검증기와 집중 테스트 실행:
 
 ```bash
 python3 -m unittest tests/test_validate_gateflow.py
 python3 tools/validate_gateflow.py --version <target-version>
 ```
 
-5. Only after validation passes, tag and release:
+5. 검증이 통과한 후에만 태그하고 릴리스:
 
 ```bash
 git tag v<target-version>
 gh release create v<target-version> --title "GateFlow v<target-version>" --notes-file <notes-file>
 ```
 
-## Report Format
+## 보고 형식
 
 ```text
 ---GATEFLOW-RESULT---

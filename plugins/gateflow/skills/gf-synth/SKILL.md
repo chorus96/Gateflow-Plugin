@@ -13,15 +13,15 @@ allowed-tools:
   - Task
 ---
 
-# GF-Synth — Yosys Synthesis Skill
+# GF-Synth — Yosys 합성 스킬
 
-## Tool Detection
+## 도구 감지
 
 ```bash
 which yosys
 ```
 
-If not found:
+찾을 수 없으면:
 ```
 ---GATEFLOW-RESULT---
 STATUS: ERROR
@@ -31,25 +31,25 @@ DETAILS: Yosys not installed. Install to enable synthesis.
 ---END-GATEFLOW-RESULT---
 ```
 
-## Pre-Synthesis SV Subset Check
+## 합성 전 SV 서브셋 검사
 
-Before synthesis, scan for unsupported constructs:
+합성 전에 미지원 구문을 스캔:
 ```bash
 grep -rn "^\s*interface\s\|^\s*modport\s\|^\s*class\s\|^\s*bind\s" <files>
 ```
 
-If found, warn user. Do NOT proceed — it will produce confusing errors.
+발견되면 사용자에게 경고. 진행하지 말 것 — 혼란스러운 오류를 유발함.
 
-## Workflow
+## 워크플로
 
-1. Check project context (`.gateflow/project.yaml`) for target
-2. Pre-synthesis lint for unsupported SV constructs
-3. Map board to Yosys synth target
-4. Run synthesis via sv-synth agent or directly
-5. Parse stat output for LUT/FF/BRAM/DSP
-6. Report structured result
+1. 타겟을 위해 프로젝트 컨텍스트(`.gateflow/project.yaml`) 확인
+2. 미지원 SV 구문에 대한 합성 전 lint
+3. 보드를 Yosys synth 타겟에 매핑
+4. sv-synth 에이전트를 통해 또는 직접 합성 실행
+5. stat 출력을 LUT/FF/BRAM/DSP로 파싱
+6. 구조화된 결과 보고
 
-## Result Format
+## 결과 형식
 
 ```
 ---GATEFLOW-RESULT---

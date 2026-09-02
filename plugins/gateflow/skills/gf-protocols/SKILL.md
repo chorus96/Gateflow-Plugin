@@ -13,51 +13,51 @@ allowed-tools:
   - Task
 ---
 
-# GF-Protocols — Protocol Scaffolding Library
+# GF-Protocols — 프로토콜 스캐폴딩 라이브러리
 
-Not production IP cores. Correct, readable scaffolds that engineers customize.
-Plus the testbenches and integration code — that's where the real time goes.
+프로덕션 IP 코어가 아닙니다. 엔지니어가 커스터마이징하는, 올바르고 읽기 쉬운 스캐폴드입니다.
+그리고 테스트벤치와 통합 코드도 함께 — 진짜 시간이 드는 곳이 거기입니다.
 
-## Available Protocols
+## 사용 가능한 프로토콜
 
-| Protocol | Priority | Scaffold Includes |
+| 프로토콜 | 우선순위 | 스캐폴드 포함 항목 |
 |----------|----------|-------------------|
-| AXI4-Lite | 1 | Slave register interface + master BFM + TB |
-| SPI | 2 | Master + slave + loopback TB |
-| UART | 3 | TX + RX + loopback TB |
-| I2C | 4 | Master + slave model + TB |
-| AXI4-Full | 5 | Slave + burst master BFM + TB |
-| AXI-Stream | 6 | Source + sink + passthrough + TB |
-| Wishbone | 7 | Slave + master + TB |
+| AXI4-Lite | 1 | 슬레이브 레지스터 인터페이스 + 마스터 BFM + TB |
+| SPI | 2 | 마스터 + 슬레이브 + 루프백 TB |
+| UART | 3 | TX + RX + 루프백 TB |
+| I2C | 4 | 마스터 + 슬레이브 모델 + TB |
+| AXI4-Full | 5 | 슬레이브 + 버스트 마스터 BFM + TB |
+| AXI-Stream | 6 | 소스 + 싱크 + 패스스루 + TB |
+| Wishbone | 7 | 슬레이브 + 마스터 + TB |
 
-## Usage
+## 사용법
 
-When user requests a protocol interface:
-1. Check if the IP library has a complete block (`/gf-ip list`)
-2. If available as IP: suggest `/gf-ip add <block>` instead
-3. If not available or user wants custom: generate scaffold
+사용자가 프로토콜 인터페이스를 요청하면:
+1. IP 라이브러리에 완전한 블록이 있는지 확인 (`/gf-ip list`)
+2. IP로 사용 가능하면: 대신 `/gf-ip add <block>` 제안
+3. 사용 불가하거나 사용자가 커스텀을 원하면: 스캐폴드 생성
 
-## Scaffold Generation
+## 스캐폴드 생성
 
-Each scaffold includes:
-- RTL skeleton with correct port names and widths
-- Signal timing comments (when to assert/deassert)
-- Testbench template with BFM (Bus Functional Model)
-- Integration example showing how to wire into a design
+각 스캐폴드는 다음을 포함:
+- 올바른 포트 이름과 폭이 있는 RTL 뼈대
+- 신호 타이밍 주석 (언제 assert/deassert할지)
+- BFM(Bus Functional Model)이 있는 테스트벤치 템플릿
+- 설계에 배선하는 방법을 보여주는 통합 예시
 
-## Protocol References
+## 프로토콜 레퍼런스
 
-Detailed protocol specifications are in `references/`:
-- `references/axi4-lite.md` — AXI4-Lite signal list, timing, rules
-- `references/spi.md` — SPI modes, timing, signal descriptions
-- `references/i2c.md` — I2C protocol, addressing, clock stretching
+상세 프로토콜 명세는 `references/`에 있습니다:
+- `references/axi4-lite.md` — AXI4-Lite 신호 목록, 타이밍, 규칙
+- `references/spi.md` — SPI 모드, 타이밍, 신호 설명
+- `references/i2c.md` — I2C 프로토콜, 주소 지정, 클럭 스트레칭
 
-When generating scaffolds, ALWAYS read the reference first for correct
-signal names, widths, and timing requirements.
+스캐폴드를 생성할 때, 올바른 신호 이름, 폭, 타이밍 요구 사항을 위해
+항상 레퍼런스를 먼저 읽으세요.
 
 ---
 
-## AXI4-Lite Slave Scaffold
+## AXI4-Lite 슬레이브 스캐폴드
 
 ```systemverilog
 module axi4lite_slave_regs #(parameter int ADDR_WIDTH=4, DATA_WIDTH=32) (
@@ -78,7 +78,7 @@ module axi4lite_slave_regs #(parameter int ADDR_WIDTH=4, DATA_WIDTH=32) (
 endmodule
 ```
 
-## SPI Master Scaffold
+## SPI 마스터 스캐폴드
 
 ```systemverilog
 module spi_master_scaffold #(parameter int CLK_DIV=4) (
@@ -94,7 +94,7 @@ module spi_master_scaffold #(parameter int CLK_DIV=4) (
 endmodule
 ```
 
-## UART TX Scaffold
+## UART TX 스캐폴드
 
 ```systemverilog
 module uart_tx_scaffold #(parameter int CLK_FREQ=100_000_000, BAUD_RATE=115_200) (
@@ -109,7 +109,7 @@ module uart_tx_scaffold #(parameter int CLK_FREQ=100_000_000, BAUD_RATE=115_200)
 endmodule
 ```
 
-## I2C Master Scaffold
+## I2C 마스터 스캐폴드
 
 ```systemverilog
 module i2c_master_scaffold #(parameter int CLK_FREQ=100_000_000, I2C_FREQ=100_000) (
@@ -125,7 +125,7 @@ module i2c_master_scaffold #(parameter int CLK_FREQ=100_000_000, I2C_FREQ=100_00
 endmodule
 ```
 
-## GATEFLOW-RESULT Integration
+## GATEFLOW-RESULT 통합
 
 ```
 ---GATEFLOW-RESULT---

@@ -13,30 +13,30 @@ allowed-tools:
   - Grep
 ---
 
-# GF-IP — IP Block Library
+# GF-IP — IP 블록 라이브러리
 
-## Commands
+## 커맨드
 
-- `add <block>` — Copy IP block into current project
-- `list` — Show all available IP blocks
-- `info <block>` — Show block details, ports, parameters
+- `add <block>` — IP 블록을 현재 프로젝트로 복사
+- `list` — 사용 가능한 모든 IP 블록 표시
+- `info <block>` — 블록 세부 정보, 포트, 파라미터 표시
 
-## Available Blocks
+## 사용 가능한 블록
 
-| Block | Description | Verified |
+| 블록 | 설명 | 검증 |
 |-------|-------------|----------|
-| fifo_sync | Synchronous FIFO (parameterized width/depth) | lint + sim + formal |
-| fifo_async | Async FIFO with Gray code pointers (CDC) | lint + sim + formal |
-| cdc_2ff | 2-flip-flop synchronizer | lint + sim + formal |
-| cdc_handshake | Multi-bit handshake synchronizer | lint + sim + formal |
-| uart | UART TX+RX with configurable baud | lint + sim + formal |
-| spi_master | SPI master (all 4 CPOL/CPHA modes) | lint + sim + formal |
-| axi4lite_slave | AXI4-Lite register slave | lint + sim + formal |
-| debouncer | Button debouncer with edge detection | lint + sim + formal |
+| fifo_sync | 동기 FIFO (파라미터화된 폭/깊이) | lint + sim + formal |
+| fifo_async | Gray 코드 포인터를 쓰는 비동기 FIFO (CDC) | lint + sim + formal |
+| cdc_2ff | 2-플립플롭 동기화기 | lint + sim + formal |
+| cdc_handshake | 멀티비트 핸드셰이크 동기화기 | lint + sim + formal |
+| uart | 구성 가능한 보드레이트의 UART TX+RX | lint + sim + formal |
+| spi_master | SPI 마스터 (4가지 CPOL/CPHA 모드 전부) | lint + sim + formal |
+| axi4lite_slave | AXI4-Lite 레지스터 슬레이브 | lint + sim + formal |
+| debouncer | 에지 감지가 포함된 버튼 디바운서 | lint + sim + formal |
 
-## Block Structure
+## 블록 구조
 
-Each block lives in `${CLAUDE_PLUGIN_ROOT}/ip/<name>/`:
+각 블록은 `${CLAUDE_PLUGIN_ROOT}/ip/<name>/`에 위치:
 ```
 <name>/
   rtl/<name>.sv           # RTL source
@@ -47,17 +47,17 @@ Each block lives in `${CLAUDE_PLUGIN_ROOT}/ip/<name>/`:
   README.md               # Usage guide
 ```
 
-## Add Flow
+## Add 흐름
 
-When user says "add a FIFO" or runs `/gf-ip add fifo_sync`:
-1. Read block.yaml for metadata and parameters
-2. Copy RTL to `rtl/` (or user-specified directory)
-3. Copy testbench to `tb/`
-4. Copy formal properties to `formal/`
-5. Update `.gateflow/project.yaml` — add to `ip_blocks`
-6. Show instantiation example from README.md
+사용자가 "add a FIFO"라고 말하거나 `/gf-ip add fifo_sync`를 실행하면:
+1. 메타데이터와 파라미터를 위해 block.yaml을 읽음
+2. RTL을 `rtl/`(또는 사용자 지정 디렉터리)로 복사
+3. 테스트벤치를 `tb/`로 복사
+4. formal 프로퍼티를 `formal/`로 복사
+5. `.gateflow/project.yaml` 갱신 — `ip_blocks`에 추가
+6. README.md의 인스턴스화 예시를 표시
 
-## Block Metadata Schema (block.yaml)
+## 블록 메타데이터 스키마 (block.yaml)
 
 ```yaml
 name: fifo_sync
@@ -81,7 +81,7 @@ formal_proofs:
 dependencies: []
 ```
 
-## Instantiation Examples
+## 인스턴스화 예시
 
 ### fifo_sync
 ```systemverilog
@@ -108,17 +108,17 @@ uart #(.CLK_FREQ(100_000_000), .BAUD_RATE(115200)) u_uart (.clk, .rst_n, .tx_dat
 spi_master #(.CLK_DIV(8)) u_spi (.clk, .rst_n, .cpol(1'b0), .cpha(1'b0), .tx_data(spi_tx), .tx_valid(spi_start), .tx_ready(spi_idle), .rx_data(spi_rx), .rx_valid(spi_done), .sclk(spi_sclk), .mosi(spi_mosi), .miso(spi_miso), .cs_n(spi_cs_n));
 ```
 
-## IP Block Comparison
+## IP 블록 비교
 
-| Need | Use | Not | Why |
+| 필요 | 사용 | 비사용 | 이유 |
 |---|---|---|---|
-| Same-clock buffering | fifo_sync | fifo_async | Async has Gray code overhead |
-| Cross-domain stream | fifo_async | cdc_2ff | 2FF only handles 1-bit |
-| Cross-domain 1-bit flag | cdc_2ff | fifo_async | FIFO overkill for 1-bit |
-| Cross-domain multi-bit (infrequent) | cdc_handshake | fifo_async | Handshake smaller |
-| Cross-domain multi-bit (streaming) | fifo_async | cdc_handshake | Handshake blocks |
+| 동일 클럭 버퍼링 | fifo_sync | fifo_async | 비동기는 Gray 코드 오버헤드가 있음 |
+| 도메인 간 스트림 | fifo_async | cdc_2ff | 2FF는 1비트만 처리 |
+| 도메인 간 1비트 플래그 | cdc_2ff | fifo_async | 1비트에 FIFO는 과함 |
+| 도메인 간 멀티비트 (드묾) | cdc_handshake | fifo_async | 핸드셰이크가 더 작음 |
+| 도메인 간 멀티비트 (스트리밍) | fifo_async | cdc_handshake | 핸드셰이크는 블로킹됨 |
 
-## GATEFLOW-RESULT Format
+## GATEFLOW-RESULT 형식
 
 ```
 ---GATEFLOW-RESULT---
