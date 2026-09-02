@@ -16,36 +16,36 @@ allowed-tools:
 
 # GF Architect
 
-Maps SystemVerilog codebases using parallel subagents.
+병렬 서브에이전트를 사용해 SystemVerilog 코드베이스를 매핑합니다.
 
-**CRITICAL: You orchestrate, Sonnet reads.** Never read codebase files directly. Always delegate file reading to Sonnet subagents - even for small codebases. You plan the work, spawn subagents, and synthesize their reports.
+**중요: 당신은 오케스트레이션하고, Sonnet이 읽습니다.** 코드베이스 파일을 직접 읽지 마세요. 파일 읽기는 항상 Sonnet 서브에이전트에 위임하세요 - 작은 코드베이스라도. 당신은 작업을 계획하고, 서브에이전트를 스폰하며, 그들의 보고서를 종합합니다.
 
-## Agent Count Strategy
+## 에이전트 수 전략
 
-| Codebase Tokens | Agents | Rationale |
+| 코드베이스 토큰 | 에이전트 | 근거 |
 |-----------------|--------|-----------|
-| < 50k | 2 | Minimum for parallelism |
-| 50k-300k | 3 | Balance load, related files together |
-| 300k-600k | 4-5 | Efficient parallel analysis |
-| 600k-1M | 6-8 | Stay under 150k per agent |
-| > 1M | 8-10 | Cap at 10, use incremental updates |
+| < 50k | 2 | 병렬성을 위한 최소 |
+| 50k-300k | 3 | 부하 균형, 관련 파일을 함께 |
+| 300k-600k | 4-5 | 효율적 병렬 분석 |
+| 600k-1M | 6-8 | 에이전트당 150k 미만 유지 |
+| > 1M | 8-10 | 10개로 상한, 증분 갱신 사용 |
 
-**Rules:**
-- **Minimum: 2 agents** (always parallelize, even for tiny codebases)
-- **Maximum: 10 agents** (diminishing returns, synthesis overhead)
-- **Large files (>80k tokens):** Dedicated agent with Grep-first strategy
+**규칙:**
+- **최소: 2 에이전트** (아주 작은 코드베이스라도 항상 병렬화)
+- **최대: 10 에이전트** (수익 체감, 종합 오버헤드)
+- **큰 파일 (>80k 토큰):** Grep 우선 전략의 전용 에이전트
 
-## Quick Start
+## 빠른 시작
 
-1. Check for existing map (incremental update if exists)
-2. Scan codebase to get file list with token counts
-3. **Determine agent count** using table above
-4. Plan subagent assignments (group files, handle large files)
-5. Spawn Sonnet subagents in parallel (ALL in single message)
-6. Synthesize subagent reports into `.gateflow/map/` files
-7. Update `CLAUDE.md` with summary
+1. 기존 맵 확인 (있으면 증분 갱신)
+2. 코드베이스를 스캔해 토큰 수가 있는 파일 목록 획득
+3. 위 표를 사용해 **에이전트 수 결정**
+4. 서브에이전트 배정 계획 (파일 그룹화, 큰 파일 처리)
+5. Sonnet 서브에이전트를 병렬로 스폰 (하나의 메시지에 전부)
+6. 서브에이전트 보고서를 `.gateflow/map/` 파일로 종합
+7. 요약으로 `CLAUDE.md` 갱신
 
-## Output Structure
+## 출력 구조
 
 ```
 .gateflow/map/
@@ -70,32 +70,32 @@ Maps SystemVerilog codebases using parallel subagents.
 
 ---
 
-## Workflow
+## 워크플로
 
-### Step 1: Check for Existing Map
+### 1단계: 기존 맵 확인
 
 ```bash
 ls .gateflow/map/CODEBASE.md 2>/dev/null
 ```
 
-**If exists:** Check for changes since last map:
+**존재하면:** 마지막 맵 이후 변경 사항 확인:
 ```bash
 # Read last commit from metadata
 last_commit=$(cat .gateflow/map/.last_scan_commit 2>/dev/null)
 git diff --name-only $last_commit HEAD -- "*.sv" "*.svh" 2>/dev/null
 ```
-- If no changes: "Map is up to date"
-- If changes: Proceed with incremental update (only remap changed files)
+- 변경 없음: "Map is up to date"
+- 변경 있음: 증분 갱신으로 진행 (변경된 파일만 재매핑)
 
-**If not exists:** Proceed to full mapping.
+**존재하지 않으면:** 전체 매핑으로 진행.
 
-### Step 2: Scan Codebase & Token Budgeting
+### 2단계: 코드베이스 스캔 & 토큰 예산 배정
 
 ```bash
 mkdir -p .gateflow/map/modules
 ```
 
-**Scan files with token counts:**
+**토큰 수와 함께 파일 스캔:**
 ```bash
 find . \( -name "*.sv" -o -name "*.svh" \) -not -path "./.gateflow/*" | while read f; do
   tokens=$(wc -c < "$f" | awk '{print int($1/4)}')
@@ -103,18 +103,18 @@ find . \( -name "*.sv" -o -name "*.svh" \) -not -path "./.gateflow/*" | while re
 done | sort -rn
 ```
 
-**Build assignment table:**
-| File | Tokens | Assignment |
+**배정 표 구성:**
+| 파일 | 토큰 | 배정 |
 |------|--------|------------|
 | top.sv | 50000 | Agent 1 |
 | uart_tx.sv | 8000 | Agent 1 |
 | hmac_core.sv | 120000 | Agent 2 (LARGE - use Grep) |
 
-### Step 3: Handle Large Files (>80k tokens)
+### 3단계: 큰 파일 처리 (>80k 토큰)
 
-**For files exceeding 80k tokens, use chunked analysis:**
+**80k 토큰을 초과하는 파일은 청크 분석 사용:**
 
-1. **Use Grep to extract structure** (don't read full file):
+1. **Grep으로 구조 추출** (전체 파일을 읽지 말 것):
 ```bash
 # Get module declaration
 grep -n "^\s*module\s" large_file.sv
@@ -126,24 +126,24 @@ grep -n "(input|output|inout)" large_file.sv
 grep -n "^\s*\w\+\s\+\w\+\s*(" large_file.sv
 ```
 
-2. **Read in sections** using offset/limit:
+2. offset/limit을 사용해 **섹션별로 읽기**:
 ```
 Read file with offset=0, limit=500 (header, ports)
 Read file with offset=500, limit=500 (logic section 1)
 ... continue until covered
 ```
 
-3. **Assign to dedicated subagent** with Grep-first strategy
+3. Grep 우선 전략으로 **전용 서브에이전트에 배정**
 
-### Step 4: Spawn Parallel Subagents
+### 4단계: 병렬 서브에이전트 스폰
 
-**CRITICAL: Spawn ALL subagents in a SINGLE message.**
+**중요: 모든 서브에이전트를 하나의 메시지에 스폰.**
 
-Use Task tool with:
+Task 도구를 다음과 함께 사용:
 - `subagent_type: "Explore"`
-- (omit model to inherit the user’s session model)
+- (사용자의 세션 모델을 상속하려면 model 생략)
 
-**Example - spawn 3 agents in ONE message:**
+**예시 - 하나의 메시지에 3개 에이전트 스폰:**
 
 ```
 Task 1:
@@ -192,21 +192,21 @@ Task 3:
     Return structured markdown.
 ```
 
-### Step 5: Synthesize Reports
+### 5단계: 보고서 종합
 
-After all subagents complete:
+모든 서브에이전트 완료 후:
 
-1. **Merge** all reports
-2. **Build hierarchy** from instance data
-3. **Create diagrams** (Mermaid)
-4. **Identify cross-cutting concerns** (clocks, CDC)
-5. **Write output files**
+1. 모든 보고서 **병합**
+2. 인스턴스 데이터로 **계층 구성**
+3. **다이어그램 생성** (Mermaid)
+4. **교차 관심사 식별** (클럭, CDC)
+5. **출력 파일 작성**
 
 ---
 
-## Output File Specifications
+## 출력 파일 명세
 
-### CODEBASE.md (Main Index)
+### CODEBASE.md (메인 인덱스)
 
 ```markdown
 ---
@@ -595,7 +595,7 @@ flowchart LR
 - ./include
 ```
 
-### Per-Module Pages (modules/*.md)
+### 모듈별 페이지 (modules/*.md)
 
 ```markdown
 # Module: uart_tx
@@ -640,7 +640,7 @@ State type: tx_state_t {IDLE, START, DATA, STOP}
 
 ---
 
-## Regex Patterns Reference
+## 정규식 패턴 레퍼런스
 
 ```
 # Design Units
@@ -701,7 +701,7 @@ import\s+"DPI|export\s+"DPI
 
 ---
 
-## Save Metadata After Mapping
+## 매핑 후 메타데이터 저장
 
 ```bash
 # Save commit hash
@@ -716,91 +716,91 @@ find . -name "*.sv" -o -name "*.svh" | xargs md5 > .gateflow/map/.file_hashes
 
 ---
 
-## Incremental Update Mode
+## 증분 갱신 모드
 
-When updating existing map:
+기존 맵을 갱신할 때:
 
-1. Get changed files: `git diff --name-only <last_commit> HEAD -- "*.sv"`
-2. Spawn subagents ONLY for changed file groups
-3. Merge new analysis with existing map files
-4. Update frontmatter timestamps
-5. Regenerate affected diagrams
-
----
-
-## Quality Warnings
-
-Report in CODEBASE.md under "## Warnings":
-- Inferred latches (always without default)
-- Missing resets on sequential logic
-- Unconnected ports
-- CDC crossings without synchronizers
-- Unused signals/parameters
-- Missing top module
+1. 변경된 파일 획득: `git diff --name-only <last_commit> HEAD -- "*.sv"`
+2. 변경된 파일 그룹에 대해서만 서브에이전트 스폰
+3. 새 분석을 기존 맵 파일과 병합
+4. 프론트매터 타임스탬프 갱신
+5. 영향받은 다이어그램 재생성
 
 ---
 
-## Token Budget Reference
+## 품질 경고
 
-| Model | Context | Safe Budget |
+CODEBASE.md의 "## Warnings" 아래에 보고:
+- 추론된 래치 (default 없는 always)
+- 순차 로직의 리셋 누락
+- 미연결 포트
+- 동기화기 없는 CDC 크로싱
+- 미사용 신호/파라미터
+- 톱 모듈 누락
+
+---
+
+## 토큰 예산 레퍼런스
+
+| 모델 | 컨텍스트 | 안전 예산 |
 |-------|---------|-------------|
-| Sonnet | 200k | 150k per agent |
-| Haiku | 200k | 100k per agent |
+| Sonnet | 200k | 에이전트당 150k |
+| Haiku | 200k | 에이전트당 100k |
 
-**Always use Sonnet** for analysis quality. The 150k budget leaves 50k headroom for agent reasoning and output.
-
----
-
-## Troubleshooting
-
-**File too large for single agent:**
-- Use Grep to extract structure first
-- Read in chunks with offset/limit
-- Assign dedicated subagent
-
-**Too many files:**
-- Increase subagent count
-- Focus on RTL, skip testbenches
-- Use glob patterns to filter
-
-**No git available:**
-- Fall back to file hash comparison
-- Store .file_hashes for change detection
+분석 품질을 위해 **항상 Sonnet 사용**. 150k 예산은 에이전트 추론과 출력을 위해 50k 여유를 남깁니다.
 
 ---
 
-## Verilator JSON Mode
+## 문제 해결
 
-When Verilator is available, use `--json-only` for more accurate mapping:
+**단일 에이전트에 파일이 너무 큼:**
+- 먼저 Grep으로 구조 추출
+- offset/limit으로 청크 단위로 읽기
+- 전용 서브에이전트 배정
+
+**파일이 너무 많음:**
+- 서브에이전트 수 늘리기
+- RTL에 집중, 테스트벤치 건너뛰기
+- glob 패턴으로 필터링
+
+**git을 사용할 수 없음:**
+- 파일 해시 비교로 폴백
+- 변경 감지를 위해 .file_hashes 저장
+
+---
+
+## Verilator JSON 모드
+
+Verilator가 사용 가능하면, 더 정확한 매핑을 위해 `--json-only` 사용:
 ```bash
 verilator --json-only --json-only-output design.tree.json --no-json-edit-nums -Wall <files>.sv
 ```
 
-Key AST nodes: MODULE (modules), VAR (signals with ioDirection), CELL (instances), ASSIGNW/ASSIGNDLY (connections). Benefits over regex: resolves parameters/generates, captures elaborated hierarchy, typed width info. Falls back to regex if Verilator unavailable.
+주요 AST 노드: MODULE (모듈), VAR (ioDirection이 있는 신호), CELL (인스턴스), ASSIGNW/ASSIGNDLY (연결). 정규식 대비 이점: 파라미터/generate 해결, 엘라보레이션된 계층 캡처, 타입 폭 정보. Verilator가 없으면 정규식으로 폴백.
 
-## Complexity Metrics
+## 복잡도 지표
 
-Add to each module page and CODEBASE.md summary:
+각 모듈 페이지와 CODEBASE.md 요약에 추가:
 
-| Metric | What It Measures |
+| 지표 | 측정하는 것 |
 |---|---|
-| CC (Cyclomatic) | Decision points in combinational logic |
-| FSM_STATES | Number of FSM states |
-| ALWAYS | Number of always blocks |
-| PORTS | Port count |
-| INSTANCES | Submodule count |
-| SLOC | Non-blank non-comment lines |
+| CC (순환 복잡도) | 조합 논리의 결정 지점 |
+| FSM_STATES | FSM 상태 수 |
+| ALWAYS | always 블록 수 |
+| PORTS | 포트 수 |
+| INSTANCES | 서브모듈 수 |
+| SLOC | 공백/주석이 아닌 줄 |
 
-Composite: `(CC*3) + (FSM_STATES*2) + ALWAYS + (PORTS/5) + (INSTANCES*2)`. Rating: 1-10 Low, 11-30 Medium, 31-60 High, 61+ Critical.
+복합: `(CC*3) + (FSM_STATES*2) + ALWAYS + (PORTS/5) + (INSTANCES*2)`. 등급: 1-10 Low, 11-30 Medium, 31-60 High, 61+ Critical.
 
-## Signal Tracing
+## 신호 추적
 
-Build directed connectivity graph (nodes=signals, edges=assignments+port bindings). BFS forward from source, BFS backward from destination. Output trace path with module crossings and pipeline stage markers.
+방향성 연결 그래프 구성 (노드=신호, 엣지=대입+포트 바인딩). 소스에서 BFS 순방향, 목적지에서 BFS 역방향. 모듈 크로싱과 파이프라인 스테이지 마커가 있는 추적 경로 출력.
 
-## Diff-Aware Mapping
+## Diff 인식 매핑
 
-After each map, save snapshot. On next map, compare module-level: ADDED/MODIFIED/REMOVED with specific change type (port, instance, FSM, parameter). Output to `.gateflow/map/CHANGES.md`.
+각 맵 후, 스냅샷 저장. 다음 맵에서 모듈 수준 비교: 구체적 변경 타입(port, instance, FSM, parameter)과 함께 ADDED/MODIFIED/REMOVED. `.gateflow/map/CHANGES.md`에 출력.
 
-## Dependency Graph Output
+## 의존성 그래프 출력
 
-Generate `.gateflow/map/dependencies.md` with Mermaid: solid arrows for instantiation, dashed for imports, subgraphs for clock domains, classDef for top/mid/leaf/package.
+Mermaid로 `.gateflow/map/dependencies.md` 생성: 인스턴스화에는 실선 화살표, import에는 점선, 클럭 도메인에는 subgraph, top/mid/leaf/package에는 classDef.
