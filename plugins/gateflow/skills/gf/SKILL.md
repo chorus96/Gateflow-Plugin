@@ -287,7 +287,7 @@ User: "Create a FIFO and test it"
 | `sv-understanding` | 코드, 아키텍처 설명 | 파일 경로, 특정 질문 |
 | `sv-refactor` | **모든** 코드 수정 필요 시 | lint 출력, 고칠 코드 |
 | `sv-developer` | 복잡한 다중 파일 변경 | 전체 컨텍스트, 여러 파일 |
-| `sv-formal` | 정형 검증 요청 시 | 모듈, 증명할 프로퍼티 |
+| `sv-formal` | Formal 검증 요청 시 | 모듈, 증명할 프로퍼티 |
 | `sv-synth` | 합성 또는 리소스 추정 | 모듈, 목표 FPGA |
 | `sv-pinmap` | 핀 할당 또는 제약 파일 | 보드, RTL 포트 |
 | `sv-ip-scanner` | 누락 IP 또는 CDC 문제 스캔 | 프로젝트 경로 |

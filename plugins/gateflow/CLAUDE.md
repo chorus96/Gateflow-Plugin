@@ -169,7 +169,7 @@ Use Task tool (call 2 - same message, parallel):
 | `gateflow:sv-orchestrator` | 병렬 빌더 | "build CPU", "create SoC", "multi-component" |
 | `gateflow:sv-tutor` | 교사 | "teach", "learn", "exercise", "practice" |
 | `gateflow:sv-viz` | 터미널 시각화 | "visualize", "show hierarchy", "show FSM", "show module" |
-| `gateflow:sv-formal` | 정형 검증 | "prove", "formally verify", "check property", "SymbiYosys" |
+| `gateflow:sv-formal` | Formal 검증 | "prove", "formally verify", "check property", "SymbiYosys" |
 | `gateflow:sv-synth` | 합성 전문가 | "synthesize", "area estimate", "Yosys", "resource usage" |
 | `gateflow:sv-pinmap` | 핀 할당 | "pin mapping", "constraints", "board pinout" |
 | `gateflow:vhdl-codegen` | VHDL 코드 생성 | "VHDL", "create VHDL", "entity", "architecture" |

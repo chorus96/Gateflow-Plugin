@@ -25,7 +25,7 @@ claude plugin add codejunkie99/Gateflow-Plugin
     → delivers lint-clean, sim-passing code
 ```
 
-**영어로 하는 정형 검증.** 증명할 것을 설명하면, SVA 프로퍼티 + SymbiYosys 증명을 얻습니다.
+**영어로 하는 Formal 검증.** 증명할 것을 설명하면, SVA 프로퍼티 + SymbiYosys 증명을 얻습니다.
 
 ```
 "Prove the FIFO never overflows" → SVA assertions + .sby config + proof result
@@ -49,7 +49,7 @@ claude plugin add codejunkie99/Gateflow-Plugin
 | `sv-testbench` | 자가 검사 테스트벤치 |
 | `sv-debug` | 시뮬레이션 실패의 근본 원인 |
 | `sv-verification` | SVA 어서션 + 커버리지 |
-| `sv-formal` | 정형 증명 (SymbiYosys) |
+| `sv-formal` | Formal 증명 (SymbiYosys) |
 | `sv-synth` | Yosys 합성 최적화 |
 | `sv-refactor` | lint 수정, 코드 정리 |
 | `sv-planner` | 코드 전 아키텍처 계획 |
@@ -92,7 +92,7 @@ claude plugin add codejunkie99/Gateflow-Plugin
 | `/gf-scan` | 프로젝트 파일 인덱싱 |
 | `/gf-map` | 코드베이스 아키텍처 매핑 |
 | `/gf-doctor` | 환경 + 의존성 점검 |
-| `/gf-formal` | 정형 검증 (SymbiYosys) |
+| `/gf-formal` | Formal 검증 (SymbiYosys) |
 | `/gf-ip` | 검증된 IP 라이브러리 관리 |
 | `/gf-detect` | 누락 IP + CDC 문제 스캔 |
 | `/gf-boards` | 보드 핀아웃 조회 |
@@ -184,7 +184,7 @@ User request
 | **Verilator** | lint + 시뮬레이션 | `brew install verilator` |
 | **Yosys** | 합성 | `brew install yosys` |
 | **nextpnr** | 배치 & 라우팅 | `brew install nextpnr` |
-| **SymbiYosys** | 정형 검증 | `pip install symbiyosys` |
+| **SymbiYosys** | Formal 검증 | `pip install symbiyosys` |
 | **openFPGALoader** | FPGA 프로그래밍 | `brew install openfpgaloader` |
 | **KiCad** | PCB 설계 | `brew install --cask kicad` |
 | **Cocotb** | Python 테스트벤치 | `pip install cocotb` |

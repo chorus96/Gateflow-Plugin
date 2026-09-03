@@ -143,7 +143,7 @@ GateFlow는 맥락을 이해합니다. 필요한 것을 평범한 말로 설명�
 | `/gf-lint` | 구조화된 출력으로 Verilator lint 실행 |
 | `/gf-fix` | lint 오류 자동 수정 |
 | `/gf-sim` | 컴파일 후 시뮬레이션 실행 |
-| `/gf-formal` | SymbiYosys 정형 검증 실행 |
+| `/gf-formal` | SymbiYosys Formal 검증 실행 |
 | `/gf-gen` | 모듈/테스트벤치 스캐폴드 생성 |
 | `/gf-ip` | 검증된 IP 블록 라이브러리 관리 (add/list/info) |
 | `/gf-boards` | 지원 FPGA 보드 목록 및 핀아웃 조회 |
@@ -229,7 +229,7 @@ Create → Lint → Fix → Test → Fix → Formally Verify → Synthesize → 
 /gf-ip add uart          → UART TX+RX with configurable baud rate
 /gf-ip add axi4lite_slave → AXI4-Lite register interface
 ```
-모든 블록은 lint 클린이며 시뮬레이션 테스트와 정형 검증을 거쳤습니다.
+모든 블록은 lint 클린이며 시뮬레이션 테스트와 Formal 검증을 거쳤습니다.
 
 ### 보드를 인식하는 개발
 GateFlow는 당신의 FPGA 보드 핀아웃을 알고 있습니다:
@@ -278,7 +278,7 @@ GateFlow는 당신의 워크플로를 관찰하며 능동적으로 돕습니다:
 | `gf` | 메인 오케스트레이터 — 계획, 빌드, 동작할 때까지 검증 | [SKILL.md](plugins/gateflow/skills/gf/SKILL.md) |
 | `gf-plan` | 다이어그램이 포함된 RTL 구현 계획 | [SKILL.md](plugins/gateflow/skills/gf-plan/SKILL.md) |
 | `gf-build` | 병렬 컴포넌트 빌드 오케스트레이션 | [SKILL.md](plugins/gateflow/skills/gf-build/SKILL.md) |
-| `gf-formal` | **자연어 기반 정형 검증** (SymbiYosys) | [SKILL.md](plugins/gateflow/skills/gf-formal/SKILL.md) |
+| `gf-formal` | **자연어 기반 Formal 검증** (SymbiYosys) | [SKILL.md](plugins/gateflow/skills/gf-formal/SKILL.md) |
 | `gf-synth` | 면적/타이밍 리포트가 포함된 **Yosys 합성** | [SKILL.md](plugins/gateflow/skills/gf-synth/SKILL.md) |
 | `gf-ip` | **IP 블록 라이브러리** — 바로 쓰는 검증 컴포넌트 | [SKILL.md](plugins/gateflow/skills/gf-ip/SKILL.md) |
 | `gf-architect` | 계층 구조, FSM, 클럭, CDC를 담은 코드베이스 맵 | [SKILL.md](plugins/gateflow/skills/gf-architect/SKILL.md) |
@@ -310,9 +310,9 @@ GateFlow는 당신의 워크플로를 관찰하며 능동적으로 돕습니다:
 | `sv-codegen` | RTL 아키텍트 — 합성 가능한 모듈 | [sv-codegen.md](plugins/gateflow/agents/sv-codegen.md) |
 | `sv-testbench` | 검증 엔지니어 — 테스트벤치와 자극 | [sv-testbench.md](plugins/gateflow/agents/sv-testbench.md) |
 | `sv-debug` | 디버그 전문가 — 시뮬레이션 실패, X 값 | [sv-debug.md](plugins/gateflow/agents/sv-debug.md) |
-| `sv-formal` | **정형 검증** — SVA 프로퍼티, SymbiYosys 증명 | [sv-formal.md](plugins/gateflow/agents/sv-formal.md) |
+| `sv-formal` | **Formal 검증** — SVA 프로퍼티, SymbiYosys 증명 | [sv-formal.md](plugins/gateflow/agents/sv-formal.md) |
 | `sv-synth` | **합성 전문가** — Yosys, 면적/타이밍 최적화 | [sv-synth.md](plugins/gateflow/agents/sv-synth.md) |
-| `sv-verification` | 검증 방법론가 — SVA, 커버리지, 정형 | [sv-verification.md](plugins/gateflow/agents/sv-verification.md) |
+| `sv-verification` | 검증 방법론가 — SVA, 커버리지, Formal | [sv-verification.md](plugins/gateflow/agents/sv-verification.md) |
 | `sv-understanding` | RTL 분석가 — 코드 설명 및 문서화 | [sv-understanding.md](plugins/gateflow/agents/sv-understanding.md) |
 | `sv-planner` | 아키텍처 플래너 — 설계 계획과 다이어그램 | [sv-planner.md](plugins/gateflow/agents/sv-planner.md) |
 | `sv-orchestrator` | 병렬 빌더 — 다중 컴포넌트 설계 | [sv-orchestrator.md](plugins/gateflow/agents/sv-orchestrator.md) |
@@ -334,7 +334,7 @@ GateFlow는 당신의 워크플로를 관찰하며 능동적으로 돕습니다:
 |---------|-------------|--------|
 | `/gf-doctor` | 환경 점검 | [gf-doctor.md](plugins/gateflow/commands/gf-doctor.md) |
 | `/gf-demo` | 무설정 쇼케이스 프로젝트 | [gf-demo.md](plugins/gateflow/commands/gf-demo.md) |
-| `/gf-formal` | 정형 검증 실행 | [gf-formal.md](plugins/gateflow/commands/gf-formal.md) |
+| `/gf-formal` | Formal 검증 실행 | [gf-formal.md](plugins/gateflow/commands/gf-formal.md) |
 | `/gf-ip` | IP 블록 라이브러리 관리 | [gf-ip.md](plugins/gateflow/commands/gf-ip.md) |
 | `/gf-boards` | 보드 목록 및 핀아웃 조회 | [gf-boards.md](plugins/gateflow/commands/gf-boards.md) |
 | `/gf-scan` | 프로젝트 인덱싱 | [gf-scan.md](plugins/gateflow/commands/gf-scan.md) |
@@ -615,7 +615,7 @@ gateflow:sv-testbench
 | **2.2.1** | 2026-03-26 | IP 자동 감지, 자동 채움, CDC 스캐닝, `sv-ip-scanner` |
 | **2.2.0** | 2026-03-26 | 커뮤니티 가이드, KiCad, Cocotb, FuseSoC, CI 템플릿, 생태계 통합 |
 | **2.1.0** | 2026-03-26 | VHDL, 핀 매핑, 배치 및 라우팅, FPGA 플래시, 프로토콜 스캐폴딩 |
-| **2.0.0** | 2026-03-26 | 정형 검증, 합성, IP 라이브러리, 보드 데이터베이스 |
+| **2.0.0** | 2026-03-26 | Formal 검증, 합성, IP 라이브러리, 보드 데이터베이스 |
 | **1.6.0** | 2026-03-26 | plugin.json과 marketplace.json 간 버전 동기화; BSL-1.1 라이선스 확정 |
 | **1.5.3** | 2026-02-18 | 프롬프트 기반 PostToolUse 훅을 결정적 Python 스크립트로 교체 |
 | **1.5.2** | 2026-02-15 | Stop 훅 JSON 검증 수정: 프롬프트 훅을 결정적 커맨드 훅(논블로킹 리마인더)으로 교체 |

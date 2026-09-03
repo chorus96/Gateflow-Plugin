@@ -17,7 +17,7 @@ allowed-tools:
 - Verilator: [installed/missing] — `verilator --version`
 - Verible: [installed/missing] — `verible-verilog-syntax --version`
 
-### Formal Verification (정형 검증)
+### Formal Verification (Formal 검증)
 - SymbiYosys: [installed/missing] — `sby --help`
 - z3 solver: [installed/missing] — `z3 --version`
 

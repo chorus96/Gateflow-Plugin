@@ -15,7 +15,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-# GF-Formal -- 정형 검증 스킬
+# GF-Formal -- Formal 검증 스킬
 
 ## 도구 감지
 
@@ -57,9 +57,9 @@ DETAILS: [proof results or counterexample explanation]
 
 ## /gf 오케스트레이터와의 통합
 
-정형 검증은 선택적 향상 단계입니다:
+Formal 검증은 선택적 향상 단계입니다:
 - 안전 필수 설계의 경우, 시뮬레이션 통과 후
-- 사용자가 정형 검증을 명시적으로 요청할 때
+- 사용자가 Formal 검증을 명시적으로 요청할 때
 - CDC, FIFO, 프로토콜 설계의 경우
 
 ## .sby 구성 템플릿

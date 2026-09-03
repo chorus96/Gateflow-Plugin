@@ -99,7 +99,7 @@ else:
 | DEVELOP | 복잡한 다중 파일 변경 | gateflow:sv-developer |
 | PLAN | 코딩 전 설계/아키텍처 | gateflow:sv-planner |
 | TUTOR | 학습 리뷰, 힌트, 피드백 | gateflow:sv-tutor |
-| FORMAL | 정형 검증, 프로퍼티 증명 | gf-formal |
+| FORMAL | Formal 검증, 프로퍼티 증명 | gf-formal |
 | SYNTHESIZE | 합성, 리소스 추정 | gf-synth |
 | PIN_MAP | 보드 핀아웃, 제약 생성 | gf-pinmap |
 | BOARD_QUERY | 보드 정보, 사용 가능 핀 | gf-boards |

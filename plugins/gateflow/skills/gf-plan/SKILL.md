@@ -730,7 +730,7 @@ Handing off to /gf for execution:
 | `references/design-patterns.md` | 핸드셰이크, skid 버퍼, 2FF 동기화, 아비터, 비동기/동기 FIFO, 듀얼 포트 RAM, ROM, 레지스터 파일, SECDED, 워치독, TMR |
 | `references/dft-and-checklists.md` | DFT 전략, 스캔 체인, JTAG TAP, MBIST, 타이밍 클로저, 리타이밍, SDC, RTL 리뷰 체크리스트 (latch, CDC, FSM, 코딩 스타일) |
 | `references/sv-constructs.md` | 패키지, 타입, 매크로, 인터페이스/modport, generate 블록, 함수/태스크, 인스턴스화 패턴, SVA, 커버리지, 클래스, DPI |
-| `references/build-and-tools.md` | 합성 계획, SDC 제약, 리소스 추정, 파형/디버그, 정형 검증 (SymbiYosys), Makefile, FuseSoC, FPGA 특화 (Vivado/XDC, ILA) |
+| `references/build-and-tools.md` | 합성 계획, SDC 제약, 리소스 추정, 파형/디버그, Formal 검증 (SymbiYosys), Makefile, FuseSoC, FPGA 특화 (Vivado/XDC, ILA) |
 
 **사용법:** 계획에 특정 패턴이 필요할 때(예: CDC가 있는 FIFO), 관련 레퍼런스 파일을 읽어 검증된 템플릿을 계획에 포함하세요.
 

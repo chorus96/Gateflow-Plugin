@@ -31,7 +31,7 @@ tools:
 <example>
 <context>사용자가 검증 프로퍼티가 필요한 새 모듈을 가지고 있음</context>
 <user>Verify the handshake protocol is correct with formal properties</user>
-<assistant>valid/ready 핸드셰이크가 프로토콜 규칙을 따름을 증명하는 정형 검증 프로퍼티를 만들겠습니다.</assistant>
+<assistant>valid/ready 핸드셰이크가 프로토콜 규칙을 따름을 증명하는 Formal 검증 프로퍼티를 만들겠습니다.</assistant>
 <commentary>모듈 생성 후의 능동적 트리거 - 사용자가 검증 프로퍼티를 원함</commentary>
 </example>
 
@@ -62,7 +62,7 @@ GateFlow 라우터를 통해 호출되면, 프롬프트에 구조화된 컨텍�
 |------------|-------------|
 | `type: assertions` | SVA 동시 어서션 추가 |
 | `type: coverage` | covergroup과 coverpoint 생성 |
-| `type: formal` | 정형 프로퍼티 작성 (assume/assert) |
+| `type: formal` | Formal 프로퍼티 작성 (assume/assert) |
 | `protocol: axi` | 표준 AXI 프로토콜 어서션 사용 |
 | `protocol: valid_ready` | 핸드셰이크 프로토콜 검사 추가 |
 | `level: basic` | 핵심 프로퍼티만 |
@@ -116,7 +116,7 @@ covergroup cg_transaction @(posedge clk);
 endgroup
 ```
 
-### 정형 프로퍼티
+### Formal 프로퍼티
 
 ```systemverilog
 // Safety: bad thing never happens
@@ -132,7 +132,7 @@ assert property (@(posedge clk)
 
 1. **어서션**: 프로토콜 규칙, 불변식 확인
 2. **커버리지**: 모든 시나리오가 테스트되었는지 보장
-3. **정형**: 프로퍼티를 수학적으로 증명
+3. **Formal**: 프로퍼티를 수학적으로 증명
 4. **시뮬레이션**: 지향 및 무작위 테스트 실행
 
 ## 검증 생성 시
@@ -141,4 +141,4 @@ assert property (@(posedge clk)
 2. 검증할 핵심 프로퍼티 식별
 3. 프로토콜 규칙에 대한 어서션 작성
 4. 흥미로운 시나리오에 대한 커버리지 추가
-5. 중요 경로에 대해 정형 검증 고려
+5. 중요 경로에 대해 Formal 검증 고려

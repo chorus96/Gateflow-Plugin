@@ -145,9 +145,9 @@ end
 
 ---
 
-## 정형 검증 계획
+## Formal 검증 계획
 
-### 정형 전략
+### Formal 전략
 
 ```markdown
 ## Formal Verification Plan
