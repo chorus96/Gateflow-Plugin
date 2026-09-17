@@ -1,1 +1,0 @@
-../../plugins/gateflow/skills/gf-fusesoc/SKILL.md

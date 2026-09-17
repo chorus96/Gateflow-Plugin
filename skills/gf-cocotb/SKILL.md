@@ -1,1 +1,0 @@
-../../plugins/gateflow/skills/gf-cocotb/SKILL.md
