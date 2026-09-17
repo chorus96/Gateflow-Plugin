@@ -1,1 +1,0 @@
-../plugins/gateflow/agents/sv-planner.md

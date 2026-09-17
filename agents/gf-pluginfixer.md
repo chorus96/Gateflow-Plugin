@@ -1,1 +1,0 @@
-../plugins/gateflow/agents/gf-pluginfixer.md
